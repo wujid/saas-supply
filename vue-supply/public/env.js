@@ -3,11 +3,11 @@ window.webConfig = {
   system_name: 'Saas框架',
 
   // 统一网关
-  gateway: 'http://43.139.150.250:8080',
+  gateway: 'http://192.168.5.107:8080',
 
   // webSocket前缀
   ws_schema: 'ws',
 
   // xx-job
-  xx_job: 'http://43.139.150.250:8090'
+  xx_job: 'http://192.168.5.107:8090'
 }
