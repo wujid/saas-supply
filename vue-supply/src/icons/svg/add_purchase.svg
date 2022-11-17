@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #5160ff;
+      }
+
+      .cls-2, .cls-3, .cls-4 {
+        fill: none;
+      }
+
+      .cls-2 {
+        stroke: #fff;
+        stroke-width: 2px;
+      }
+
+      .cls-3 {
+        stroke: #5160ff;
+      }
+
+      .cls-5 {
+        stroke: none;
+      }
+    </style>
+  </defs>
+  <g id="组_146" data-name="组 146" transform="translate(-649 -742.764)">
+    <g id="组_43" data-name="组 43" transform="translate(377 245.764)">
+      <g id="组_42" data-name="组 42" transform="translate(281 511)">
+        <path id="路径_96" data-name="路径 96" class="cls-1" d="M98.143,99.055V103.2h4.142l7.456,15.72-2.043,3.568a4,4,0,0,0-.518,1.988,4.154,4.154,0,0,0,4.142,4.142h24.854v-4.142H112.193a.513.513,0,0,1-.518-.518l.062-.249,1.111-1.87h15.43A4.123,4.123,0,0,0,131.9,119.7l7.415-13.442a2.024,2.024,0,0,0,.249-.994,2.077,2.077,0,0,0-2.071-2.071H106.862l-1.947-4.142Zm33.138,40.67Z" transform="translate(-98.143 -99.055)"/>
+        <path id="联合_1" data-name="联合 1" class="cls-2" d="M2.323,2.664h0v0h0v0Z" transform="translate(21.265 11.888)"/>
+      </g>
+      <g id="椭圆_21" data-name="椭圆 21" class="cls-3" transform="translate(289.506 543.569)">
+        <ellipse class="cls-5" cx="4.64" cy="4.215" rx="4.64" ry="4.215"/>
+        <ellipse class="cls-4" cx="4.64" cy="4.215" rx="4.14" ry="3.715"/>
+      </g>
+      <g id="椭圆_23" data-name="椭圆 23" class="cls-3" transform="translate(310.384 543.569)">
+        <ellipse class="cls-5" cx="4.64" cy="4.215" rx="4.64" ry="4.215"/>
+        <ellipse class="cls-4" cx="4.64" cy="4.215" rx="4.14" ry="3.715"/>
+      </g>
+    </g>
+    <rect id="矩形_51" data-name="矩形 51" class="cls-4" width="60" height="60" transform="translate(649 742.764)"/>
+  </g>
+</svg>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supply.system.mapper.DataScopeTypeMapper">
+    <resultMap id="dataScopeTypePo" type="com.supply.system.model.po.DataScopeTypePo">
+        <id property="id" column="id" jdbcType="NUMERIC"/>
+        <result property="createUserId" column="create_user_id" jdbcType="NUMERIC"/>
+        <result property="createTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateUserId" column="update_user_id" jdbcType="NUMERIC"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status" jdbcType="NUMERIC"/>
+    </resultMap>
+
+    <sql id="tableName">
+        sys_data_scope_type dst
+    </sql>
+
+    <sql id="columns">
+        dst.id, dst.user_id, dst.resource_id, dst.data_scope_type, dst.create_user_id, dst.create_time, dst.update_user_id, dst.update_time, dst.status
+    </sql>
+
+
+
+</mapper>

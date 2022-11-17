@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supply.system.mapper.ResourceMapper">
+    <resultMap id="resourcePo" type="com.supply.system.model.po.ResourcePo">
+        <id property="id" column="id" jdbcType="NUMERIC"/>
+        <result property="parentId" column="parent_id" jdbcType="NUMERIC"/>
+        <result property="code" column="code" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="icon" column="icon" jdbcType="VARCHAR"/>
+        <result property="path" column="path" jdbcType="VARCHAR"/>
+        <result property="sort" column="sort" jdbcType="NUMERIC"/>
+        <result property="type" column="type" jdbcType="NUMERIC"/>
+        <result property="businessStatus" column="business_status" jdbcType="NUMERIC"/>
+        <result property="createUserId" column="create_user_id" jdbcType="NUMERIC"/>
+        <result property="createTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateUserId" column="update_user_id" jdbcType="NUMERIC"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status" jdbcType="NUMERIC"/>
+    </resultMap>
+
+    <sql id="tableName">
+        sys_resource r
+    </sql>
+
+    <sql id="columns">
+        r.id, r.parent_id, r.code, r.name, r.icon, r.path, r.sort, r.type, r.business_status,
+        r.create_user_id, r.create_time, r.update_user_id, r.update_time, r.status
+    </sql>
+
+    <select id="getByRoleIdList" resultMap="resourcePo">
+        SELECT
+            <include refid="columns" />
+        FROM
+            <include refid="tableName" />
+        WHERE r.`status` = 0 AND
+                r.id IN (
+                    SELECT
+                        resource_id
+                    FROM
+                        sys_role_resource
+                    WHERE
+                        `status` = 0
+                        <if test="roleIdList != null and roleIdList.size() > 0">
+                            AND role_id IN
+                            <foreach collection="roleIdList" item="item" open="(" separator="," close=")">
+                                #{item}
+                            </foreach>
+                        </if>
+                    )
+                <if test="type != null">
+                    AND r.type = #{Ttype}
+                </if>
+        ORDER BY r.sort
+    </select>
+
+    <select id="getByTenantId" resultMap="resourcePo">
+        SELECT
+            <include refid="columns" />
+        FROM
+            <include refid="tableName" />
+        WHERE r.`status` = 0 AND
+            id IN (
+                SELECT
+                    resource_id
+                FROM
+                    sys_tenant_resource
+                WHERE
+                    `status` = 0
+                <if test="tenantId != null">
+                    AND tenant_id = #{tenantId}
+                </if>
+            )
+        ORDER BY r.sort
+    </select>
+
+
+</mapper>

@@ -1,0 +1,70 @@
+version: '3.3'
+services:
+  gateway-service:
+    image: gateway-service:0.0.1
+    container_name: gateway-service
+    env_file: ./env/project.env
+    restart: on-failure
+    volumes:
+      - ./data/gateway-service/log/:/supply/log/
+    ports:
+      - 8080:8080
+  auth-service:
+    image: auth-service:0.0.1
+    container_name: auth-service
+    env_file: ./env/project.env
+    restart: on-failure
+    volumes:
+      - ./data/auth-service/log/:/supply/log/
+  system-service:
+    image: system-service:0.0.1
+    container_name: system-service
+    env_file: ./env/project.env
+    restart: on-failure
+    volumes:
+      - ./data/system-service/log/:/supply/log/
+  file-service:
+    image: file-service:0.0.1
+    container_name: file-service
+    env_file: ./env/project.env
+    restart: on-failure
+    volumes:
+      - ./data/file-service/log/:/supply/log/
+  message-service:
+    image: message-service:0.0.1
+    container_name: message-service
+    env_file: ./env/project.env
+    restart: on-failure
+    volumes:
+      - ./data/message-service/log/:/supply/log/
+  job-client:
+    image: job-client:0.0.1
+    container_name: job-client
+    env_file: ./env/project.env
+    restart: on-failure
+    volumes:
+      - ./data/job-client/log/:/supply/log/
+    ports:
+      - 8090:8080
+  job-service:
+    image: job-service:0.0.1
+    container_name: job-service
+    env_file: ./env/project.env
+    restart: on-failure
+    volumes:
+      - ./data/job-service/log/:/supply/log/
+  vue-admin:
+    image: vue-admin:latest
+    container_name: vue-admin
+    restart: on-failure
+    ports:
+      - 9528:9528
+
+
+
+
+  
+
+
+
+

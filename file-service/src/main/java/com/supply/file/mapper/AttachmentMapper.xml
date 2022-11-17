@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supply.file.mapper.AttachmentMapper">
+    <resultMap id="dataScopeRangePo" type="com.supply.file.model.po.AttachmentPo">
+        <id property="id" column="id" jdbcType="NUMERIC"/>
+        <result property="createUserId" column="create_user_id" jdbcType="NUMERIC"/>
+        <result property="createTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateUserId" column="update_user_id" jdbcType="NUMERIC"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status" jdbcType="NUMERIC"/>
+    </resultMap>
+
+    <sql id="tableName">
+        file_attachment fa
+    </sql>
+
+    <sql id="columns">
+        fa.id, fa.name, fa.url, fa.size, fa.business_id, fa.business_status, fa.create_user_id, fa.create_time, fa.update_user_id, fa.update_time, fa.status
+    </sql>
+
+
+
+</mapper>

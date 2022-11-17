@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/auth-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/auth-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/bpm-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/bpm-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/common-web/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/file-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/file-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/gateway-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/gateway-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/job-client/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/job-client/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/job-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/job-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/message-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/message-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/system-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/system-service/src/main/resources" charset="UTF-8" />
+  </component>
+</project>

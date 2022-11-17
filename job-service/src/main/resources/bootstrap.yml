@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: job-service
+  main:
+    allow-bean-definition-overriding: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${nacos}
+        group: ${group}
+      config:
+        server-addr: ${nacos}
+        file-extension: yml
+        group: ${group}
+        extension-configs:
+          - dataId: common-datasource.yml
+            group: ${group}
+            refresh: false
+          - dataId: common-redis.yml
+            group: ${group}
+            refresh: true
+logging:
+  level:
+    com.supply.system.mapper: info
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+nacos: ${env_nacos:192.168.5.107:8848}
+group: ${env_group:supply}

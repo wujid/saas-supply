@@ -1,0 +1,7 @@
+system:
+  tenant:
+    tenantIdColumn: tenant_id
+    ignoreTenantTables:
+      - sys_user_role
+      - sys_role_resource
+      - sys_user_role

@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: system-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${nacos}
+        group: ${group}
+      config:
+        server-addr: ${nacos}
+        file-extension: yml
+        group: ${group}
+        extension-configs:
+          - dataId: common-datasource.yml
+            group: ${group}
+            refresh: false
+          - dataId: common-redis.yml
+            group: ${group}
+            refresh: true
+
+nacos: ${env_nacos:192.168.5.107:8848}
+group: ${env_group:supply}

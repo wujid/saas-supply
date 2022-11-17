@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supply.system.mapper.TenantResourceMapper">
+    <resultMap id="tenantResourcePo" type="com.supply.system.model.po.TenantResourcePo">
+        <id property="id" column="id" jdbcType="NUMERIC"/>
+        <result property="tenantId" column="tenant_id" jdbcType="NUMERIC"/>
+        <result property="resourceId" column="resource_id" jdbcType="NUMERIC"/>
+        <result property="createUserId" column="create_user_id" jdbcType="NUMERIC"/>
+        <result property="createTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateUserId" column="update_user_id" jdbcType="NUMERIC"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status" jdbcType="NUMERIC"/>
+    </resultMap>
+
+    <sql id="tableName">
+        sys_tenant_resource tr
+    </sql>
+
+    <sql id="columns">
+        tr.id, tr.tenant_id, tr.resource_id, tr.create_user_id, tr.create_time, tr.update_user_id, tr.update_time, tr.status
+    </sql>
+</mapper>

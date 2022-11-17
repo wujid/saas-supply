@@ -1,0 +1,213 @@
+@import './variables.scss';
+@import './mixin.scss';
+@import './transition.scss';
+@import './element-ui.scss';
+@import './sidebar.scss';
+@import './element-variables.scss';
+
+body {
+  height: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+}
+
+*::-webkit-scrollbar{
+  width: 8px;
+  height: 8px;
+  background-color:transparent;
+}
+*::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background: #d1d1d1;
+}
+*::-webkit-scrollbar-track {
+  border-radius: 3px;
+  background: #f2f2f2;
+}
+
+label {
+  font-weight: 700;
+}
+
+html {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+#app {
+  height: 100%;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+a:focus,
+a:active {
+  outline: none;
+}
+
+a,
+a:focus,
+a:hover {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+}
+
+div:focus {
+  outline: none;
+}
+
+.clearfix {
+  &:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+}
+
+// main-container global css
+.app-container {
+  padding: 20px;
+}
+
+// 筛选栏容器
+.formSearch {
+  margin: 16px 16px -16px 16px;
+  padding: 16px 20px 8px 20px;
+  box-sizing: border-box;
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+
+  .el-form-item--mini.el-form-item {
+    margin-bottom: 10px;
+    margin-right: 24px;
+    .el-input__inner {
+      border-top-left-radius: 0px;
+      border-bottom-left-radius: 0px;
+    }
+  }
+  .el-form-item__content{
+    width: 198px;
+    .el-input, .el-select, .el-cascader, .el-date-editor--daterange{
+      width: 100%!important;
+    }
+  }
+  .el-date-editor .el-range__icon{
+    margin-left: -8px;
+    line-height: 25px;
+  }
+  .el-date-editor .el-range__close-icon{
+    width: 7px!important;
+    line-height: 25px;
+  }
+
+  .el-form-item--mini.el-form-item:last-child {
+    margin-right: 0px;
+  }
+
+  .el-form-item .el-form-item__label {
+    height: 32px;
+    line-height: 32px;
+    padding: 0 10px;
+    color: #333;
+    background-color: #F4F4F4;
+    border: 1px solid #dcdfe6;
+    border-right: none;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    box-sizing: border-box;
+    font-size: 12px;
+    min-width: 105px;
+    text-align: center;
+  }
+
+  .el-input--mini .el-input__inner, .el-range-editor--mini.el-input__inner{
+    height: 32px;
+    line-height: 32px;
+  }
+  .el-range-editor--mini .el-range-separator{
+    line-height: 26px;
+  }
+  .btn-center{
+    display: block!important;
+    text-align: center!important;
+    margin-top: 8px!important;
+  }
+  .el-button--mini{
+    padding: 9px 15px;
+    margin: 0 20px;
+  }
+}
+.el-pagination{
+  width: 100%!important;
+  text-align: center!important;
+  margin-top: 10px!important;
+}
+
+
+.text-left {
+  text-align: left!important;
+}
+.text-center {
+  text-align: center!important;
+}
+
+.text-right {
+  text-align: right!important;
+}
+
+.text-justify {
+  text-align: justify;
+}
+
+
+$spacing-list: (16, 24);
+
+// 循环间隔5px，例如margin:0px; margin:5px;...
+$spacing-size: 0;
+@while $spacing-size<50 {
+  $spacing-list: append($spacing-list, $spacing-size);
+  $spacing-size: $spacing-size+5;
+}
+
+@each $label,$value in $spacing-list {
+  .m-#{$label} {
+    margin: $label * 1px !important;
+  }
+  .mt-#{$label} {
+    margin-top: $label * 1px !important;
+  }
+  .mb-#{$label} {
+    margin-bottom: $label * 1px !important;
+  }
+  .ml-#{$label} {
+    margin-left: $label * 1px !important;
+  }
+  .mr-#{$label} {
+    margin-right: $label * 1px !important;
+  }
+  .p-#{$label} {
+    padding: $label * 1px !important;
+  }
+  .pt-#{$label} {
+    padding-top: $label * 1px !important;
+  }
+  .pb-#{$label} {
+    padding-bottom: $label * 1px !important;
+  }
+  .pl-#{$label} {
+    padding-left: $label * 1px !important;
+  }
+  .pr-#{$label} {
+    padding-right: $label * 1px !important;
+  }
+}

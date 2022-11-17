@@ -1,0 +1,5 @@
+auth:
+  # token有效期2小时 60 * 60 * 2
+  accessTokenValiditySeconds: 7200
+  # token刷新时间1天 60 * 60 * 24
+  refreshTokenValiditySeconds: 86400

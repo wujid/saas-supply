@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supply.system.mapper.DictItemMapper">
+    <resultMap id="dictItemPo" type="com.supply.system.model.po.DictItemPo">
+        <id property="id" column="id" jdbcType="NUMERIC"/>
+        <result property="createUserId" column="create_user_id" jdbcType="NUMERIC"/>
+        <result property="createTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateUserId" column="update_user_id" jdbcType="NUMERIC"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status" jdbcType="NUMERIC"/>
+    </resultMap>
+
+    <sql id="tableName">
+        sys_dict_item di
+    </sql>
+
+    <sql id="columns">
+        di.id, di.dict_id, di.key, di.value, di.sort, di.create_user_id, di.create_time, di.update_user_id, di.update_time, di.status
+    </sql>
+
+
+
+</mapper>

@@ -1,0 +1,41 @@
+version: '2'
+services:
+  nacos:
+    image: nacos/nacos-server:v2.0.4
+    environment:
+      MODE: standalone
+      SPRING_DATASOURCE_PLATFORM: mysql
+      MYSQL_SERVICE_HOST: 192.16.5.107
+      MYSQL_SERVICE_DB_NAME: nacos_config
+      MYSQL_SERVICE_PORT: 3306
+      MYSQL_SERVICE_USER: root
+      MYSQL_SERVICE_PASSWORD: 123456
+      MYSQL_SERVICE_DB_PARAM: characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useSSL=false
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+      - "9555:9555"
+    depends_on:
+      - mysql
+  redis:
+    image: redis:5.0.0
+    container_name: redis
+    command: redis-server --port 6379  --appendonly yes --requirepass "123456"
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+  mysql:
+    container_name: mysql
+    image: mysql:latest
+    command:
+      --default-authentication-plugin=mysql_native_password
+      --lower_case_table_names=1
+    volumes:
+      - ./data/mysql/data/:/var/lib/mysql/
+      - ./data/mysql/conf/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - LANG=C.UTF-8
