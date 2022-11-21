@@ -1,0 +1,30 @@
+version: '2.1'
+services:
+  fastdfs-tracker:
+    image: delron/fastdfs
+    container_name: fastdfs-tracker
+    privileged: true
+    command: tracker
+    network_mode: "host"
+    environment:
+      TZ: "Asia/Shanghai"
+    volumes:
+      - ./data/tracker:/var/fdfs
+    ports:
+      - "22122:22122"
+    # storage 服务
+  fastdfs-storage:
+    image: delron/fastdfs
+    container_name: fastdfs-storage
+    privileged: true
+    command: storage
+    network_mode: "host"
+    ports:
+      - "8888:8888"
+      - "23000:23000"
+    environment:
+      TZ: "Asia/Shanghai"
+      TRACKER_SERVER: 192.168.5.65:22122
+      GROUP_NAME: group1
+    volumes:
+      - ./data/storage:/var/fdfs

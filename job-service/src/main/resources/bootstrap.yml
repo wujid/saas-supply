@@ -22,13 +22,6 @@ spring:
           - dataId: common-redis.yml
             group: ${group}
             refresh: true
-logging:
-  level:
-    com.supply.system.mapper: info
-
-mybatis-plus:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 nacos: ${env_nacos:192.168.5.107:8848}
 group: ${env_group:supply}
