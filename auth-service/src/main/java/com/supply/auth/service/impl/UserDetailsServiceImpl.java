@@ -16,6 +16,7 @@ import com.supply.common.model.response.sys.SysUserResponse;
 import com.supply.common.util.SystemUserUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,6 +25,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author wjd
@@ -52,6 +54,10 @@ public class UserDetailsServiceImpl implements UserService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         logger.info("[用户登录]---当前用户为{}", username);
+        // 设置默认语言为中文
+        LocaleContextHolder.resetLocaleContext();
+        LocaleContextHolder.setDefaultLocale(Locale.CHINA);
+        // 验证
         final SysUserResponse userResponse = this.getUser(username);
         return new LoginUser(userResponse);
     }
