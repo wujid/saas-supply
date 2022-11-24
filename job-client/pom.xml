@@ -16,6 +16,7 @@
 
     <properties>
         <java.version>11</java.version>
+        <job-core.version>2.3.1</job-core.version>
     </properties>
 
     <dependencies>
@@ -34,17 +35,18 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-freemarker</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.xuxueli</groupId>
+            <artifactId>xxl-job-core</artifactId>
+            <version>${job-core.version}</version>
         </dependency>
 
     </dependencies>
