@@ -16,7 +16,7 @@ public class DruidPasswordHandle extends DruidPasswordCallback {
     public void setProperties(Properties properties) {
         super.setProperties(properties);
         // 获取配置文件中的已经加密的密码
-        String pwd = (String)properties.get("ciphertext");
+        String pwd = (String)properties.get("password");
         String password = EncryptionUtil.decryptPassword(pwd);
         setPassword(password.toCharArray());
     }
