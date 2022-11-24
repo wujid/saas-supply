@@ -17,6 +17,9 @@ spring:
           - dataId: common-redis.yml
             group: ${group}
             refresh: true
+          - dataId: common-actuator.yml
+            group: ${group}
+            refresh: true
 
 nacos: ${env_nacos:192.168.5.107:8848}
 group: ${env_group:supply}
