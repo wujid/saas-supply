@@ -90,7 +90,7 @@ export default {
     // eslint-disable-next-line vue/return-in-computed-property
     imageUrl() {
       if (this.userInfo.avatarId) {
-        return window.webConfig.gateway + '/file/attachment/downloadByParams?businessId=' + this.userInfo.avatarId
+        return process.env.VUE_APP_BASE_API + '/file/attachment/downloadByParams?businessId=' + this.userInfo.avatarId
       } else {
         return null
       }

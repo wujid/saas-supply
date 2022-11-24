@@ -16,7 +16,7 @@ export default {
     return {
       editor: null,
       ç: '',
-      baseImgUrl: window.webConfig.gateway
+      baseImgUrl: process.env.VUE_APP_BASE_API
     }
   },
   watch: {
@@ -34,7 +34,7 @@ export default {
       // 把这个html通过catchData的方法传入父组件
       this.catchData(this.editorContent)
     }
-    this.editor.config.uploadImgServer = ((process.env.NODE_ENV === 'production') ? window.webConfig.gateway : process.env.VUE_APP_BASE_API) + '/file/upload/file'
+    this.editor.config.uploadImgServer = process.env.VUE_APP_BASE_API + '/file/upload/file'
     // let tenantIdStr = window.location.search.substring(10)
     // let tenantId = tenantIdStr.substring(0, tenantIdStr.length - 1) || ''
     // this.editor.config.uploadImgHeaders = { 'tenantId': tenantId }
@@ -96,7 +96,7 @@ export default {
         // 图片上传并返回结果，自定义插入图片的事件（而不是编辑器自动插入图片！！！）
         // insertImg 是插入图片的函数，editor 是编辑器对象，result 是服务器端返回的结果
         // 举例：假如上传图片成功后，服务器端返回的是 {url:'....'} 这种格式，即可这样插入图片：
-        const url = ((process.env.NODE_ENV === 'production') ? window.webConfig.gateway : process.env.VUE_APP_BASE_API) + result.data.url // result.data就是服务器返回的图片名字和链接
+        const url = process.env.VUE_APP_BASE_API + result.data.url // result.data就是服务器返回的图片名字和链接
         JSON.stringify(url) // 在这里转成JSON格式
         insertImg(url)
         // result 必须是一个 JSON 格式字符串！！！否则报错

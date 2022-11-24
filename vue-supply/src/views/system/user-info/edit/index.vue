@@ -73,7 +73,7 @@ export default {
       callback()
     }
     return {
-      baseImgUrl: window.webConfig.gateway,
+      baseImgUrl: process.env.VUE_APP_BASE_API,
       maleImg: require('@/assets/images/maleImg.png'),
       femaleImg: require('@/assets/images/femaleImg.png'),
       userInfo: {},

@@ -63,7 +63,7 @@ export default {
       visible: false,
       isFile: true,
       loading: false,
-      fileApi: ((process.env.NODE_ENV === 'production') ? window.webConfig.gateway : process.env.VUE_APP_BASE_API) + '/file/attachment/upload',
+      fileApi: process.env.VUE_APP_BASE_API + '/file/attachment/upload',
       imageName: null,
       fileList: [],
       busId: this.businessId
@@ -72,10 +72,10 @@ export default {
   computed: {
     imageUrl() {
       if (this.value) {
-        return window.webConfig.gateway + '/file/attachment/downloadByParams?attachmentId=' + this.value
+        return process.env.VUE_APP_BASE_API + '/file/attachment/downloadByParams?attachmentId=' + this.value
       }
       if (this.busId) {
-        return window.webConfig.gateway + '/file/attachment/downloadByParams?businessId=' + this.busId
+        return process.env.VUE_APP_BASE_API + '/file/attachment/downloadByParams?businessId=' + this.busId
       }
       return null
     }

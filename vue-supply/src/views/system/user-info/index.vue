@@ -62,7 +62,7 @@ export default {
           this.avatar = require('@/assets/images/femaleImg.png')
         }
       } else {
-        this.avatar = window.webConfig.gateway + '/file/attachment/downloadByParams?businessId=' + this.userInfo.avatarId
+        this.avatar = process.env.VUE_APP_BASE_API + '/file/attachment/downloadByParams?businessId=' + this.userInfo.avatarId
       }
     },
     edit() {
