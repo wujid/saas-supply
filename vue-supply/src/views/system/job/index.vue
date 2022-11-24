@@ -13,7 +13,7 @@ export default {
   },
   computed: {
     getUrl() {
-      return process.env.VUE_APP_JOB_CLIENT + '/job'
+      return process.env.VUE_APP_JOB_CLIENT + '/job-client/job'
     }
   },
   methods: {
