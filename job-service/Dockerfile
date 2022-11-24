@@ -6,6 +6,10 @@ WORKDIR /supply
 
 ADD ./target/*.jar app.jar
 
+ENV LANG C.UTF-8
+
+ENV TIMEZONE Asia/Shanghai
+
 ENV JAVA_OPTS=""
 
 ENTRYPOINT java ${JAVA_OPTS} -jar app.jar
