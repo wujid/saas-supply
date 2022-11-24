@@ -13,11 +13,7 @@ export default {
   },
   computed: {
     getUrl() {
-      if (process.env.NODE_ENV === 'production') {
-        return window.webConfig.xx_job + '/job'
-      } else {
-        return process.env.VUE_APP_BASE_API + '/job-client/job'
-      }
+      return process.env.VUE_APP_BASE_API + '/job-client/job'
     }
   },
   methods: {
