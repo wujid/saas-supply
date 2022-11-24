@@ -1,4 +1,4 @@
-package com.supply.common.handle;
+package com.supply.common.config;
 
 import com.alibaba.druid.util.DruidPasswordCallback;
 import com.supply.common.util.EncryptionUtil;
@@ -10,7 +10,7 @@ import java.util.Properties;
  * @description 对druid的密码进行解密.
  * @date 2022-11-11
  */
-public class DruidPasswordHandle extends DruidPasswordCallback {
+public class DruidPasswordConfig extends DruidPasswordCallback {
 
     @Override
     public void setProperties(Properties properties) {
