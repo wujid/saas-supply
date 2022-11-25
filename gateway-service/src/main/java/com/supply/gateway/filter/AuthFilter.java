@@ -45,6 +45,12 @@ public class AuthFilter implements GlobalFilter, Ordered {
         this.customerThreadPool = customerExecutor;
     }
 
+    // 自定义过滤器执行的顺序,数值越大越靠后执行,越小就越先执行
+    @Override
+    public int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE;
+    }
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
@@ -65,7 +71,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
         }
 
         // 根据token获取登录用户信息
-        Result<LoginUser> loginUserResult = null;
+        Result<LoginUser> loginUserResult;
         try {
             LoginUserTask task = new LoginUserTask(token);
             FutureTask<Result<LoginUser>> futureTask = new FutureTask<>(task);
@@ -76,7 +82,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
             logger.error(message, e);
             return unauthorizedResponse(exchange, message);
         }
-        if (loginUserResult.getCode() != HttpStatus.OK.value() || null == loginUserResult || null == loginUserResult.getData()) {
+        if (!loginUserResult.isOk() || null == loginUserResult.getData()) {
             logger.info("根据token{}鉴权失败,鉴权结果为{}", token, JSON.toJSONString(loginUserResult));
             return unauthorizedResponse(exchange, "token已过期或验证不正确!");
         }
@@ -87,11 +93,6 @@ public class AuthFilter implements GlobalFilter, Ordered {
         addHeader(mutate, Constant.ACCOUNT_ID_KEY, loginUser.getUsername());
 
         return chain.filter(exchange.mutate().request(mutate.build()).build());
-    }
-
-    @Override
-    public int getOrder() {
-        return -200;
     }
 
     private Mono<Void> unauthorizedResponse(ServerWebExchange exchange, String msg) {
