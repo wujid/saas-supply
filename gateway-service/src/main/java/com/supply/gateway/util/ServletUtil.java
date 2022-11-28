@@ -3,7 +3,6 @@ package com.supply.gateway.util;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.supply.common.model.Result;
-import com.supply.gateway.constant.GatewayConstant;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -13,6 +12,7 @@ import reactor.core.publisher.Mono;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author wjd
@@ -67,7 +67,7 @@ public class ServletUtil {
 
     public static String urlEncode(String str) {
         try {
-            return URLEncoder.encode(str, GatewayConstant.UTF8);
+            return URLEncoder.encode(str, StandardCharsets.UTF_8.toString());
         } catch (UnsupportedEncodingException e) {
             return StrUtil.EMPTY;
         }

@@ -24,7 +24,7 @@ public class FileUtil {
       * @param response 响应
       */
     public static void fileOperator(String fileName, String fileExtName, boolean isDownload, HttpServletResponse response) {
-        response.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         // 非指定下载的图片类型的显示在浏览器上
         if (!isDownload && StrUtil.equals(FileExtensionEnum.valueOf(fileExtName).getType(), "image")) {
             response.setHeader("Content-disposition", "inline; filename=" + URLEncoder.encode(fileName, StandardCharsets.UTF_8));

@@ -7,7 +7,6 @@ import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
-import com.supply.common.constant.EncodeEnum;
 import com.supply.common.exception.ApiException;
 import com.supply.common.web.listener.ExcelListener;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -21,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -120,7 +120,7 @@ public class ExcelUtil {
       * @return 文件输出流
       */
     private static OutputStream getOutputStream(String fileName, HttpServletResponse response) throws IOException {
-        fileName = URLEncoder.encode(fileName,  EncodeEnum.UTF8.getType());
+        fileName = URLEncoder.encode(fileName,  StandardCharsets.UTF_8.toString());
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf8");
         response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");

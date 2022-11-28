@@ -5,6 +5,7 @@ import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.biz.model.TriggerParam;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -38,7 +39,7 @@ public class ExecutorRouteConsistentHash extends ExecutorRouter {
         md5.reset();
         byte[] keyBytes = null;
         try {
-            keyBytes = key.getBytes("UTF-8");
+            keyBytes = key.getBytes(StandardCharsets.UTF_8.toString());
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException("Unknown string :" + key, e);
         }
