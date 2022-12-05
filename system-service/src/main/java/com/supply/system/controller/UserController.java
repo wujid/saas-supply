@@ -7,12 +7,15 @@ import com.supply.common.constant.Constant;
 import com.supply.common.model.Result;
 import com.supply.common.web.util.ContextUtil;
 import com.supply.common.web.util.DataScopeUtil;
+import com.supply.common.web.validate.AddGroup;
+import com.supply.common.web.validate.UpdateGroup;
 import com.supply.system.model.po.UserPo;
 import com.supply.system.model.request.UserRequest;
 import com.supply.system.model.response.UserResponse;
 import com.supply.system.service.IUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,7 +44,7 @@ public class UserController {
 
     @ApiOperation(value = "新增用户")
     @PostMapping("/addUser")
-    public Result<Object> addUser(@RequestBody UserRequest request) {
+    public Result<Object> addUser(@RequestBody @Validated(value = AddGroup.class) UserRequest request) {
         final Long tenantId = ContextUtil.getCurrentTenantId();
         request.setTenantId(tenantId);
         userService.addUser(request);
@@ -50,7 +53,7 @@ public class UserController {
 
     @ApiOperation(value = "修改用户")
     @PostMapping("/updateUser")
-    public Result<Object> updateUser(@RequestBody UserRequest request) {
+    public Result<Object> updateUser(@RequestBody @Validated(value = UpdateGroup.class) UserRequest request) {
         final Long tenantId = ContextUtil.getCurrentTenantId();
         request.setTenantId(tenantId);
         userService.updateUser(request);

@@ -6,7 +6,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -22,6 +24,8 @@ public class UserRequest extends BaseRequestEntity<UserPo> implements Serializab
     private static final long serialVersionUID = -241617171310573603L;
 
     @ApiModelProperty(value = "登录账号")
+    @NotBlank(message = "账号不能为空")
+    @Length(message = "账号不能超过个 {max} 字符", max = 15)
     private String account;
 
     @ApiModelProperty(value = "登录密码")
