@@ -3,12 +3,15 @@ package com.supply.system.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.supply.common.constant.Constant;
 import com.supply.common.model.Result;
+import com.supply.common.web.validate.AddGroup;
+import com.supply.common.web.validate.UpdateGroup;
 import com.supply.system.model.po.DictItemPo;
 import com.supply.system.model.request.DictItemRequest;
 import com.supply.system.model.response.DictItemResponse;
 import com.supply.system.service.IDictItemService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,14 +41,14 @@ public class DictItemController {
 
     @ApiOperation(value = "新增数据字典集")
     @PostMapping("/addDictItem")
-    public Result<Object> addDictItem(@RequestBody DictItemRequest request) {
+    public Result<Object> addDictItem(@RequestBody @Validated(value = AddGroup.class) DictItemRequest request) {
         dictItemService.addDictItem(request);
         return Result.ok();
     }
 
     @ApiOperation(value = "修改数据字典集")
     @PostMapping("/updateDictItem")
-    public Result<Object> updateDictItem(@RequestBody DictItemRequest request) {
+    public Result<Object> updateDictItem(@RequestBody  @Validated(value = UpdateGroup.class) DictItemRequest request) {
         dictItemService.updateDictItem(request);
         return Result.ok();
     }
