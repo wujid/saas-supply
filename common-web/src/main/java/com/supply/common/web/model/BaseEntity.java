@@ -19,7 +19,7 @@ public class BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "主键ID")
-    @NotNull(message = "主键ID不能为空", groups = {UpdateGroup.class})
+    @NotNull(message = "主键ID不能为空", groups = UpdateGroup.class)
     private Long id;
 
     @ApiModelProperty(value = "创建人")
