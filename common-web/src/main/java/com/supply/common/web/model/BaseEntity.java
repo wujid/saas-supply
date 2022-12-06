@@ -1,11 +1,11 @@
 package com.supply.common.web.model;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.supply.common.web.annotation.LongNotEmpty;
 import com.supply.common.web.validate.UpdateGroup;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -19,7 +19,7 @@ public class BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "主键ID")
-    @NotNull(message = "主键ID不能为空", groups = UpdateGroup.class)
+    @LongNotEmpty(message = "主键ID不能为空", groups = UpdateGroup.class)
     private Long id;
 
     @ApiModelProperty(value = "创建人")
