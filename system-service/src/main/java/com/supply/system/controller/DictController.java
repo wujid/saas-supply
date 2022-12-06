@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @description 数据字典控制层.
  * @date 2022-08-29
  */
-@Api(tags="数据字典控制层")
+@Api(value="数据字典控制层")
 @RestController
 @RequestMapping("/dict")
 public class DictController {
@@ -37,21 +37,21 @@ public class DictController {
 
     @ApiOperation(value = "新增数据字典")
     @PostMapping("/addDict")
-    public Result<Object> addDict(@RequestBody @Validated(value = AddGroup.class) DictRequest request) {
+    public Result<?> addDict(@RequestBody @Validated(value = AddGroup.class) DictRequest request) {
         dictService.addDict(request);
         return Result.ok();
     }
 
     @ApiOperation(value = "修改数据字典")
     @PostMapping("/updateDict")
-    public Result<Object> updateDict(@RequestBody @Validated(value = UpdateGroup.class) DictRequest request) {
+    public Result<?> updateDict(@RequestBody @Validated(value = UpdateGroup.class) DictRequest request) {
         dictService.updateDict(request);
         return Result.ok();
     }
 
     @ApiOperation(value = "删除数据字典")
     @GetMapping("/delDict")
-    public Result<Object> delDict(@RequestParam Long dictId) {
+    public Result<?> delDict(@RequestParam Long dictId) {
         dictService.delDict(dictId);
         return Result.ok();
     }
