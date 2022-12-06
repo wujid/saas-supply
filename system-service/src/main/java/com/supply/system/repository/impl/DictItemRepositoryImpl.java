@@ -40,8 +40,8 @@ public class DictItemRepositoryImpl extends ServiceImpl<DictItemMapper, DictItem
 
     @Override
     @BaseData(fill = OperatorTypeEnum.INSERT)
-    public boolean saveBatch(Collection<DictItemPo> entityList, int batchSize) {
-        return super.saveBatch(entityList, batchSize);
+    public boolean saveBatch(Collection<DictItemPo> entityList) {
+        return super.saveBatch(entityList);
     }
 
     @Override
