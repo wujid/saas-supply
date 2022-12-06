@@ -1,6 +1,6 @@
 package com.supply.file.model.request;
 
-import com.supply.common.model.BaseRequestEntity;
+import com.supply.common.web.model.BaseRequestEntity;
 import com.supply.file.model.po.AttachmentPo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

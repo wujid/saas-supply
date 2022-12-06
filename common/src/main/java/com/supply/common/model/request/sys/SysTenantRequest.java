@@ -2,7 +2,6 @@ package com.supply.common.model.request.sys;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.supply.common.annotation.Note;
-import com.supply.common.model.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -17,8 +16,11 @@ import java.util.Date;
 @Note(description="租户信息请求实体")
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class SysTenantRequest extends BaseEntity implements Serializable {
+public class SysTenantRequest implements Serializable {
     private static final long serialVersionUID = -1491158383445749282L;
+
+    @Note(description = "ID")
+    private Long id;
 
     @Note(description = "租户编号")
     private String code;

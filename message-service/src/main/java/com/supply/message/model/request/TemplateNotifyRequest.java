@@ -1,6 +1,6 @@
 package com.supply.message.model.request;
 
-import com.supply.common.model.BaseRequestEntity;
+import com.supply.common.web.model.BaseRequestEntity;
 import com.supply.message.model.po.TemplateNotifyPo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

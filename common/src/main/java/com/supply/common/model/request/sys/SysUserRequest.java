@@ -1,11 +1,12 @@
 package com.supply.common.model.request.sys;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.supply.common.annotation.Note;
-import com.supply.common.model.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -15,8 +16,11 @@ import java.util.Set;
  */
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class SysUserRequest extends BaseEntity implements Serializable {
+public class SysUserRequest implements Serializable {
     private static final long serialVersionUID = -3777622238599656825L;
+
+    @Note(description = "ID")
+    private Long id;
 
     @Note(description = "登录账号")
     private String account;
@@ -53,6 +57,23 @@ public class SysUserRequest extends BaseEntity implements Serializable {
 
     @Note(description = "租户ID")
     private Long tenantId;
+
+    @Note(description = "创建人")
+    private Long createUserId;
+
+    @Note(description = "创建时间")
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    private Date createTime;
+
+    @Note(description = "修改人")
+    private Long updateUserId;
+
+    @Note(description = "修改时间")
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
+
+    @Note(description = "状态")
+    private Integer status;
 
     @Note(description = "租户ID集")
     private Set<Long> tenantIds;

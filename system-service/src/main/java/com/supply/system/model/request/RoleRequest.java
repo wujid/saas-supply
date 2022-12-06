@@ -1,7 +1,7 @@
 package com.supply.system.model.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.supply.common.model.BaseRequestEntity;
+import com.supply.common.web.model.BaseRequestEntity;
 import com.supply.system.model.po.RolePo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

@@ -1,4 +1,4 @@
-package com.supply.common.model;
+package com.supply.common.web.model;
 
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.supply.common.annotation.Note;

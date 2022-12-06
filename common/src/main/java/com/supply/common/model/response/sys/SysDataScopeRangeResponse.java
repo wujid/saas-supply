@@ -1,11 +1,12 @@
 package com.supply.common.model.response.sys;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.supply.common.annotation.Note;
-import com.supply.common.model.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author wjd
@@ -15,9 +16,11 @@ import java.io.Serializable;
 @Note(description="用户数据权限范围信息响应实体")
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class SysDataScopeRangeResponse extends BaseEntity implements Serializable {
+public class SysDataScopeRangeResponse implements Serializable {
     private static final long serialVersionUID = 2880231603706732270L;
 
+    @Note(description = "ID")
+    private Long id;
 
     @Note(description = "用户资源数据权限类型ID")
     private Long dataScopeTypeId;
@@ -27,4 +30,21 @@ public class SysDataScopeRangeResponse extends BaseEntity implements Serializabl
 
     @Note(description = "数据权限ID")
     private Long dataScopeId;
+
+    @Note(description = "创建人")
+    private Long createUserId;
+
+    @Note(description = "创建时间")
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    private Date createTime;
+
+    @Note(description = "修改人")
+    private Long updateUserId;
+
+    @Note(description = "修改时间")
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
+
+    @Note(description = "状态")
+    private Integer status;
 }

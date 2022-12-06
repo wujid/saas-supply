@@ -1,6 +1,6 @@
 package com.supply.message.model.response;
 
-import com.supply.common.model.BaseEntity;
+import com.supply.common.web.model.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

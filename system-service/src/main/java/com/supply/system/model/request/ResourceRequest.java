@@ -1,6 +1,6 @@
 package com.supply.system.model.request;
 
-import com.supply.common.model.BaseRequestEntity;
+import com.supply.common.web.model.BaseRequestEntity;
 import com.supply.system.model.po.ResourcePo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

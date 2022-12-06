@@ -1,11 +1,12 @@
 package com.supply.common.model.request.sys;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.supply.common.annotation.Note;
-import com.supply.common.model.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author wjd
@@ -15,9 +16,11 @@ import java.io.Serializable;
 @Note(description="资源信息请求实体")
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class SysResourceRequest extends BaseEntity implements Serializable {
+public class SysResourceRequest implements Serializable {
     private static final long serialVersionUID = -4068719063954705701L;
 
+    @Note(description = "ID")
+    private Long id;
 
     @Note(description = "父ID")
     private Long parentId;
@@ -42,6 +45,23 @@ public class SysResourceRequest extends BaseEntity implements Serializable {
 
     @Note(description = "业务状态")
     private Integer businessStatus;
+
+    @Note(description = "创建人")
+    private Long createUserId;
+
+    @Note(description = "创建时间")
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    private Date createTime;
+
+    @Note(description = "修改人")
+    private Long updateUserId;
+
+    @Note(description = "修改时间")
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
+
+    @Note(description = "状态")
+    private Integer status;
 
     @Note(description = "是否固定")
     private Boolean isFix;

@@ -1,7 +1,7 @@
 package com.supply.common.web.aspect;
 
 import cn.hutool.core.util.StrUtil;
-import com.supply.common.model.BaseRequestEntity;
+import com.supply.common.web.model.BaseRequestEntity;
 import com.supply.common.web.annotation.DataScope;
 import com.supply.common.web.util.DataScopeUtil;
 import org.aspectj.lang.JoinPoint;
