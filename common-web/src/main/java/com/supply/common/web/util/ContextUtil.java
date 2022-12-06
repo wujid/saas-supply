@@ -75,7 +75,7 @@ public class ContextUtil {
      * @date 2022/7/28
      * @return 当前登陆用户ID
      */
-    private static String getCurrentUserId() {
+    public static String getCurrentUserId() {
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
