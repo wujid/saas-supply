@@ -1,6 +1,6 @@
 window.webConfig = {
   // 网站名称
-  system_name: 'Saas框架',
+  system_name: '云梦成美',
 
   // 统一网关
   gateway: 'http://192.168.5.107:8080',

@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'Saas框架',
+  title: '云梦成美',
 
   // 是否固定header
   fixedHeader: true,

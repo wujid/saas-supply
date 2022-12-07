@@ -24,7 +24,7 @@ export default {
   },
   data() {
     return {
-      title: 'Saas框架',
+      title: '云梦成美',
       logo: require('@/assets/images/logo.png')
     }
   }
