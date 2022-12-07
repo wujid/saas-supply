@@ -1,6 +1,8 @@
 package com.supply.gateway.config;
 
 import com.supply.gateway.properties.TaskThreadPoolProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
  */
 @Configuration
 public class GatewayConfig {
+    private static final Logger logger = LoggerFactory.getLogger(GatewayConfig.class);
 
     @Bean("customerExecutor")
     public Executor customerExecutor(TaskThreadPoolProperties config) {
@@ -47,4 +50,29 @@ public class GatewayConfig {
     public HttpMessageConverters messageConverters(ObjectProvider<HttpMessageConverter<?>> converters) {
         return new HttpMessageConverters(converters.orderedStream().collect(Collectors.toList()));
     }
+
+//    @Bean
+//    public WebFilter corsFilter() {
+//        return (ServerWebExchange ctx, WebFilterChain chain) -> {
+//            ServerHttpRequest request = ctx.getRequest();
+//            final boolean isTrue = CorsUtils.isCorsRequest(request);
+//            logger.info("跨域过滤-------------是否是个跨域请求{}", isTrue);
+//            if (isTrue) {
+//                ServerHttpResponse response = ctx.getResponse();
+//                HttpHeaders headers = response.getHeaders();
+//                headers.add("Access-Control-Allow-Origin", "*");
+//                headers.add("Access-Control-Allow-Methods", "*");
+//                headers.add("Access-Control-Max-Age", "18000L");
+//                headers.add("Access-Control-Allow-Headers", "*");
+//                headers.add("Access-Control-Expose-Headers", "*");
+//                headers.add("Access-Control-Allow-Credentials", "true");
+//                if (request.getMethod() == HttpMethod.OPTIONS) {
+//                    response.setStatusCode(HttpStatus.OK);
+//                    return Mono.empty();
+//                }
+//            }
+//            return chain.filter(ctx);
+//        };
+//    }
+
 }
