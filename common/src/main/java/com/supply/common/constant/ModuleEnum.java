@@ -24,8 +24,8 @@ public enum ModuleEnum {
     MESSAGE("MESSAGE", "消息模块");
 
     @Note(description = "模块")
-    private String module;
+    private final String module;
 
     @Note(description = "模块名称")
-    private String name;
+    private final String name;
 }
