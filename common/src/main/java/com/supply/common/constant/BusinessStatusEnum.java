@@ -29,13 +29,13 @@ public enum BusinessStatusEnum {
 
 
     @Note(description = "业务状态")
-    private int status;
+    private final int status;
 
     @Note(description = "业务名称")
-    private String name;
+    private final String name;
 
     @Note(description = "所属模块")
-    private ModuleEnum moduleEnum;
+    private final ModuleEnum moduleEnum;
 
 
 }
