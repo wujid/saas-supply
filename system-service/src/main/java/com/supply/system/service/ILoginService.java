@@ -21,6 +21,15 @@ public interface ILoginService {
     AuthTokenResponse login(LoginRequest request);
 
     /**
+      * @description 第三方平台微信登录.
+      * @author wjd
+      * @date 2022/12/8
+      * @param code 微信授权码
+      * @return token信息
+      */
+    AuthTokenResponse loginByWeCat(String code);
+
+    /**
      * @description 退出
      * @author wjd
      * @date 2022/8/3

@@ -9,6 +9,7 @@ import com.supply.common.constant.GrantTypeEnum;
 import com.supply.common.exception.ApiException;
 import com.supply.common.model.Result;
 import com.supply.common.model.response.auth.AuthTokenResponse;
+import com.supply.common.util.EncryptionUtil;
 import com.supply.common.util.RedisUtil;
 import com.supply.system.api.AuthClient;
 import com.supply.system.constant.ResourceTypeEnum;
@@ -135,8 +136,11 @@ public class LoginServiceImpl implements ILoginService {
         // 根据用户ID查询用户信息
         final Long userId = userThirdPo.getUserId();
         final UserPo userPo = userRepository.getById(userId);
-        // 权限验证
-        return this.validateAuth(tenantPo, userPo.getAccount(), userPo.getPassword());
+        // 权限验证: 第三方授权登录统一转换成账号密码去验证服务验证
+        // 弊端在于需存储用户明文密码
+        // 好处在于方便管理,网关不用去请求第三方验证服务验证,对于token失效时间保持全系统统一
+        final String password = EncryptionUtil.decryptPassword(userPo.getEncodePassword());
+        return this.validateAuth(tenantPo, userPo.getAccount(), password);
     }
 
     @Override

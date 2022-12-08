@@ -3,7 +3,6 @@ package com.supply.system.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.supply.common.constant.Constant;
 import com.supply.common.model.Result;
-import com.supply.common.model.response.sys.SysUserResponse;
 import com.supply.common.web.util.ContextUtil;
 import com.supply.system.model.po.RolePo;
 import com.supply.system.model.request.RoleRequest;

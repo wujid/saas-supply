@@ -32,7 +32,7 @@ public class WeCatUtil {
 
     private static final String baseAccessTokenUrl = "https://api.weixin.qq.com/sns/oauth2/access_token?appid={}&secret={}&code={}&grant_type=authorization_code";
 
-    private static final String baseRefreshTokenUrl = "https://api.weixin.qq.com/sns/oauth2/refresh_token?appid={}&grant_type={}&refresh_token=REFRESH_TOKEN";
+    private static final String baseRefreshTokenUrl = "https://api.weixin.qq.com/sns/oauth2/refresh_token?appid={}&grant_type=authorization_code&refresh_token=REFRESH_TOKEN";
 
     private static final String baseUserInfoUrl = "https://api.weixin.qq.com/sns/userinfo?access_token={}&openid={}";
 

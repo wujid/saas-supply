@@ -34,4 +34,7 @@ public class UserThirdRequest extends BaseRequestEntity<UserThirdPo> implements 
 
     @ApiModelProperty(value = "租户ID")
     private Long tenantId;
+
+    @ApiModelProperty(value = "授权码")
+    private String code;
 }
