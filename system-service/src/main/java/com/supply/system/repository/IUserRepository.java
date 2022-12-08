@@ -34,7 +34,6 @@ public interface IUserRepository extends IService<UserPo> {
      **/
     UserPo getByParams(UserRequest request);
 
-
     /**
      * @author wjd
      * @description 根据条件查询用户信息集.

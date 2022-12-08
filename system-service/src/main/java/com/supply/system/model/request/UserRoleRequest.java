@@ -2,6 +2,7 @@ package com.supply.system.model.request;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.supply.common.web.model.BaseRequestEntity;
+import com.supply.system.model.po.UserRolePo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -19,7 +20,7 @@ import java.util.Set;
 @ApiModel(value="用户角色关联关系信息请求实体")
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class UserRoleRequest extends BaseRequestEntity implements Serializable {
+public class UserRoleRequest extends BaseRequestEntity<UserRolePo> implements Serializable {
     private static final long serialVersionUID = -7722348518713529497L;
 
     @ApiModelProperty(value = "用户ID")
