@@ -9,6 +9,7 @@ import com.supply.system.model.response.UserInfoResponse;
 import com.supply.system.service.ILoginService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,8 +36,15 @@ public class LoginController {
 
     @ApiOperation(value = "密码模式登录")
     @PostMapping("/loginForPwd")
-    public Result<AuthTokenResponse> login(@RequestBody LoginRequest request) {
+    public Result<AuthTokenResponse> login(@RequestBody @Validated LoginRequest request) {
         final AuthTokenResponse tokenResponse = loginService.login(request);
+        return Result.ok(tokenResponse);
+    }
+
+    @ApiOperation(value = "微信登录")
+    @GetMapping("/loginForPwd")
+    public Result<AuthTokenResponse> loginByWeCat(@RequestParam String code) {
+        final AuthTokenResponse tokenResponse = loginService.loginByWeCat(code);
         return Result.ok(tokenResponse);
     }
 

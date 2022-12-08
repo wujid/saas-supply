@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 /**
@@ -19,12 +20,15 @@ public class LoginRequest implements Serializable {
     private static final long serialVersionUID = 1518352290594194744L;
 
     @ApiModelProperty(value = "租户编码")
+    @NotBlank(message = "租户编码不能为空")
     private String tenantCode;
 
     @ApiModelProperty(value = "账号")
+    @NotBlank(message = "账号不能为空")
     private String userName;
 
     @ApiModelProperty(value = "密码")
+    @NotBlank(message = "密码不能为空")
     private String password;
 
     @ApiModelProperty(value = "登录成功跳转地址")
@@ -34,5 +38,6 @@ public class LoginRequest implements Serializable {
     private String key;
 
     @ApiModelProperty(value = "验证码")
+    @NotBlank(message = "验证码不能为空")
     private String captcha;
 }

@@ -9,7 +9,6 @@ import com.supply.common.constant.GrantTypeEnum;
 import com.supply.common.exception.ApiException;
 import com.supply.common.model.Result;
 import com.supply.common.model.response.auth.AuthTokenResponse;
-import com.supply.common.util.ExceptionUtil;
 import com.supply.common.util.RedisUtil;
 import com.supply.system.api.AuthClient;
 import com.supply.system.constant.ResourceTypeEnum;
@@ -21,18 +20,23 @@ import com.supply.system.model.po.ResourcePo;
 import com.supply.system.model.po.RolePo;
 import com.supply.system.model.po.TenantPo;
 import com.supply.system.model.po.UserPo;
+import com.supply.system.model.po.UserThirdPo;
 import com.supply.system.model.request.LoginRequest;
 import com.supply.system.model.request.TenantRequest;
+import com.supply.system.model.request.UserThirdRequest;
 import com.supply.system.model.response.ResourceResponse;
 import com.supply.system.model.response.RoleResponse;
 import com.supply.system.model.response.TenantResponse;
 import com.supply.system.model.response.UserInfoResponse;
 import com.supply.system.model.response.UserResponse;
+import com.supply.system.model.response.UserThirdResponse;
 import com.supply.system.repository.IResourceRepository;
 import com.supply.system.repository.IRoleRepository;
 import com.supply.system.repository.ITenantRepository;
 import com.supply.system.repository.IUserRepository;
+import com.supply.system.repository.IUserThirdRepository;
 import com.supply.system.service.ILoginService;
+import com.supply.system.util.WeCatUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -74,10 +78,14 @@ public class LoginServiceImpl implements ILoginService {
 
     private final Producer producer;
 
+    private final IUserThirdRepository userThirdRepository;
+
+    private final WeCatUtil weCatUtil;
+
     public LoginServiceImpl(ITenantRepository tenantRepository, IUserRepository userRepository,
                             IRoleRepository roleRepository, IResourceRepository resourceRepository,
-                            AuthClient authClient, RedisUtil redisUtil,
-                            Producer producer) {
+                            AuthClient authClient, RedisUtil redisUtil, Producer producer,
+                            IUserThirdRepository userThirdRepository, WeCatUtil weCatUtil) {
         this.tenantRepository = tenantRepository;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
@@ -85,6 +93,8 @@ public class LoginServiceImpl implements ILoginService {
         this.authClient = authClient;
         this.redisUtil = redisUtil;
         this.producer = producer;
+        this.userThirdRepository = userThirdRepository;
+        this.weCatUtil = weCatUtil;
     }
 
 
@@ -93,33 +103,40 @@ public class LoginServiceImpl implements ILoginService {
         logger.info("[用户登录]---其中登录信息为{}", JSON.toJSONString(request));
         // 验证码验证
         final String captcha = request.getCaptcha();
-        ExceptionUtil.error(StrUtil.isBlank(captcha))
-                .errorMessage(null, "验证码无效");
         final String code = captcha.toLowerCase();
         final String realKey = code + request.getKey();
         final Object checkCode = redisUtil.getCacheObject(realKey);
         if (null == checkCode || !StrUtil.equals(checkCode.toString(), code)) {
             throw new ApiException("验证码错误");
         }
-
         // 租户验证
         final TenantPo tenantPo = this.validateTenant(request.getTenantCode());
-        final String userName = request.getUserName() + "&" + tenantPo.getId();
         // 组装信息
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("client_id", tenantPo.getClientId());
-        parameters.put("client_secret", tenantPo.getCode());
-        parameters.put("grant_type", GrantTypeEnum.PASSWORD.getCode());
-        parameters.put("username", userName);
-        parameters.put("password", request.getPassword());
-        final Result<AuthTokenResponse> result = authClient.postAccessToken(parameters);
-        if (!result.isOk()) {
-            logger.error("[用户登录]---验证异常!");
-            throw new ApiException(result.getMessage());
+        return this.validateAuth(tenantPo, request.getUserName(), request.getPassword());
+    }
+
+    @Override
+    public AuthTokenResponse loginByWeCat(String code) {
+        // 根据授权码获取开放平台ID
+        final UserThirdResponse userThirdInfo = weCatUtil.getOpenInfoByCode(code);
+        final String openId = userThirdInfo.getOpenId();
+        // 根据授权码查询绑定的用户信息
+        UserThirdRequest userThirdRequest = new UserThirdRequest();
+        userThirdRequest.setOpenId(openId);
+        userThirdRequest.setStatus(Constant.STATUS_NOT_DEL);
+        final UserThirdPo userThirdPo = userThirdRepository.getByParams(userThirdRequest);
+        if (null == userThirdPo) {
+            final String message = "该微信号尚未绑定账号,请先进行绑定!";
+            throw new ApiException(message);
         }
-        final AuthTokenResponse data = result.getData();
-        data.setTenantCode(tenantPo.getCode());
-        return data;
+        // 根据租户ID查询租户信息
+        final Long tenantId = userThirdPo.getTenantId();
+        final TenantPo tenantPo = tenantRepository.getById(tenantId);
+        // 根据用户ID查询用户信息
+        final Long userId = userThirdPo.getUserId();
+        final UserPo userPo = userRepository.getById(userId);
+        // 权限验证
+        return this.validateAuth(tenantPo, userPo.getAccount(), userPo.getPassword());
     }
 
     @Override
@@ -202,7 +219,33 @@ public class LoginServiceImpl implements ILoginService {
         return response;
     }
 
-
+    /**
+      * @description 密码模式权限验证.
+      * @author wjd
+      * @date 2022/12/8
+      * @param tenantPo 租户信息
+      * @param account 账号
+      * @param password 用户密码
+      * @return 权限token
+      */
+    private AuthTokenResponse validateAuth(TenantPo tenantPo, String account, String password) {
+        final String userName = account + "&" + tenantPo.getId();
+        // 组装信息
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("client_id", tenantPo.getClientId());
+        parameters.put("client_secret", tenantPo.getCode());
+        parameters.put("grant_type", GrantTypeEnum.PASSWORD.getCode());
+        parameters.put("username", userName);
+        parameters.put("password", password);
+        final Result<AuthTokenResponse> result = authClient.postAccessToken(parameters);
+        if (!result.isOk()) {
+            logger.error("[用户登录]---验证异常!");
+            throw new ApiException(result.getMessage());
+        }
+        final AuthTokenResponse data = result.getData();
+        data.setTenantCode(tenantPo.getCode());
+        return data;
+    }
 
     /**
       * @description 根据租户编码验证租户.
