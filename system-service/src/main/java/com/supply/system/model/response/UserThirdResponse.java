@@ -34,4 +34,7 @@ public class UserThirdResponse extends BaseEntity implements Serializable {
 
     @ApiModelProperty(value = "租户ID")
     private Long tenantId;
+
+    @ApiModelProperty(value = "头像")
+    private String headImageUrl;
 }
