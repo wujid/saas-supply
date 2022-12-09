@@ -11,7 +11,6 @@ import com.supply.common.constant.BusinessStatusEnum;
 import com.supply.common.constant.Constant;
 import com.supply.common.exception.ApiException;
 import com.supply.common.util.CommonUtil;
-import com.supply.common.util.EncryptionUtil;
 import com.supply.common.util.RedisUtil;
 import com.supply.system.cvt.UserCvt;
 import com.supply.system.model.po.OrgPo;
@@ -125,8 +124,6 @@ public class UserServiceImpl implements IUserService {
         if (StrUtil.isNotBlank(password)) {
             final String encode = passwordEncoder.encode(password);
             userPo.setPassword(encode);
-            final String encodePassword = EncryptionUtil.encryptionPassword(request.getPassword());
-            userPo.setEncodePassword(encodePassword);
         }
         userRepository.updateById(userPo);
 
@@ -162,12 +159,9 @@ public class UserServiceImpl implements IUserService {
     public void resetPassword(Long userId, String password) {
         logger.info("[重置密码]---其中待重置的用户ID为{},新密码为{}", userId, password);
         final String encode = passwordEncoder.encode(password);
-        final String encodePassword = EncryptionUtil.encryptionPassword(password);
         UserPo userPo = new UserPo();
         userPo.setId(userId);
         userPo.setPassword(encode);
-        userPo.setEncodePassword(encodePassword);
-        userRepository.updateById(userPo);
     }
 
     @Override
@@ -269,9 +263,6 @@ public class UserServiceImpl implements IUserService {
         // 密码加密
         final String encode = passwordEncoder.encode(request.getPassword());
         userPo.setPassword(encode);
-        // 使用自定义加密解密方式用于第三方登录时使用本系统的授权服务的密码方式进行验证
-        final String encodePassword = EncryptionUtil.encryptionPassword(request.getPassword());
-        userPo.setEncodePassword(encodePassword);
         // 业务状态默认为正常状态
         if (null == userPo.getBusinessStatus()) {
             userPo.setBusinessStatus(BusinessStatusEnum.IN_ACTIVE.getStatus());

@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @Data
 @Configuration
 @RefreshScope
-@ConfigurationProperties(prefix = "system.third.weCat")
+@ConfigurationProperties(prefix = "system.third.we-cat")
 public class WeCatProperties {
 
     @ApiModelProperty(value = "应用唯一标识")

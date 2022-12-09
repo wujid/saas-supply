@@ -20,11 +20,13 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Locale;
 
 /**
@@ -43,11 +45,17 @@ public class UserDetailsServiceImpl implements UserService {
 
     private final SystemUserUtil systemUserUtil;
 
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    @Resource
+    private HttpServletRequest request;
+
     public UserDetailsServiceImpl(SystemClient systemClient, TokenStore tokenStore,
-                                  SystemUserUtil systemUserUtil) {
+                                  SystemUserUtil systemUserUtil, BCryptPasswordEncoder passwordEncoder) {
         this.systemClient = systemClient;
         this.tokenStore = tokenStore;
         this.systemUserUtil = systemUserUtil;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -93,14 +101,13 @@ public class UserDetailsServiceImpl implements UserService {
      * @description 根据当前登录用户验证用户信息.
      * @author wjd
      * @date 2022/7/22
-     * @param username 登录用户(账号 + 租户ID)
+     * @param account 用户账号
      * @return 当前登录用户信息
      */
-    private SysUserResponse getUser(String username) {
+    private SysUserResponse getUser(String account) {
         // 根据&进行拆分出账号和租户ID
-        final List<String> split = StrUtil.split(username, "&");
-        final String account = split.get(0);
-        final String tenantId = split.get(1);
+        final String loginType = request.getHeader("loginType");
+        final String tenantId = request.getHeader("tenantId");
         final SysTenantResponse tenant = this.validateTenant(Long.valueOf(tenantId));
 
         // 根据账号和租户ID进行查询
@@ -111,17 +118,22 @@ public class UserDetailsServiceImpl implements UserService {
         final SysUserResponse userResponse = systemUserUtil.getUserByParams(userRequest);
         // 用户不存在或者已经删除
         if (userResponse == null) {
-            final String message = StrUtil.format("[用户登录]---该用户{}不存在", username);
+            final String message = StrUtil.format("[用户登录]---该用户{}不存在", account);
             logger.error(message);
             throw new ApiException(message);
         }
         if (userResponse.getBusinessStatus() == BusinessStatusEnum.IN_FREEZE.getStatus()) {
-            final String message = StrUtil.format("[用户登录]---用户{}已被冻结", username);
+            final String message = StrUtil.format("[用户登录]---用户{}已被冻结", account);
             logger.error(message);
             throw new ApiException(message);
         }
         // 租户编码
         userResponse.setTenantCode(tenant.getCode());
+        // 如果登录方式为第三方登录将密码改为默认密码的加密方式
+        if (null != loginType && Integer.parseInt(loginType) == Constant.LOGIN_TYPE_THIRD) {
+            final String encodePassword = passwordEncoder.encode(Constant.DEFAULT_PASSWORD);
+            userResponse.setPassword(encodePassword);
+        }
         return userResponse;
     }
 

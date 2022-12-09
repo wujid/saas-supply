@@ -55,8 +55,8 @@ public class UserThirdController {
         return Result.ok();
     }
 
-    @ApiOperation(value = "解除关联关系")
-    @GetMapping("/delThirdBind")
+    @ApiOperation(value = "获取关联关系")
+    @GetMapping("/getThirdList")
     public Result<List<UserThirdResponse>> getThirdList() {
         final SysUserResponse currentUser = ContextUtil.getCurrentUser();
         if (null == currentUser) {

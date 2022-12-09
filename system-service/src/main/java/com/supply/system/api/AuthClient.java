@@ -22,5 +22,5 @@ public interface AuthClient {
     Result<Object> saveClientDetails(@RequestBody ClientDetailRequest request);
 
     @PostMapping(value = "/oauth/token",  produces = {"application/json"})
-    Result<AuthTokenResponse> postAccessToken(@RequestParam Map<String, String> parameters);
+    Result<AuthTokenResponse> postAccessToken(@RequestParam Map<String, String> parameters, @RequestHeader int loginType, @RequestHeader Long tenantId);
 }

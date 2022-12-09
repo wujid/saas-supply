@@ -9,7 +9,6 @@ import com.supply.common.constant.GrantTypeEnum;
 import com.supply.common.exception.ApiException;
 import com.supply.common.model.Result;
 import com.supply.common.model.response.auth.AuthTokenResponse;
-import com.supply.common.util.EncryptionUtil;
 import com.supply.common.util.RedisUtil;
 import com.supply.system.api.AuthClient;
 import com.supply.system.constant.ResourceTypeEnum;
@@ -113,7 +112,7 @@ public class LoginServiceImpl implements ILoginService {
         // 租户验证
         final TenantPo tenantPo = this.validateTenant(request.getTenantCode());
         // 组装信息
-        return this.validateAuth(tenantPo, request.getUserName(), request.getPassword());
+        return this.validateAuth(Constant.LOGIN_TYPE_PWD, tenantPo, request.getUserName(), request.getPassword());
     }
 
     @Override
@@ -137,10 +136,7 @@ public class LoginServiceImpl implements ILoginService {
         final Long userId = userThirdPo.getUserId();
         final UserPo userPo = userRepository.getById(userId);
         // 权限验证: 第三方授权登录统一转换成账号密码去验证服务验证
-        // 弊端在于需存储用户明文密码
-        // 好处在于方便管理,网关不用去请求第三方验证服务验证,对于token失效时间保持全系统统一
-        final String password = EncryptionUtil.decryptPassword(userPo.getEncodePassword());
-        return this.validateAuth(tenantPo, userPo.getAccount(), password);
+        return this.validateAuth(Constant.LOGIN_TYPE_THIRD, tenantPo, userPo.getAccount(), Constant.DEFAULT_PASSWORD);
     }
 
     @Override
@@ -227,21 +223,21 @@ public class LoginServiceImpl implements ILoginService {
       * @description 密码模式权限验证.
       * @author wjd
       * @date 2022/12/8
+      * @param loginType 登录方式
       * @param tenantPo 租户信息
       * @param account 账号
       * @param password 用户密码
       * @return 权限token
       */
-    private AuthTokenResponse validateAuth(TenantPo tenantPo, String account, String password) {
-        final String userName = account + "&" + tenantPo.getId();
+    private AuthTokenResponse validateAuth(int loginType, TenantPo tenantPo, String account, String password) {
         // 组装信息
         Map<String, String> parameters = new HashMap<>();
         parameters.put("client_id", tenantPo.getClientId());
         parameters.put("client_secret", tenantPo.getCode());
         parameters.put("grant_type", GrantTypeEnum.PASSWORD.getCode());
-        parameters.put("username", userName);
+        parameters.put("username", account);
         parameters.put("password", password);
-        final Result<AuthTokenResponse> result = authClient.postAccessToken(parameters);
+        final Result<AuthTokenResponse> result = authClient.postAccessToken(parameters, loginType, tenantPo.getId());
         if (!result.isOk()) {
             logger.error("[用户登录]---验证异常!");
             throw new ApiException(result.getMessage());

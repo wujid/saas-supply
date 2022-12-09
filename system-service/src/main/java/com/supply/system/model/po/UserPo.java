@@ -35,9 +35,6 @@ public class UserPo extends Model<UserPo> implements Serializable {
     @ApiModelProperty(value = "加密密码")
     private String password;
 
-    @ApiModelProperty(value = "登录密码")
-    private String encodePassword;
-
     @ApiModelProperty(value = "手机号")
     private String telephone;
 
