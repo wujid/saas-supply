@@ -43,7 +43,7 @@
       </template>
       <template v-slot:operation="scope">
         <el-link v-auth="'message_content_view'" type="primary" :underline="false" @click="viewContent(scope.row)">查看</el-link>
-        <el-link v-show="scope.row.businessStatus === 6" v-auth="'message_content_read'" type="primary" :underline="false" @click="updateReader(scope.row)">已读</el-link>
+        <el-link v-show="scope.row.businessStatus === 401" v-auth="'message_content_read'" type="primary" :underline="false" @click="updateReader(scope.row)">已读</el-link>
         <el-link v-auth="'message_content_del'" type="primary" :underline="false" @click="delContent(scope.row)">删除</el-link>
       </template>
     </my-table>
