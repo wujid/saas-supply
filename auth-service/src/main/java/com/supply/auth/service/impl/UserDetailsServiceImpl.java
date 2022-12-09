@@ -25,7 +25,6 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Locale;
 
@@ -47,15 +46,16 @@ public class UserDetailsServiceImpl implements UserService {
 
     private final BCryptPasswordEncoder passwordEncoder;
 
-    @Resource
-    private HttpServletRequest request;
+    private final HttpServletRequest request;
 
     public UserDetailsServiceImpl(SystemClient systemClient, TokenStore tokenStore,
-                                  SystemUserUtil systemUserUtil, BCryptPasswordEncoder passwordEncoder) {
+                                  SystemUserUtil systemUserUtil, BCryptPasswordEncoder passwordEncoder,
+                                  HttpServletRequest request) {
         this.systemClient = systemClient;
         this.tokenStore = tokenStore;
         this.systemUserUtil = systemUserUtil;
         this.passwordEncoder = passwordEncoder;
+        this.request = request;
     }
 
 

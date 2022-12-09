@@ -40,8 +40,6 @@ import com.supply.system.util.WeCatUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
@@ -82,10 +80,12 @@ public class LoginServiceImpl implements ILoginService {
 
     private final WeCatUtil weCatUtil;
 
+    private final HttpServletResponse response;
+
     public LoginServiceImpl(ITenantRepository tenantRepository, IUserRepository userRepository,
                             IRoleRepository roleRepository, IResourceRepository resourceRepository,
                             AuthClient authClient, RedisUtil redisUtil, Producer producer,
-                            IUserThirdRepository userThirdRepository, WeCatUtil weCatUtil) {
+                            IUserThirdRepository userThirdRepository, WeCatUtil weCatUtil, HttpServletResponse response) {
         this.tenantRepository = tenantRepository;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
@@ -95,6 +95,7 @@ public class LoginServiceImpl implements ILoginService {
         this.producer = producer;
         this.userThirdRepository = userThirdRepository;
         this.weCatUtil = weCatUtil;
+        this.response = response;
     }
 
 
@@ -152,8 +153,6 @@ public class LoginServiceImpl implements ILoginService {
     public void generateCaptcha(String key) {
         final String text = producer.createText();
         final BufferedImage image = producer.createImage(text);
-        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        final HttpServletResponse response = requestAttributes.getResponse();
         try {
             ServletOutputStream out = response.getOutputStream();
             response.setStatus(203);
