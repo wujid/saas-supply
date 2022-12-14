@@ -24,7 +24,7 @@ import java.util.List;
  * @description 系统角色信息控制层.
  * @date 2022-08-03
  */
-@Api(value="系统角色信息控制层")
+@Api(tags="系统角色信息控制层")
 @RestController
 @RequestMapping("/sysRole")
 public class RoleController {

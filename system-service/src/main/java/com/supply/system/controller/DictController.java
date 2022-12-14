@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @description 数据字典控制层.
  * @date 2022-08-29
  */
-@Api(value="数据字典控制层")
+@Api(tags="数据字典控制层")
 @RestController
 @RequestMapping("/dict")
 public class DictController {

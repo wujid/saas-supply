@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @description
  * @date 2022-09-30
  */
-@Api(value="用户角色关联关系信息控制层")
+@Api(tags="用户角色关联关系信息控制层")
 @RestController
 @RequestMapping("/userRole")
 public class UserRoleController {

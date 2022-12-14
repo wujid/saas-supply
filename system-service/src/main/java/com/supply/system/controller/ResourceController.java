@@ -17,7 +17,7 @@ import java.util.List;
  * @description 系统资源信息控制层.
  * @date 2022-08-05
  */
-@Api(value="系统资源信息控制层")
+@Api(tags="系统资源信息控制层")
 @RestController
 @RequestMapping("/sysResource")
 public class ResourceController {
