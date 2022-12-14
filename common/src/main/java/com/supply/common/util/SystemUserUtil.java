@@ -137,10 +137,10 @@ public class SystemUserUtil {
      * @param userId 用户ID
      * @return 用户信息
      */
-    public List<SysUserResponse> getUsersById(Long userId) {
+    public SysUserResponse getUserById(Long userId) {
         SysUserRequest request = new SysUserRequest();
         request.setId(userId);
-        final Result<List<SysUserResponse>> result = systemClient.getUsesByParams(request);
+        final Result<SysUserResponse> result = systemClient.getUserById(userId);
         if (!result.isOk()) {
             final String message = StrUtil.format("根据用户ID{}查询用户信息异常!", userId);
             logger.error(message);
