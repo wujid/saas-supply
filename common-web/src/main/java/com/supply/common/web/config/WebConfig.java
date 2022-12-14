@@ -20,7 +20,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,6 +55,11 @@ public class WebConfig extends WebMvcConfigurationSupport {
 
         jackson2HttpMessageConverter.setObjectMapper(objectMapper);
         converters.add(jackson2HttpMessageConverter);
+    }
+
+    @Override
+    protected void configureViewResolvers(ViewResolverRegistry registry) {
+        registry.viewResolver(new InternalResourceViewResolver());
     }
 
 

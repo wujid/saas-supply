@@ -19,6 +19,8 @@ public class LoginUser implements UserDetails {
 
     private String username;
 
+    private String account;
+
     private String password;
 
     private List<GrantedAuthority> authorities = new ArrayList<>();
@@ -37,8 +39,9 @@ public class LoginUser implements UserDetails {
         this.tenantCode = tenantCode;
     }
 
-    public LoginUser(SysUserResponse userResponse) {
-        this.username = userResponse.getAccount();
+    public LoginUser(SysUserResponse userResponse, String username) {
+        this.username = username;
+        this.account = userResponse.getAccount();
         this.password = userResponse.getPassword();
         this.tenantId = userResponse.getTenantId();
         this.userId = userResponse.getId();

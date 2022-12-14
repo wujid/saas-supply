@@ -26,6 +26,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -67,7 +68,7 @@ public class UserDetailsServiceImpl implements UserService {
         LocaleContextHolder.setDefaultLocale(Locale.CHINA);
         // 验证
         final SysUserResponse userResponse = this.getUser(username);
-        return new LoginUser(userResponse);
+        return new LoginUser(userResponse, username);
     }
 
     @Override
@@ -87,7 +88,9 @@ public class UserDetailsServiceImpl implements UserService {
             if (result.getCode() != HttpStatus.OK.value() || result.getData() == null) {
                throw new ApiException("认证失败!");
             }
-            loginUser = new LoginUser(result.getData());
+            final SysUserResponse userResponse = result.getData();
+            String username = userResponse.getAccount() + "&" + userResponse.getTenantId();
+            loginUser = new LoginUser(result.getData(), username);
         }
 
         // 密码模式:直接获取缓存中的用户
@@ -101,11 +104,14 @@ public class UserDetailsServiceImpl implements UserService {
      * @description 根据当前登录用户验证用户信息.
      * @author wjd
      * @date 2022/7/22
-     * @param account 用户账号
+     * @param username 用户名
      * @return 当前登录用户信息
      */
-    private SysUserResponse getUser(String account) {
+    private SysUserResponse getUser(String username) {
         // 根据&进行拆分出账号和租户ID
+        final List<String> split = StrUtil.split(username, "&");
+        final String account = split.get(0);
+
         final String loginType = request.getHeader("loginType");
         final String tenantId = request.getHeader("tenantId");
         final SysTenantResponse tenant = this.validateTenant(Long.valueOf(tenantId));
