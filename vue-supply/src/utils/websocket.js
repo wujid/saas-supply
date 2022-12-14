@@ -3,7 +3,7 @@ import ElementUI from 'element-ui'
 import { nanoid } from 'nanoid'
 
 function initWebSocket() {
-  const api = process.env.VUE_APP_BASE_API.substring(7)
+  const api = process.env.VUE_APP_BASE_URL.substring(7)
   const uuid = nanoid(5)
   const wsUrl = `ws://${api}/message/websocket/` + store.state.user.tenantInfo.id + '/' + uuid + '/' + store.state.user.userInfo.id
   this.socket = new WebSocket(wsUrl)// 这里面的this都指向vue
