@@ -57,6 +57,14 @@ public class WebConfig extends WebMvcConfigurationSupport {
         converters.add(jackson2HttpMessageConverter);
     }
 
+    /**
+      * @description swagger中有一个配置类继承了WebMvcConfigurationSupport,其中没有配置ViewResolver
+      * 导致OAuth2授权码模式下异常:Could not resolve view with name 'forward:/oauth/confirm_access' in servlet with name 'dispatcherServlet'.
+      * @author wjd
+      * @date 2022/12/14
+      * @param
+      * @return void
+      */
     @Override
     protected void configureViewResolvers(ViewResolverRegistry registry) {
         registry.viewResolver(new InternalResourceViewResolver());
