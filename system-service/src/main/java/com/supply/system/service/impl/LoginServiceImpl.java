@@ -234,9 +234,7 @@ public class LoginServiceImpl implements ILoginService {
         parameters.put("client_id", tenantPo.getClientId());
         parameters.put("client_secret", tenantPo.getCode());
         parameters.put("grant_type", GrantTypeEnum.PASSWORD.getCode());
-        // 用户名使用账号+租户保证唯一
-        String username = account + "&" + tenantPo.getId();
-        parameters.put("username", username);
+        parameters.put("username", account);
         parameters.put("password", password);
         final Result<AuthTokenResponse> result = authClient.postAccessToken(parameters, loginType, tenantPo.getId());
         if (!result.isOk()) {

@@ -31,16 +31,9 @@ public class LoginUser implements UserDetails {
 
     private String tenantCode;
 
-    public LoginUser(String username, String password, Long tenantId, Long userId, String tenantCode) {
-        this.username = username;
-        this.password = password;
-        this.tenantId = tenantId;
-        this.userId = userId;
-        this.tenantCode = tenantCode;
-    }
-
-    public LoginUser(SysUserResponse userResponse, String username) {
-        this.username = username;
+    public LoginUser(SysUserResponse userResponse) {
+        // 确保username唯一性
+        this.username = userResponse.getAccount() + "&" + userResponse.getTenantId();
         this.account = userResponse.getAccount();
         this.password = userResponse.getPassword();
         this.tenantId = userResponse.getTenantId();
