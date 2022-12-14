@@ -90,7 +90,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
         final LoginUser loginUser = loginUserResult.getData();
         addHeader(mutate, Constant.USER_ID_KEY, loginUser.getUserId());
         addHeader(mutate, Constant.TENANT_ID_KEY, loginUser.getTenantId());
-        addHeader(mutate, Constant.ACCOUNT_ID_KEY, loginUser.getUsername());
+        addHeader(mutate, Constant.ACCOUNT_ID_KEY, loginUser.getAccount());
 
         return chain.filter(exchange.mutate().request(mutate.build()).build());
     }

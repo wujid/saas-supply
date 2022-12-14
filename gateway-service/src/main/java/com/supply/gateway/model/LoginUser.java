@@ -14,10 +14,13 @@ public class LoginUser {
     @Note(description = "用户ID")
     private Long userId;
 
+    @Note(description = "账号")
+    private String account;
+
     @Note(description = "租户ID")
     private Long tenantId;
 
-    @Note(description = "账号")
+    @Note(description = "用户名")
     private String username;
 
     @Note(description = "密码")
