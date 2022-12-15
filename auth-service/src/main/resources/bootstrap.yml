@@ -19,7 +19,7 @@ spring:
           - dataId: common-redis.yml
             group: ${group}
             refresh: true
-          - dataId: system-service.yml
+          - dataId: common-doc.yml
             group: ${group}
             refresh: true
 
