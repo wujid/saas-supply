@@ -23,3 +23,9 @@ spring:
 
 nacos: ${env_nacos:192.168.5.107:8848}
 group: ${env_group:supply}
+server:
+  port: 8085
+
+logging:
+  level:
+    org.activiti.engine.impl.persistence.entity: trace
