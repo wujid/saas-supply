@@ -12,7 +12,8 @@
  */
 package com.supply.bpm.config;
 
-import org.activiti.engine.ActivitiException;
+import com.alibaba.fastjson.JSON;
+import com.supply.common.exception.ApiException;
 import org.apache.commons.io.IOUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,21 +21,26 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.InputStream;
+import java.util.Map;
 
 /**
- * @author Tijs Rademakers
+ * @author wjd
+ * @description 流程配置加载.
+ * @date 2022-12-19
  */
 @RestController
 @RequestMapping("/bpm/act")
 public class StencilsetRestResource {
 
   @RequestMapping(value="/editor/stencilset", method = RequestMethod.GET, produces = "application/json;charset=utf-8")
-  public @ResponseBody String getStencilset() {
+  public @ResponseBody Map getStencilset() {
     InputStream stencilsetStream = this.getClass().getClassLoader().getResourceAsStream("static/stencilset.json");
     try {
-      return IOUtils.toString(stencilsetStream, "utf-8");
+      final String config = IOUtils.toString(stencilsetStream, "utf-8");
+      final Map map = JSON.parseObject(config, Map.class);
+      return map;
     } catch (Exception e) {
-      throw new ActivitiException("加载stencil配置出错", e);
+      throw new ApiException("加载stencil配置出错", e);
     }
   }
 }

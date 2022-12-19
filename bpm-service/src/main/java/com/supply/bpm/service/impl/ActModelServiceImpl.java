@@ -77,6 +77,7 @@ public class ActModelServiceImpl implements IActModelService {
         final ActModelPo actModelPo = ActModelCvt.INSTANCE.requestToPo(request);
         actModelPo.setModelId(modelId);
         actModelPo.setVersion(model.getVersion());
+        actModelPo.setIsMain(true);
         actModelRepository.save(actModelPo);
     }
 }

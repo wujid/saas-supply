@@ -12,6 +12,7 @@ import com.supply.bpm.model.request.ActModelRequest;
 import com.supply.bpm.repository.IActModelRepository;
 import com.supply.common.constant.OperatorTypeEnum;
 import com.supply.common.web.annotation.BaseData;
+import com.supply.common.web.annotation.IgnoreFill;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
@@ -53,6 +54,12 @@ public class ActModelRepositoryImpl extends ServiceImpl<ActModelMapper, ActModel
     @BaseData(fill = OperatorTypeEnum.UPDATE)
     public boolean updateBatchById(Collection<ActModelPo> entityList) {
         return super.updateBatchById(entityList);
+    }
+
+    @Override
+    public int updateByParams(ActModelPo actModelPo, @IgnoreFill ActModelRequest request) {
+        final LambdaQueryWrapper<ActModelPo> queryWrapper = this.getQueryWrapper(request);
+        return actModelMapper.update(actModelPo, queryWrapper);
     }
 
     @Override

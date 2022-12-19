@@ -34,11 +34,17 @@ public class ActModelPo extends Model<ActModelPo> {
     @ApiModelProperty(value = "流程模型key")
     private String modelKey;
 
+    @ApiModelProperty(value = "流程模型名称")
+    private String modelName;
+
     @ApiModelProperty(value = "流程备注")
     private String description;
 
     @ApiModelProperty(value = "版本号")
     private Integer version;
+
+    @ApiModelProperty(value = "是否主流程")
+    private Boolean isMain;
 
     @ApiModelProperty(value = "创建人")
     private Long createUserId;

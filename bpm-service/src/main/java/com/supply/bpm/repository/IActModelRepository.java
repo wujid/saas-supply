@@ -14,6 +14,17 @@ import java.util.List;
  */
 public interface IActModelRepository extends IService<ActModelPo> {
 
+
+    /**
+     * @description 根据自定义条件修改.
+     * @author wjd
+     * @date 2022/11/3
+     * @param actModelPo 修改实体
+     * @param request 条件值
+     * @return int 受影响行数
+     */
+    int updateByParams(ActModelPo actModelPo,  ActModelRequest request);
+
     /**
      * @description 根据自定义条件查询流程模型.
      * @author wjd
