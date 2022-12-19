@@ -56,6 +56,7 @@ public class ContentInfoRepositoryImpl extends ServiceImpl<ContentInfoMapper, Co
         return contentInfoMapper.update(contentInfoPo, queryWrapper);
     }
 
+    @Override
     public ContentInfoPo getByParams(ContentInfoRequest request) {
         final LambdaQueryWrapper<ContentInfoPo> queryWrapper = this.getQueryWrapper(request);
         return contentInfoMapper.selectOne(queryWrapper);
