@@ -70,7 +70,6 @@ public class CategoryServiceImpl implements ICategoryService {
         List<CategoryResponse> result = new ArrayList<>();
         CategoryRequest request = new CategoryRequest();
         request.setParentId(parentId);
-        request.setName(name);
         request.setOrderColumn(CategoryPo::getSort);
         request.setIsAsc(true);
         final List<CategoryPo> categoryPoList = categoryRepository.getListByParams(request);

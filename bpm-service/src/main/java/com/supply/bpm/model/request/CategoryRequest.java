@@ -1,5 +1,6 @@
 package com.supply.bpm.model.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.supply.bpm.model.po.CategoryPo;
 import com.supply.common.web.model.BaseRequestEntity;
 import io.swagger.annotations.ApiModel;
@@ -17,6 +18,7 @@ import java.io.Serializable;
 @ApiModel(value="流程分类信息请求实体")
 @Data
 @EqualsAndHashCode(callSuper=false)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CategoryRequest extends BaseRequestEntity<CategoryPo> implements Serializable {
     private static final long serialVersionUID = -1447317606024384248L;
 
