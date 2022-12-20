@@ -41,7 +41,7 @@ public class ProcessDefinitionRepositoryImpl extends ServiceImpl<ProcessDefiniti
     @Override
     @BaseData(fill = OperatorTypeEnum.INSERT)
     public boolean saveBatch(Collection<ProcessDefinitionPo> entityList) {
-        return super.saveBatch(entityList, 1000);
+        return super.saveBatch(entityList);
     }
 
     @Override

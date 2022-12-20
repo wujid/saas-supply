@@ -41,14 +41,14 @@ public class DictItemController {
 
     @ApiOperation(value = "新增数据字典集")
     @PostMapping("/addDictItem")
-    public Result<Object> addDictItem(@RequestBody @Validated(value = AddGroup.class) DictItemRequest request) {
+    public Result<Object> addDictItem(@RequestBody @Validated(AddGroup.class) DictItemRequest request) {
         dictItemService.addDictItem(request);
         return Result.ok();
     }
 
     @ApiOperation(value = "修改数据字典集")
     @PostMapping("/updateDictItem")
-    public Result<Object> updateDictItem(@RequestBody  @Validated(value = UpdateGroup.class) DictItemRequest request) {
+    public Result<Object> updateDictItem(@RequestBody  @Validated(UpdateGroup.class) DictItemRequest request) {
         dictItemService.updateDictItem(request);
         return Result.ok();
     }

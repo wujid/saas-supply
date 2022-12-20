@@ -25,23 +25,23 @@ import java.util.Set;
 public class DictItemRequest extends BaseRequestEntity<DictItemPo> {
     private static final long serialVersionUID = 1942254915491660373L;
 
-    @ApiModelProperty(value = "字典类型ID")
+    @ApiModelProperty("字典类型ID")
     @LongNotEmpty(message = "字典类型ID不能为空", groups = AddGroup.class)
     private Long dictId;
 
-    @ApiModelProperty(value = "字典名称")
+    @ApiModelProperty("字典名称")
     @NotBlank(message = "字典名称不能为空")
     private String label;
 
-    @ApiModelProperty(value = "字典值")
+    @ApiModelProperty("字典值")
     @NotBlank(message = "字典值不能为空")
     private String value;
 
-    @ApiModelProperty(value = "排序")
+    @ApiModelProperty("排序")
     @NotEmpty(message = "排序不能为空")
     @Size(message = "排序值范围为{min}-{max}", max = 999)
     private Integer sort;
 
-    @ApiModelProperty(value = "字典类型ID集")
+    @ApiModelProperty("字典类型ID集")
     private Set<Long> dictIdList;
 }

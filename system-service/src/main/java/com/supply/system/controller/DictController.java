@@ -37,14 +37,14 @@ public class DictController {
 
     @ApiOperation(value = "新增数据字典")
     @PostMapping("/addDict")
-    public Result<?> addDict(@RequestBody @Validated(value = AddGroup.class) DictRequest request) {
+    public Result<?> addDict(@RequestBody @Validated(AddGroup.class) DictRequest request) {
         dictService.addDict(request);
         return Result.ok();
     }
 
     @ApiOperation(value = "修改数据字典")
     @PostMapping("/updateDict")
-    public Result<?> updateDict(@RequestBody @Validated(value = UpdateGroup.class) DictRequest request) {
+    public Result<?> updateDict(@RequestBody @Validated(UpdateGroup.class) DictRequest request) {
         dictService.updateDict(request);
         return Result.ok();
     }
