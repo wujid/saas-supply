@@ -36,3 +36,12 @@ export function getCategoryTreeByParams(params) {
     params
   })
 }
+
+// 流程定义分页信息
+export function getProcessDefinitionPage(params) {
+  return request({
+    url: api + '/processDefinition/getProcessDefinitionPage',
+    method: 'get',
+    params
+  })
+}

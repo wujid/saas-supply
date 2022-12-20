@@ -33,6 +33,46 @@
         </span>
       </el-tree>
     </div>
+    <div class="table-page">
+      <el-form v-show="defForm.showSearch" ref="formSearch" :model="defForm.searchForm" size="mini" class="formSearch ml-16" inline>
+        <el-form-item label="流程名称" prop="processName">
+          <el-input v-model.trim="defForm.searchForm.processName" clearable placeholder="请输入流程名称" />
+        </el-form-item>
+        <el-form-item label="状态" prop="businessStatus">
+          <el-select v-model="defForm.searchForm.businessStatus" placeholder="全部" clearable>
+            <el-option
+              v-for="item in [{label:'激活',value:703},{label:'挂起',value:704}]"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="" class="btn-center">
+          <el-button type="primary" @click="defSearch">查询</el-button>
+          <el-button plain @click="defReset">重置</el-button>
+        </el-form-item>
+      </el-form>
+      <my-table
+        ref="myTable"
+        stripe
+        border
+        toolbar
+        :columns="defForm.columns"
+        :search-form="defForm.searchForm"
+        @pageRequest="defPageRequest"
+        @see="defForm.showSearch = !defForm.showSearch"
+      >
+        <template slot="toolSlot">
+          <div style="width:100%;">
+            <el-button v-auth="'org_user_add'" type="primary" size="mini" @click="addBpm">新建流程</el-button>
+          </div>
+        </template>
+        <template v-slot:operation="scope">
+          <el-link v-auth="'org_user_view'" type="primary" :underline="false" @click="defHistory(scope.row, 'view')">历史版本</el-link>
+        </template>
+      </my-table>
+    </div>
     <el-dialog class="formDialog" :title="categoryForm.formTitle" :visible.sync="categoryForm.formVisible" width="600px">
       <el-form ref="categoryForm" :model="categoryForm.form" :rules="categoryForm.formRules" label-width="120px">
         <el-form-item v-if="categoryForm.form.parentName" label="上级名称">
@@ -57,7 +97,7 @@
 </template>
 
 <script>
-import { addCategory, getCategoryTreeByParams, updateCategory } from '@/api/bpm'
+import { addCategory, delCategory, getCategoryTreeByParams, getProcessDefinitionPage, updateCategory } from '@/api/bpm'
 
 export default {
   name: 'bpm-definition',
@@ -90,6 +130,56 @@ export default {
           code: { required: true, message: '请输入编码' },
           sort: { required: true, message: '请输入排序' }
         }
+      },
+      defForm: {
+        showSearch: true,
+        searchForm: {
+          processName: null,
+          categoryId: null,
+          businessStatus: null
+        },
+        columns: [
+          {
+            title: '流程名称',
+            key: 'processName'
+          },
+          {
+            title: '流程备注',
+            key: 'description'
+          },
+          {
+            title: '流程图片',
+            key: 'diagramName'
+          },
+          {
+            title: '流程xml',
+            key: 'xmlName'
+          },
+          {
+            title: '版本号',
+            key: 'version',
+            formatter(row) {
+              return 'v.' + row.version
+            }
+          },
+          {
+            title: '流程状态',
+            key: 'businessStatus',
+            formatter(row) {
+              if (row.businessStatus === 703) {
+                return '激活'
+              }
+              return '挂起'
+            }
+          },
+          {
+            title: '操作',
+            width: 400,
+            key: 'operation',
+            className: 'text-left',
+            rowSlot: true
+          }
+        ]
       }
     }
   },
@@ -109,8 +199,14 @@ export default {
         await this.getDefinitionInfo(this.categoryData[0])
       }
     },
+    // 获取流程定义信息
     async getDefinitionInfo(data) {
+      this.selectedCategory.id = data.id
+      this.selectedCategory.name = data.name
+      this.selectedCategory.data = data
+      this.defSearch()
     },
+    // 新建流程分类
     addCategory(data) {
       this.categoryForm.formTitle = '新建流程分类'
       this.categoryForm.formVisible = true
@@ -127,9 +223,31 @@ export default {
         this.categoryForm.form.sort = null
       })
     },
+    // 修改流程分类
     editCategory(data) {
+      this.categoryForm.formTitle = '修改流程分类'
+      this.categoryForm.formVisible = true
+      this.categoryForm.isDisabled = true
+      this.$nextTick(() => {
+        this.categoryForm.form = {
+          id: data.id,
+          parentName: data.parentName,
+          parentId: data.parentId,
+          code: data.code,
+          name: data.name,
+          sort: data.sort
+        }
+      })
     },
+    // 删除流程分类
     delCategory(id) {
+      this.$confirm('确认要删除吗？', '提示', {
+        type: 'error'
+      }).then(async _ => {
+        await delCategory({ categoryId: id })
+        await this.getCategoryData()
+        this.$message.success('删除成功！')
+      }).catch(_ => {})
     },
     // 保存流程分类
     saveCategory() {
@@ -152,6 +270,39 @@ export default {
           }
         }
       })
+    },
+    defPageRequest(query, callback) {
+      const params = query
+      params.categoryId = this.selectedCategory.id
+      const promise = new Promise((resolve) => {
+        getProcessDefinitionPage(params)
+          .then((res) => {
+            resolve({
+              data: res.data.records,
+              total: parseInt(res.data.total)
+            })
+          })
+          .catch(() => {
+            resolve({
+              data: [],
+              total: 0
+            })
+          })
+      })
+      callback(promise)
+    },
+    defSearch() {
+      this.$refs.myTable.handleSearch()
+    },
+    defReset() {
+      this.$refs.formSearch.resetFields()
+      this.defSearch()
+    },
+    // 新建流程
+    addBpm() {
+    },
+    // 流程历史版本信息
+    defHistory() {
     }
   }
 }
