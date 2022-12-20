@@ -1,85 +1,163 @@
 <template>
-  <div class="app-container">
-    <el-form ref="form" :model="form" label-width="120px">
-      <el-form-item label="Activity name">
-        <el-input v-model="form.name" />
-      </el-form-item>
-      <el-form-item label="Activity zone">
-        <el-select v-model="form.region" placeholder="please select your zone">
-          <el-option label="Zone one" value="shanghai" />
-          <el-option label="Zone two" value="beijing" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="Activity time">
-        <el-col :span="11">
-          <el-date-picker v-model="form.date1" type="date" placeholder="Pick a date" style="width: 100%;" />
-        </el-col>
-        <el-col :span="2" class="line">-</el-col>
-        <el-col :span="11">
-          <el-time-picker v-model="form.date2" type="fixed-time" placeholder="Pick a time" style="width: 100%;" />
-        </el-col>
-      </el-form-item>
-      <el-form-item label="Instant delivery">
-        <el-switch v-model="form.delivery" />
-      </el-form-item>
-      <el-form-item label="Activity type">
-        <el-checkbox-group v-model="form.type">
-          <el-checkbox label="Online activities" name="type" />
-          <el-checkbox label="Promotion activities" name="type" />
-          <el-checkbox label="Offline activities" name="type" />
-          <el-checkbox label="Simple brand exposure" name="type" />
-        </el-checkbox-group>
-      </el-form-item>
-      <el-form-item label="Resources">
-        <el-radio-group v-model="form.resource">
-          <el-radio label="Sponsor" />
-          <el-radio label="Venue" />
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="Activity form">
-        <el-input v-model="form.desc" type="textarea" />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="onSubmit">Create</el-button>
-        <el-button @click="onCancel">Cancel</el-button>
-      </el-form-item>
-    </el-form>
+  <div class="customer-add">
+    <div class="group-tree">
+      <div>
+        <el-form ref="formSearch" size="mini" inline class="group-tree-form">
+          <el-form-item label="" prop="name">
+            <el-input
+              v-model.trim="categoryForm.searchForm.name"
+              clearable
+              placeholder="请输入分类名称查询"
+              style="width:60%; margin-right: 10px"
+              @keyup.enter.native="getCategoryData"
+            />
+            <el-button v-auth="'org_add'" type="primary" size="mini" @click="addCategory(null)">创建分类</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <el-tree
+        :data="categoryData"
+        node-key="id"
+        default-expand-all
+        :expand-on-click-node="false"
+        :props="{ label: 'name', children: 'childrenList' }"
+        class="p-16"
+      >
+        <span slot-scope="{ node, data }" class="custom-tree-node">
+          <span :class="{currentStyle: selectedCategory.id === data.id}" @click="getDefinitionInfo(data)">{{ data.name }}</span>
+          <span class="ml-16">
+            <el-button v-auth="'org_add'" type="text" class="ml-16" size="mini" @click="addCategory(data)">创建</el-button>
+            <el-button v-auth="'org_add'" type="text" class="ml-16" size="mini" @click="editCategory(data)">编辑</el-button>
+            <el-button v-if="!data.isMain" v-auth="'org_add'" type="text" class="ml-16" size="mini" @click="delCategory(data.id)">删除</el-button>
+          </span>
+        </span>
+      </el-tree>
+    </div>
   </div>
 </template>
 
 <script>
+import { getCategoryTreeByParams } from '@/api/bpm'
+
 export default {
+  name: 'bpm-definition',
   data() {
     return {
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
+      categoryData: [],
+      selectedCategory: {
+        id: null,
+        name: null,
+        data: {}
+      },
+      categoryForm: {
+        formTitle: null,
+        formVisible: false,
+        formLoading: false,
+        searchForm: {
+          name: null
+        },
+        isDisabled: false,
+        form: {
+          id: null,
+          parentName: null,
+          parentId: null,
+          code: null,
+          name: null,
+          sort: null
+        },
+        formRules: {
+          name: { required: true, message: '请输入名称' },
+          code: { required: true, message: '请输入编码' },
+          sort: { required: true, message: '请输入排序' }
+        }
       }
     }
   },
+  created() {
+    this.getCategoryData()
+  },
   methods: {
-    onSubmit() {
-      this.$message('submit!')
+    async getCategoryData() {
+      this.selectedCategory = {
+        id: null,
+        name: null,
+        data: null
+      }
+      const { data } = await getCategoryTreeByParams({ name: this.categoryForm.searchForm.name })
+      this.categoryData = data
+      if (this.categoryData) {
+        await this.getDefinitionInfo(this.categoryData[0])
+      }
     },
-    onCancel() {
-      this.$message({
-        message: 'cancel!',
-        type: 'warning'
-      })
+    async getDefinitionInfo(data) {
+    },
+    addCategory(data) {
+    },
+    editCategory(data) {
+    },
+    delCategory(id) {
     }
   }
 }
 </script>
 
-<style scoped>
-.line{
-  text-align: center;
+<style lang='scss' scoped>
+.group-tree {
+  float: left;
+  width: 320px;
+  height: calc(100vh - 50px);
+  background-color: #fff;
+  overflow: auto;
+  &::-webkit-scrollbar{
+    width: 10px;
+    height: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #d1d1d1;
+  }
+  &::-webkit-scrollbar-track {
+    background: #f2f2f2;
+  }
+  ::v-deep .el-tree {
+    height: 100%;
+  }
+  ::v-deep .el-tree-node {
+    min-width: 100% !important;
+    display: block !important;
+    float: left;
+  }
+  ::v-deep .currentStyle{
+    font-weight: bold;
+    color: #333;
+  }
+  .custom-tree-node span {
+    font-size: 14px;
+  }
+}
+.table-page {
+  height: calc(100vh - 50px);
+  display: flex;
+  flex-direction: column;
+  .el-link {
+    margin-right: 10px;
+  };
+}
+.formDialog{
+  .el-input{
+    width: 90%;
+  }
+}
+::v-deep .group-tree-form{
+  margin: 20px 0 0;
+  .el-form-item{
+    margin: 0;
+    width: 100%;
+  }
+  .el-form-item__content{
+    width: 100%!important;
+    padding-left: 15px;
+    box-sizing: border-box;
+  }
 }
 </style>
 
