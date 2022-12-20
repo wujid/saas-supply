@@ -20,6 +20,9 @@ import java.io.Serializable;
 public class ProcessDefinitionRequest extends BaseRequestEntity<ProcessDefinitionPo> implements Serializable {
     private static final long serialVersionUID = -2839224806437704551L;
 
+    @ApiModelProperty(value = "流程分类ID")
+    private Long categoryId;
+
     @ApiModelProperty(value = "流程部署ID")
     private String deploymentId;
 

@@ -28,6 +28,9 @@ public class ProcessDefinitionPo extends Model<ProcessDefinitionPo> {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
+    @ApiModelProperty(value = "流程分类ID")
+    private Long categoryId;
+
     @ApiModelProperty(value = "流程部署ID")
     private String deploymentId;
 

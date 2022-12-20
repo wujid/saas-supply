@@ -176,6 +176,7 @@ public class ModelSaveRestResource implements ModelDataJsonConstants {
         processDefinitionRepository.updateByParams(processDefinitionPo, request);
         // 保存当前流程定义信息
         processDefinitionPo = new ProcessDefinitionPo();
+        processDefinitionPo.setCategoryId(actModelPo.getCategoryId());
         processDefinitionPo.setDeploymentId(deployment.getId());
         processDefinitionPo.setProcessDefinitionId(processDefinition.getId());
         processDefinitionPo.setProcessKey(actModelPo.getModelKey());

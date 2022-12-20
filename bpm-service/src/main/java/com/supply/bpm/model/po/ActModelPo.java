@@ -28,6 +28,9 @@ public class ActModelPo extends Model<ActModelPo> {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
+    @ApiModelProperty(value = "流程分类ID")
+    private Long categoryId;
+
     @ApiModelProperty(value = "流程模型ID")
     private String modelId;
 

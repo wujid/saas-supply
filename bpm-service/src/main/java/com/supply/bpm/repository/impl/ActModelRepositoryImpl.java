@@ -91,6 +91,7 @@ public class ActModelRepositoryImpl extends ServiceImpl<ActModelMapper, ActModel
     private LambdaQueryWrapper<ActModelPo> getQueryWrapper(ActModelRequest request) {
         LambdaQueryWrapper<ActModelPo> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(null != request.getId(), ActModelPo::getId, request.getId());
+        queryWrapper.eq(null != request.getCategoryId(), ActModelPo::getCategoryId, request.getCategoryId());
         queryWrapper.eq(StrUtil.isNotBlank(request.getModelId()), ActModelPo::getModelId, request.getModelId());
         queryWrapper.eq(StrUtil.isNotBlank(request.getModelKey()), ActModelPo::getModelKey, request.getModelKey());
         queryWrapper.eq(StrUtil.isNotBlank(request.getDescription()), ActModelPo::getDescription, request.getDescription());

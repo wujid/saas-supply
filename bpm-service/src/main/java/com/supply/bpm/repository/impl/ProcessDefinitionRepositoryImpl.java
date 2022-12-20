@@ -91,6 +91,7 @@ public class ProcessDefinitionRepositoryImpl extends ServiceImpl<ProcessDefiniti
     private LambdaQueryWrapper<ProcessDefinitionPo> getQueryWrapper(ProcessDefinitionRequest request) {
         LambdaQueryWrapper<ProcessDefinitionPo> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(null != request.getId(), ProcessDefinitionPo::getId, request.getId());
+        queryWrapper.eq(null != request.getCategoryId(), ProcessDefinitionPo::getCategoryId, request.getCategoryId());
         queryWrapper.eq(StrUtil.isNotBlank(request.getDeploymentId()), ProcessDefinitionPo::getDeploymentId, request.getDeploymentId());
         queryWrapper.eq(StrUtil.isNotBlank(request.getProcessDefinitionId()), ProcessDefinitionPo::getProcessDefinitionId, request.getProcessDefinitionId());
         queryWrapper.eq(StrUtil.isNotBlank(request.getProcessName()), ProcessDefinitionPo::getProcessName, request.getProcessName());

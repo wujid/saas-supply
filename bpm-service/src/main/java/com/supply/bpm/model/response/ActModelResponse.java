@@ -19,6 +19,8 @@ import java.io.Serializable;
 public class ActModelResponse extends BaseEntity implements Serializable {
     private static final long serialVersionUID = -8572992760696819247L;
 
+    @ApiModelProperty(value = "流程分类ID")
+    private Long categoryId;
 
     @ApiModelProperty(value = "流程模型ID")
     private String modelId;

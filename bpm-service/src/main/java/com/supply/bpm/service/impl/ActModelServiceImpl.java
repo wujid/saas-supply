@@ -58,7 +58,6 @@ public class ActModelServiceImpl implements IActModelService {
             final String uuid = IdUtil.fastUUID();
             request.setModelKey(uuid);
         }
-
         // 创建模型节点
         ObjectNode modelNode = objectMapper.createObjectNode();
         modelNode.put(ModelDataJsonConstants.MODEL_NAME, request.getModelName());

@@ -45,7 +45,7 @@ public class CategoryController {
     @ApiOperation(value = "修改流程分类")
     @PostMapping("/updateCategory")
     public Result<?> updateCategory(@RequestBody @Validated(UpdateGroup.class) CategoryRequest request) {
-        categoryService.addCategory(request);
+        categoryService.updateCategory(request);
         return Result.ok();
     }
 
