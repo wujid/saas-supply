@@ -8,6 +8,7 @@ import Layout from '@/layout'
 import system from '@/router/modules/system'
 import job from '@/router/modules/job'
 import message from '@/router/modules/message'
+import bpm from '@/router/modules/bpm'
 
 export const constantRoutes = [
   {
@@ -47,7 +48,8 @@ export const constantRoutes = [
       },
       ...system,
       ...job,
-      ...message
+      ...message,
+      ...bpm
     ]
   },
   { path: '*', redirect: '/404', hidden: true }
