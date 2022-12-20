@@ -10,7 +10,7 @@ import com.supply.bpm.model.po.ActModelPo;
 import com.supply.bpm.model.request.ActModelRequest;
 import com.supply.bpm.repository.IActModelRepository;
 import com.supply.bpm.service.IActModelService;
-import com.supply.common.exception.ApiException;
+import com.supply.common.constant.BusinessStatusEnum;
 import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Model;
@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -77,17 +76,13 @@ public class ActModelServiceImpl implements IActModelService {
         editorNode.replace("stencilset", stencilSetNode);
         properties.put("process_id", request.getModelKey());
         editorNode.replace("properties", properties);
-        try {
-            repositoryService.addModelEditorSource(modelId, editorNode.toString().getBytes(StandardCharsets.UTF_8.toString()));
-        } catch (UnsupportedEncodingException e) {
-            final String message = "新增模型失败";
-            throw new ApiException(message, e);
-        }
+        repositoryService.addModelEditorSource(modelId, editorNode.toString().getBytes(StandardCharsets.UTF_8));
 
         // 保存扩展模型至数据库
         final ActModelPo actModelPo = ActModelCvt.INSTANCE.requestToPo(request);
         actModelPo.setModelId(modelId);
         actModelPo.setVersion(model.getVersion());
+        actModelPo.setBusinessStatus(BusinessStatusEnum.UN_DEPLOY.getStatus());
         actModelRepository.save(actModelPo);
     }
 }

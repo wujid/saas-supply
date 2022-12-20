@@ -14,34 +14,46 @@ import java.util.Date;
 
 /**
  * @author wjd
- * @description 流程模型信息数据库映射实体.
- * @date 2022-12-19
+ * @description 流程定义信息数据库映射实体.
+ * @date 2022-12-20
  */
-@ApiModel(value="流程模型信息数据库映射实体")
+@ApiModel(value="流程定义信息数据库映射实体")
 @Data
 @EqualsAndHashCode(callSuper=false)
-@TableName("bpm_act_model")
-public class ActModelPo extends Model<ActModelPo> {
-    private static final long serialVersionUID = -8859249573471760262L;
+@TableName("bpm_process_definition")
+public class ProcessDefinitionPo extends Model<ProcessDefinitionPo> {
+    private static final long serialVersionUID = -8139233364558600613L;
 
     @ApiModelProperty(value = "主键ID")
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    @ApiModelProperty(value = "流程模型ID")
-    private String modelId;
+    @ApiModelProperty(value = "流程部署ID")
+    private String deploymentId;
 
-    @ApiModelProperty(value = "流程模型key")
-    private String modelKey;
+    @ApiModelProperty(value = "流程定义ID")
+    private String processDefinitionId;
 
-    @ApiModelProperty(value = "流程模型名称")
-    private String modelName;
+    @ApiModelProperty(value = "流程名称")
+    private String processName;
 
-    @ApiModelProperty(value = "流程备注")
+    @ApiModelProperty(value = "流程标识名称")
+    private String processKey;
+
+    @ApiModelProperty(value = "备注")
     private String description;
 
     @ApiModelProperty(value = "版本号")
     private Integer version;
+
+    @ApiModelProperty(value = "流程图片名称")
+    private String diagramName;
+
+    @ApiModelProperty(value = "xml文件名称")
+    private String xmlName;
+
+    @ApiModelProperty(value = "是否主流程")
+    private Boolean isMain;
 
     @ApiModelProperty(value = "业务状态")
     private Integer businessStatus;

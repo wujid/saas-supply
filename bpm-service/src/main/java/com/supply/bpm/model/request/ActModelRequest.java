@@ -35,6 +35,9 @@ public class ActModelRequest extends BaseRequestEntity<ActModelPo> implements Se
     @ApiModelProperty(value = "版本号")
     private Integer version;
 
+    @ApiModelProperty(value = "业务状态")
+    private Integer businessStatus;
+
     @ApiModelProperty(value = "租户ID")
     private Long tenantId;
 

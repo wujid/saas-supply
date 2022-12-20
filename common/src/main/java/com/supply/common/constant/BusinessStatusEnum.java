@@ -19,13 +19,23 @@ public enum BusinessStatusEnum {
 
     IN_EXPIRE(3, "过期", ModuleEnum.COMMON),
 
-    WAIT_RELATION(201, "待关联", ModuleEnum.FILE),
+    WAIT_RELATION(301, "待关联", ModuleEnum.FILE),
 
-    RELATION(202, "已关联", ModuleEnum.FILE),
+    RELATION(302, "已关联", ModuleEnum.FILE),
 
-    UN_READER(401, "未读", ModuleEnum.MESSAGE),
+    UN_READER(501, "未读", ModuleEnum.MESSAGE),
 
-    READER(402, "已读", ModuleEnum.MESSAGE);
+    READER(502, "已读", ModuleEnum.MESSAGE),
+
+    UN_DEPLOY(701, "未部署", ModuleEnum.BPM),
+
+    DEPLOYED(702, "已部署", ModuleEnum.BPM),
+
+    PROCESS_STATUS_ACTIVE(703, "流程激活", ModuleEnum.BPM),
+
+    PROCESS_STATUS_SUSPEND(704, "流程挂起", ModuleEnum.BPM);
+
+
 
 
     @Note(description = "业务状态")

@@ -96,6 +96,7 @@ public class ActModelRepositoryImpl extends ServiceImpl<ActModelMapper, ActModel
         queryWrapper.eq(StrUtil.isNotBlank(request.getDescription()), ActModelPo::getDescription, request.getDescription());
         queryWrapper.eq(null != request.getVersion(), ActModelPo::getVersion, request.getVersion());
         queryWrapper.eq(null != request.getStatus(), ActModelPo::getStatus, request.getStatus());
+        queryWrapper.eq(null != request.getBusinessStatus(), ActModelPo::getBusinessStatus, request.getBusinessStatus());
         queryWrapper.eq(null != request.getTenantId(), ActModelPo::getTenantId, request.getTenantId());
         queryWrapper.apply(null != request.getApplySql(), request.getApplySql());
         queryWrapper.orderBy(null != request.getOrderColumn(),  request.getIsAsc(), request.getOrderColumn());
