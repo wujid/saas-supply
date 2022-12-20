@@ -43,8 +43,8 @@ public class ActModelPo extends Model<ActModelPo> {
     @ApiModelProperty(value = "版本号")
     private Integer version;
 
-    @ApiModelProperty(value = "是否主流程")
-    private Boolean isMain;
+    @ApiModelProperty(value = "租户ID")
+    private Long tenantId;
 
     @ApiModelProperty(value = "创建人")
     private Long createUserId;

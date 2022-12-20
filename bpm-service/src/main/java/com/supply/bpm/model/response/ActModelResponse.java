@@ -35,8 +35,8 @@ public class ActModelResponse extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "版本号")
     private Integer version;
 
-    @ApiModelProperty(value = "是否主流程")
-    private Boolean isMain;
+    @ApiModelProperty(value = "租户ID")
+    private Long tenantId;
 
 
 }

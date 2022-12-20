@@ -3,6 +3,7 @@ package com.supply.bpm.controller;
 import com.supply.bpm.model.request.ActModelRequest;
 import com.supply.bpm.service.IActModelService;
 import com.supply.common.model.Result;
+import com.supply.common.web.util.ContextUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +30,8 @@ public class ActModelController {
     @ApiOperation(value = "新增流程模型")
     @PostMapping("/addModel")
     public Result<Object> addModel(@RequestBody ActModelRequest request) {
+        final Long tenantId = ContextUtil.getCurrentTenantId();
+        request.setTenantId(tenantId);
         actModelService.addModel(request);
         return Result.ok();
     }

@@ -1,5 +1,7 @@
 package com.supply.bpm.service.impl;
 
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -49,6 +51,15 @@ public class ActModelServiceImpl implements IActModelService {
         logger.info("[新增流程模型]---其中待新增的流程模型信息为{}", JSON.toJSONString(request));
         // 初始化一个空模型
         Model model = repositoryService.newModel();
+        // 未传值赋默认值
+        if (StrUtil.isBlank(request.getModelName())) {
+            request.setModelName("默认流程");
+        }
+        if (StrUtil.isBlank(request.getModelKey())) {
+            final String uuid = IdUtil.fastUUID();
+            request.setModelKey(uuid);
+        }
+
         // 创建模型节点
         ObjectNode modelNode = objectMapper.createObjectNode();
         modelNode.put(ModelDataJsonConstants.MODEL_NAME, request.getModelName());
@@ -77,7 +88,6 @@ public class ActModelServiceImpl implements IActModelService {
         final ActModelPo actModelPo = ActModelCvt.INSTANCE.requestToPo(request);
         actModelPo.setModelId(modelId);
         actModelPo.setVersion(model.getVersion());
-        actModelPo.setIsMain(true);
         actModelRepository.save(actModelPo);
     }
 }
