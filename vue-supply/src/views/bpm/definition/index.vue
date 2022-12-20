@@ -33,11 +33,31 @@
         </span>
       </el-tree>
     </div>
+    <el-dialog class="formDialog" :title="categoryForm.formTitle" :visible.sync="categoryForm.formVisible" width="600px">
+      <el-form ref="categoryForm" :model="categoryForm.form" :rules="categoryForm.formRules" label-width="120px">
+        <el-form-item v-if="categoryForm.form.parentName" label="上级名称">
+          <el-input v-model="categoryForm.form.parentName" disabled />
+        </el-form-item>
+        <el-form-item label="编码" prop="code">
+          <el-input v-model="categoryForm.form.code" placeholder="请输入编码" :disabled="categoryForm.form.id !== null" />
+        </el-form-item>
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="categoryForm.form.name" placeholder="请输入名称" />
+        </el-form-item>
+        <el-form-item label="排序">
+          <el-input v-model="categoryForm.form.sort" placeholder="请输入排序" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" :loading="categoryForm.formLoading" @click="saveCategory">提交</el-button>
+        <el-button @click="categoryForm.formVisible = false">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getCategoryTreeByParams } from '@/api/bpm'
+import { addCategory, getCategoryTreeByParams, updateCategory } from '@/api/bpm'
 
 export default {
   name: 'bpm-definition',
@@ -92,10 +112,46 @@ export default {
     async getDefinitionInfo(data) {
     },
     addCategory(data) {
+      this.categoryForm.formTitle = '新建流程分类'
+      this.categoryForm.formVisible = true
+      this.$nextTick(() => {
+        this.$refs.categoryForm.resetFields()
+        if (data) {
+          this.categoryForm.form.parentName = data.name
+          this.categoryForm.form.parentId = data.id
+        } else {
+          this.categoryForm.form.parentName = null
+          this.categoryForm.isDisabled = true
+        }
+        this.categoryForm.form.id = null
+        this.categoryForm.form.sort = null
+      })
     },
     editCategory(data) {
     },
     delCategory(id) {
+    },
+    // 保存流程分类
+    saveCategory() {
+      this.$refs.categoryForm.validate(async(valid) => {
+        if (valid) {
+          this.categoryForm.formLoading = true
+          try {
+            if (this.categoryForm.form.id === null) {
+              await addCategory(this.categoryForm.form)
+            } else {
+              await updateCategory(this.categoryForm.form)
+            }
+            await this.getCategoryData()
+            this.$message.success('提交成功！')
+            this.categoryForm.formVisible = false
+          } catch (e) {
+            this.$message.success('提交失败！')
+          } finally {
+            this.categoryForm.formLoading = false
+          }
+        }
+      })
     }
   }
 }
