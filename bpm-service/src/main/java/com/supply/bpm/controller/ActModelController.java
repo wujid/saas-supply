@@ -1,6 +1,7 @@
 package com.supply.bpm.controller;
 
 import com.supply.bpm.model.request.ActModelRequest;
+import com.supply.bpm.model.response.ActModelResponse;
 import com.supply.bpm.service.IActModelService;
 import com.supply.common.model.Result;
 import com.supply.common.web.util.ContextUtil;
@@ -32,7 +33,7 @@ public class ActModelController {
     public Result<Object> addModel(@RequestBody ActModelRequest request) {
         final Long tenantId = ContextUtil.getCurrentTenantId();
         request.setTenantId(tenantId);
-        actModelService.addModel(request);
-        return Result.ok();
+        final ActModelResponse data = actModelService.addModel(request);
+        return Result.ok(data);
     }
 }

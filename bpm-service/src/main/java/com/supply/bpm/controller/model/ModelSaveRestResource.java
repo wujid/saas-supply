@@ -62,7 +62,6 @@ import java.nio.charset.StandardCharsets;
  */
 @Slf4j
 @RestController
-@Transactional
 @RequestMapping("/bpm/act")
 public class ModelSaveRestResource implements ModelDataJsonConstants {
 
@@ -80,6 +79,7 @@ public class ModelSaveRestResource implements ModelDataJsonConstants {
 
     @RequestMapping(value = "/model/{modelId}/save", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.OK)
+    @Transactional(rollbackFor = Exception.class)
     public void saveModel(@PathVariable String modelId,
                           @RequestParam String name, @RequestParam String description,
                           @RequestParam String json_xml, @RequestParam String svg_xml) {
@@ -143,7 +143,7 @@ public class ModelSaveRestResource implements ModelDataJsonConstants {
         actModel.setVersion(version);
         actModelPo.setBusinessStatus(BusinessStatusEnum.DEPLOYED.getStatus());
         actModelRepository.updateById(actModelPo);
-        return actModel;
+        return actModelRepository.getById(actModelPo.getId());
     }
 
     private void deployModel(String modelId, ActModelPo actModelPo) throws IOException {
@@ -182,11 +182,11 @@ public class ModelSaveRestResource implements ModelDataJsonConstants {
         processDefinitionPo.setProcessKey(actModelPo.getModelKey());
         processDefinitionPo.setProcessName(actModelPo.getModelName());
         processDefinitionPo.setDescription(actModelPo.getDescription());
-        processDefinitionPo.setVersion(processDefinitionPo.getVersion());
-        processDefinitionPo.setDiagramName(processDefinitionPo.getDiagramName());
-        processDefinitionPo.setXmlName(processDefinitionPo.getXmlName());
+        processDefinitionPo.setVersion(processDefinition.getVersion());
+        processDefinitionPo.setDiagramName(processDefinition.getDiagramResourceName());
+        processDefinitionPo.setXmlName(processDefinition.getResourceName());
         processDefinitionPo.setIsMain(true);
-        processDefinitionPo.setBusinessStatus(BusinessStatusEnum.IN_ACTIVE.getStatus());
+        processDefinitionPo.setBusinessStatus(BusinessStatusEnum.PROCESS_STATUS_ACTIVE.getStatus());
         processDefinitionPo.setTenantId(actModelPo.getTenantId());
         processDefinitionRepository.save(processDefinitionPo);
     }

@@ -25,7 +25,7 @@ import java.util.List;
  */
 @Api(tags="流程分类信息权限控制层")
 @RestController
-@RequestMapping("/actModel")
+@RequestMapping("/category")
 public class CategoryController {
 
     private final ICategoryService categoryService;

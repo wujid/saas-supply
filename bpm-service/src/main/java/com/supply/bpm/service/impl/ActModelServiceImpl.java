@@ -1,6 +1,7 @@
 package com.supply.bpm.service.impl;
 
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,6 +9,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.supply.bpm.cvt.ActModelCvt;
 import com.supply.bpm.model.po.ActModelPo;
 import com.supply.bpm.model.request.ActModelRequest;
+import com.supply.bpm.model.response.ActModelResponse;
 import com.supply.bpm.repository.IActModelRepository;
 import com.supply.bpm.service.IActModelService;
 import com.supply.common.constant.BusinessStatusEnum;
@@ -46,7 +48,7 @@ public class ActModelServiceImpl implements IActModelService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void addModel(ActModelRequest request) {
+    public ActModelResponse addModel(ActModelRequest request) {
         logger.info("[新增流程模型]---其中待新增的流程模型信息为{}", JSON.toJSONString(request));
         // 初始化一个空模型
         Model model = repositoryService.newModel();
@@ -55,14 +57,19 @@ public class ActModelServiceImpl implements IActModelService {
             request.setModelName("默认流程");
         }
         if (StrUtil.isBlank(request.getModelKey())) {
-            final String uuid = IdUtil.fastUUID();
+            String uuid = IdUtil.fastUUID();
+            uuid = RandomUtil.randomString(RandomUtil.BASE_CHAR, 1) + uuid;
             request.setModelKey(uuid);
         }
-        // 创建模型节点
         ObjectNode modelNode = objectMapper.createObjectNode();
         modelNode.put(ModelDataJsonConstants.MODEL_NAME, request.getModelName());
         modelNode.put(ModelDataJsonConstants.MODEL_DESCRIPTION, request.getDescription());
         modelNode.put(ModelDataJsonConstants.MODEL_REVISION, model.getVersion());
+
+        model.setName(request.getModelName());
+        model.setKey(request.getModelKey());
+        model.setMetaInfo(modelNode.toString());
+
         // 保存模型
         repositoryService.saveModel(model);
         String modelId = model.getId();
@@ -83,5 +90,6 @@ public class ActModelServiceImpl implements IActModelService {
         actModelPo.setVersion(model.getVersion());
         actModelPo.setBusinessStatus(BusinessStatusEnum.UN_DEPLOY.getStatus());
         actModelRepository.save(actModelPo);
+        return ActModelCvt.INSTANCE.poToResponse(actModelPo);
     }
 }

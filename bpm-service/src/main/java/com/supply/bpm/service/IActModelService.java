@@ -1,6 +1,7 @@
 package com.supply.bpm.service;
 
 import com.supply.bpm.model.request.ActModelRequest;
+import com.supply.bpm.model.response.ActModelResponse;
 
 /**
  * @author wjd
@@ -15,5 +16,5 @@ public interface IActModelService {
       * @date 2022/12/19
       * @param request 待保存的流程实体
       */
-    void addModel(ActModelRequest request);
+    ActModelResponse addModel(ActModelRequest request);
 }
