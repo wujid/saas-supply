@@ -24,7 +24,7 @@ import java.util.List;
  * @date 2023-01-04
  */
 @Repository
-public class NodeRepositoryImpl  extends ServiceImpl<NodeMapper, NodePo> implements INodeRepository {
+public class NodeRepositoryImpl extends ServiceImpl<NodeMapper, NodePo> implements INodeRepository {
 
     private final NodeMapper nodeMapper;
 
