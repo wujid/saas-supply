@@ -21,9 +21,9 @@ public enum ButtonTypeEnum {
 
 
     @Note(description = "按钮类型")
-    private int type;
+    private final int type;
 
     @Note(description = "按钮名称")
-    private String name;
+    private final String name;
 
 }

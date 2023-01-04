@@ -21,9 +21,9 @@ public enum NodeTypeEnum {
 
 
     @Note(description = "节点类型")
-    private int type;
+    private final int type;
 
     @Note(description = "节点名称")
-    private String name;
+    private final String name;
 
 }
