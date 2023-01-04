@@ -17,7 +17,7 @@ public enum NodeTypeEnum {
 
     DEPT(2, "部门"),
 
-    USER(2, "用户");
+    USER(3, "用户");
 
 
     @Note(description = "节点类型")

@@ -17,7 +17,7 @@ public enum ButtonTypeEnum {
 
     REJECT(2, "反对"),
 
-    BACK(3, "驳回到发起人");
+    OPPOSE_TO_START_USER(3, "驳回到发起人");
 
 
     @Note(description = "按钮类型")
