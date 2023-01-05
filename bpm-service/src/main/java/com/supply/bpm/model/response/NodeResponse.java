@@ -25,8 +25,8 @@ public class NodeResponse extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "节点ID")
     private String nodeId;
 
-    @ApiModelProperty(value = "关联ID")
-    private Long relationId;
+    @ApiModelProperty(value = "节点名称")
+    private String nodeName;
 
     @ApiModelProperty(value = "租户ID")
     private Long tenantId;
