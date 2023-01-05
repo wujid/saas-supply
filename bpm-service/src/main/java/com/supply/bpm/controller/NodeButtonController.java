@@ -1,6 +1,7 @@
 package com.supply.bpm.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.supply.bpm.model.po.NodeButtonPo;
 import com.supply.bpm.model.request.NodeButtonRequest;
 import com.supply.bpm.model.response.NodeButtonResponse;
 import com.supply.bpm.service.INodeButtonService;
@@ -59,6 +60,8 @@ public class NodeButtonController {
     @ApiOperation(value = "获取流程节点按钮信息集")
     @GetMapping("/getNodeButtonListByParams")
     public Result<List<NodeButtonResponse>> getNodeUserListByParams(NodeButtonRequest request) {
+        request.setOrderColumn(NodeButtonPo::getSort);
+        request.setIsAsc(true);
         final List<NodeButtonResponse> data = nodeButtonService.getNodeButtonListByParams(request);
         return Result.ok(data);
     }
