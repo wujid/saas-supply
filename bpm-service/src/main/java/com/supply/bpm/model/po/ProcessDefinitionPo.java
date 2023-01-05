@@ -58,6 +58,12 @@ public class ProcessDefinitionPo extends Model<ProcessDefinitionPo> {
     @ApiModelProperty(value = "是否主流程")
     private Boolean isMain;
 
+    @ApiModelProperty(value = "流程标题")
+    private String title;
+
+    @ApiModelProperty(value = "表单URL")
+    private String formUrl;
+
     @ApiModelProperty(value = "业务状态")
     private Integer businessStatus;
 
