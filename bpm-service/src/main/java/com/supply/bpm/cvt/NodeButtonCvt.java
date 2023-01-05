@@ -28,6 +28,15 @@ public interface NodeButtonCvt {
     NodeButtonPo requestToPo(NodeButtonRequest request);
 
     /**
+     * @description 批量将request实体转换成po实体.
+     * @author wjd
+     * @date 2022/10/9
+     * @param list 待转换的request实体集
+     * @return 转换后的po实体集
+     */
+    List<NodeButtonPo> requestToPoBatch(List<NodeButtonRequest> list);
+
+    /**
      * @description 将po实体转换成response实体.
      * @author wjd
      * @date 2022/10/9
