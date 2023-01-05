@@ -14,28 +14,28 @@ import java.util.Date;
 
 /**
  * @author wjd
- * @description 流程节点信息数据库映射实体.
+ * @description 流程节点审批人员信息数据库映射实体.
  * @date 2023-01-04
  */
-@ApiModel(value="流程节点信息数据库映射实体")
+@ApiModel(value="流程节点审批人员信息数据库映射实体")
 @Data
 @EqualsAndHashCode(callSuper=false)
-@TableName("bpm_node")
-public class NodePo extends Model<NodePo> {
-    private static final long serialVersionUID = 3092225331029344502L;
+@TableName("bpm_node_user")
+public class NodeUserPo extends Model<NodeUserPo> {
+    private static final long serialVersionUID = 1278666864936003196L;
 
     @ApiModelProperty(value = "主键ID")
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    @ApiModelProperty(value = "流程定义ID")
-    private String definitionId;
-
     @ApiModelProperty(value = "节点ID")
     private String nodeId;
 
-    @ApiModelProperty(value = "节点名称")
-    private String nodeName;
+    @ApiModelProperty(value = "节点人员类型")
+    private Integer nodeUserType;
+
+    @ApiModelProperty(value = "关联ID")
+    private Long relationId;
 
     @ApiModelProperty(value = "租户ID")
     private Long tenantId;

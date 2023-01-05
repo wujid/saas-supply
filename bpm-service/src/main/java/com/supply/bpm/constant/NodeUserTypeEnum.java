@@ -6,12 +6,12 @@ import lombok.Getter;
 
 /**
  * @author wjd
- * @description 流程节点类型枚举值.
+ * @description 流程节点审批人类型枚举值.
  * @date 2022-07-28
  */
 @Getter
 @AllArgsConstructor
-public enum NodeTypeEnum {
+public enum NodeUserTypeEnum {
 
     ROLE(1, "角色"),
 

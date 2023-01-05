@@ -94,8 +94,6 @@ public class NodeRepositoryImpl extends ServiceImpl<NodeMapper, NodePo> implemen
         queryWrapper.eq(StrUtil.isNotBlank(request.getDefinitionId()), NodePo::getDefinitionId, request.getDefinitionId());
         queryWrapper.eq(StrUtil.isNotBlank(request.getNodeId()), NodePo::getNodeId, request.getNodeId());
         queryWrapper.eq(StrUtil.isNotBlank(request.getNodeName()), NodePo::getNodeName, request.getNodeName());
-        queryWrapper.eq(null != request.getNodeType(), NodePo::getNodeType, request.getNodeType());
-        queryWrapper.eq(null != request.getRelationId(), NodePo::getRelationId, request.getRelationId());
         queryWrapper.eq(null != request.getTenantId(), NodePo::getTenantId, request.getTenantId());
         queryWrapper.eq(null != request.getStatus(), NodePo::getStatus, request.getStatus());
         queryWrapper.apply(null != request.getApplySql(), request.getApplySql());

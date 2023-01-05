@@ -10,13 +10,13 @@ import java.io.Serializable;
 
 /**
  * @author wjd
- * @description 流程节点信息响应实体.
+ * @description 流程节点审批人员信息响应实体.
  * @date 2023-01-04
  */
-@ApiModel(value="流程节点信息响应实体")
+@ApiModel(value="流程节点审批人员信息响应实体")
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class NodeResponse extends BaseEntity implements Serializable {
+public class NodeUserResponse extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 2865616781541573939L;
 
     @ApiModelProperty(value = "流程定义ID")
@@ -24,6 +24,12 @@ public class NodeResponse extends BaseEntity implements Serializable {
 
     @ApiModelProperty(value = "节点ID")
     private String nodeId;
+
+    @ApiModelProperty(value = "节点名称")
+    private String nodeName;
+
+    @ApiModelProperty(value = "节点人员类型")
+    private Integer nodeUserType;
 
     @ApiModelProperty(value = "关联ID")
     private Long relationId;
