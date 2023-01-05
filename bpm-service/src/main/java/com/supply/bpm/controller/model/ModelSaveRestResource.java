@@ -18,10 +18,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.supply.bpm.model.po.ActModelPo;
+import com.supply.bpm.model.po.NodePo;
 import com.supply.bpm.model.po.ProcessDefinitionPo;
 import com.supply.bpm.model.request.ActModelRequest;
 import com.supply.bpm.model.request.ProcessDefinitionRequest;
 import com.supply.bpm.repository.IActModelRepository;
+import com.supply.bpm.repository.INodeRepository;
 import com.supply.bpm.repository.IProcessDefinitionRepository;
 import com.supply.common.constant.BusinessStatusEnum;
 import com.supply.common.constant.Constant;
@@ -29,6 +31,9 @@ import com.supply.common.exception.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.UserTask;
 import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.ActivitiException;
@@ -54,6 +59,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author wjd
@@ -76,6 +84,9 @@ public class ModelSaveRestResource implements ModelDataJsonConstants {
 
     @Autowired
     private IProcessDefinitionRepository processDefinitionRepository;
+
+    @Autowired
+    private INodeRepository nodeRepository;
 
     @RequestMapping(value = "/model/{modelId}/save", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.OK)
@@ -151,7 +162,8 @@ public class ModelSaveRestResource implements ModelDataJsonConstants {
         byte[] bytes = repositoryService.getModelEditorSource(modelId);
         JsonNode modelNode = new ObjectMapper().readTree(bytes);
         BpmnModel bpmnModel = new BpmnJsonConverter().convertToBpmnModel(modelNode);
-        if (CollectionUtil.isEmpty(bpmnModel.getProcesses())) {
+        final List<Process> processes = bpmnModel.getProcesses();
+        if (CollectionUtil.isEmpty(processes)) {
             final String message = StrUtil.format("模型ID{}转换成BPMN模型异常", modelId);
             log.error(message);
             throw new ApiException(message);
@@ -189,5 +201,33 @@ public class ModelSaveRestResource implements ModelDataJsonConstants {
         processDefinitionPo.setBusinessStatus(BusinessStatusEnum.PROCESS_STATUS_ACTIVE.getStatus());
         processDefinitionPo.setTenantId(actModelPo.getTenantId());
         processDefinitionRepository.save(processDefinitionPo);
+        // 保存流程节点用户任务信息
+        this.saveNode(processes, processDefinition.getId(), actModelPo.getTenantId());
+    }
+
+    /**
+      * @description 获取流程节点中用户任务节点信息并保存.
+      * @author wjd
+      * @date 2023/1/5
+      * @param processes 流程信息
+      * @param definitionId 流程定义ID
+      * @param tenantId 租户ID
+      */
+    private void saveNode(List<Process> processes, String definitionId, Long tenantId) {
+        List<NodePo> nodePoList = new ArrayList<>();
+        for(Process process : processes) {
+            Collection<FlowElement> elements = process.getFlowElements();
+            for(FlowElement element : elements) {
+                if(element instanceof UserTask) {
+                    NodePo nodePo = new NodePo();
+                    nodePo.setDefinitionId(definitionId);
+                    nodePo.setNodeId(element.getId());
+                    nodePo.setNodeName(element.getName());
+                    nodePo.setTenantId(tenantId);
+                    nodePoList.add(nodePo);
+                }
+            }
+        }
+        nodeRepository.saveBatch(nodePoList);
     }
 }

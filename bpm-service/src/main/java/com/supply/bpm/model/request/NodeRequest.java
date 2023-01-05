@@ -31,4 +31,7 @@ public class NodeRequest extends BaseRequestEntity<NodePo> implements Serializab
 
     @ApiModelProperty(value = "租户ID")
     private Long tenantId;
+
+    @ApiModelProperty(value = "节点名称模糊查询匹配")
+    private String likeNodeName;
 }
