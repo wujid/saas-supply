@@ -3,7 +3,9 @@ package com.supply.system.cvt;
 import com.supply.system.model.po.UserPo;
 import com.supply.system.model.request.UserRequest;
 import com.supply.system.model.response.UserResponse;
+import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
@@ -34,6 +36,7 @@ public interface UserCvt {
      * @param po 待转换的po实体
      * @return 转换后的response实体
      */
+    @Named("poToResponse")
     UserResponse poToResponse(UserPo po);
 
     /**
@@ -43,5 +46,6 @@ public interface UserCvt {
      * @param list 待转换的po实体集
      * @return 转换后的response实体集
      */
+    @IterableMapping(qualifiedByName = "poToResponse")
     List<UserResponse> poToResponseBatch(List<UserPo> list);
 }
