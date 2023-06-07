@@ -10,7 +10,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @EnableDiscoveryClient
 @SpringBootApplication(scanBasePackages = "com.supply.**",
-        exclude = {SecurityAutoConfiguration.class, ManagementWebSecurityAutoConfiguration.class})
+        exclude = {SecurityAutoConfiguration.class, ManagementWebSecurityAutoConfiguration.class, org.activiti.spring.boot.SecurityAutoConfiguration.class})
 @MapperScan(value = {"com.supply.bpm.mapper"})
 @EnableFeignClients("com.supply.**.api")
 public class BpmServiceApplication {
