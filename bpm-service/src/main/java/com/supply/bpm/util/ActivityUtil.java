@@ -1,7 +1,11 @@
 package com.supply.bpm.util;
 
+import cn.hutool.core.util.XmlUtil;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.UserTask;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,5 +35,22 @@ public class ActivityUtil {
             }
         }
         return userTaskList;
+    }
+
+    /**
+      * @description 通过bpmnXml获取流程名称.
+      * @author wjd
+      * @date 2023/6/7
+      * @param
+      * @return java.lang.String
+      */
+    public static String getBpmnNameByXml(String bpmnXml) {
+        Document document = XmlUtil.parseXml(bpmnXml);
+        final NodeList elementsByTagName = document.getElementsByTagName("bpmn2:process");
+        final Node node = elementsByTagName.item(0).getAttributes().getNamedItem("name");
+        if (null == node) {
+            return null;
+        }
+        return node.getNodeValue();
     }
 }

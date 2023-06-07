@@ -58,8 +58,9 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
     public void addDeployment(ProcessDefinitionRequest request) {
         logger.info("[新增流程部署xml]---待新增的实体信息为{}", JSON.toJSONString(request));
 
+        final String bpmnName = ActivityUtil.getBpmnNameByXml(request.getBpmnXml());
         // 保存流程部署xml信息
-        final String resourceName = StrUtil.concat(true, request.getProcessName(), ".bpmn");
+        final String resourceName = StrUtil.concat(true, bpmnName, ".bpmn");
         final Deployment deployment = repositoryService.createDeployment()
                 .addString(resourceName, request.getBpmnXml()).deploy();
         // 根据流程部署ID查询出流程定义信息
@@ -111,10 +112,10 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
             userNode.setDefinitionId(definitionId);
             userNode.setNodeId(userTask.getId());
             userNode.setNodeName(userTask.getName());
-            if (StrUtil.isNotBlank(userTask.getOwner())) {
+            if (StrUtil.isNotBlank(userTask.getAssignee())) {
                 userNode.setNodeType(UserNodeTypeEnum.OWNER.getType());
             }
-            if (StrUtil.isNotBlank(userTask.getAssignee())) {
+            if (CollectionUtil.isNotEmpty(userTask.getCandidateUsers())) {
                 userNode.setNodeType(UserNodeTypeEnum.CANDIDATE_USERS.getType());
             }
             if (CollectionUtil.isNotEmpty(userTask.getCandidateGroups())) {

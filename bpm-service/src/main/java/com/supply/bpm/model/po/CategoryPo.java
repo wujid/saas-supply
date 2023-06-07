@@ -40,6 +40,9 @@ public class CategoryPo extends Model<CategoryPo> {
     @ApiModelProperty(value = "序号")
     private Integer sort;
 
+    @ApiModelProperty(value = "租户ID")
+    private Long tenantId;
+
     @ApiModelProperty(value = "创建人")
     private Long createUserId;
 
