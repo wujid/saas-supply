@@ -80,6 +80,12 @@ public class ProcessDefinitionRepositoryImpl extends ServiceImpl<ProcessDefiniti
         return processDefinitionMapper.selectPage(page, queryWrapper);
     }
 
+    @Override
+    public Long getCountByParams(ProcessDefinitionRequest request) {
+        final LambdaQueryWrapper<ProcessDefinitionPo> queryWrapper = this.getQueryWrapper(request);
+        return processDefinitionMapper.selectCount(queryWrapper);
+    }
+
 
     /**
      * @author wjd

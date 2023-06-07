@@ -21,6 +21,31 @@ public interface IProcessDefinitionService {
 
 
     /**
+      * @description 流程挂起.
+      * @author wjd
+      * @date 2023/6/7
+      * @param defId 流程定义拓展表主键ID
+      */
+    void suspendProcess(Long defId);
+
+    /**
+     * @description 流程激活.
+     * @author wjd
+     * @date 2023/6/7
+     * @param defId 流程定义拓展表主键ID
+     */
+    void activeProcess(Long defId);
+
+    /**
+      * @description 流程删除.
+      * @author wjd
+      * @date 2023/6/7
+      * @param defId 流程定义拓展表主键ID
+      * @return void
+      */
+    void delProcess(Long defId);
+
+    /**
      * @description 根据自定义条件查询带流程定义信息集.
      * @author wjd
      * @date 2023/6/7

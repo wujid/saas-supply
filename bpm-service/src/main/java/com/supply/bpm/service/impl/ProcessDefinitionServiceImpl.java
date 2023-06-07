@@ -19,12 +19,16 @@ import com.supply.bpm.repository.IUserNodeRepository;
 import com.supply.bpm.service.IProcessDefinitionService;
 import com.supply.bpm.util.ActivityUtil;
 import com.supply.common.constant.BusinessStatusEnum;
+import com.supply.common.constant.Constant;
+import com.supply.common.exception.ApiException;
 import com.supply.common.util.CommonUtil;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.UserTask;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.slf4j.Logger;
@@ -47,13 +51,20 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
 
     private final RepositoryService repositoryService;
 
+    private final RuntimeService runtimeService;
+
+    private final HistoryService historyService;
+
     private final IProcessDefinitionRepository processDefinitionRepository;
 
     private final IUserNodeRepository userNodeRepository;
 
-    public ProcessDefinitionServiceImpl(RepositoryService repositoryService, IProcessDefinitionRepository processDefinitionRepository,
+    public ProcessDefinitionServiceImpl(RepositoryService repositoryService, RuntimeService runtimeService,
+                                        HistoryService historyService, IProcessDefinitionRepository processDefinitionRepository,
                                         IUserNodeRepository userNodeRepository) {
         this.repositoryService = repositoryService;
+        this.runtimeService = runtimeService;
+        this.historyService = historyService;
         this.processDefinitionRepository = processDefinitionRepository;
         this.userNodeRepository = userNodeRepository;
     }
@@ -86,13 +97,104 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
         long groupId = snowflake.nextId();
         processDefinitionPo.setGroupId(groupId);
         processDefinitionPo.setVersion(BpmConstant.DEFAULT_VERSION);
-        processDefinitionPo.setIsGroupUse(true);
+        // 判断是否存在默认流程,不存在则设置为默认流程
+        processDefinitionPo.setIsGroupUse(this.isInDefaultProcess(request.getCategoryId()));
         processDefinitionPo.setBusinessStatus(BusinessStatusEnum.PROCESS_STATUS_ACTIVE.getStatus());
         processDefinitionPo.setTenantId(request.getTenantId());
         processDefinitionRepository.save(processDefinitionPo);
 
         // 获取用户任务节点信息并保存
         this.userNodeInfo(processDefinition.getId(), request.getTenantId());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void suspendProcess(Long defId) {
+        logger.info("[流程挂起]---待挂起的流程ID为{}", defId);
+        // 当流程定义被挂起时,已经发起的该流程定义的流程实例不受影响
+        // 当流程定义被挂起时,无法发起新的该流程定义的流程实例
+        final ProcessDefinitionPo processDefinitionPo = processDefinitionRepository.getById(defId);
+        if (null == processDefinitionPo) {
+            logger.error("流程定义ID{}不存在", defId);
+            throw new ApiException("操作失败");
+        }
+        if (processDefinitionPo.getStatus() == BusinessStatusEnum.PROCESS_STATUS_SUSPEND.getStatus()) {
+            throw new ApiException("该流程已被挂起,请勿重复操作!");
+        }
+        // 修改状态为挂起状态
+        ProcessDefinitionPo processDefinition = new ProcessDefinitionPo();
+        processDefinition.setId(defId);
+        processDefinition.setBusinessStatus(BusinessStatusEnum.PROCESS_STATUS_SUSPEND.getStatus());
+        processDefinitionRepository.updateById(processDefinition);
+
+        // 将流程表act_re_procdef的SUSPENSION_STATE_值改为2
+        repositoryService.suspendProcessDefinitionById(processDefinitionPo.getDefinitionId());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void activeProcess(Long defId) {
+        logger.info("[流程激活]---待激活的流程ID为{}", defId);
+        final ProcessDefinitionPo processDefinitionPo = processDefinitionRepository.getById(defId);
+        if (null == processDefinitionPo) {
+            logger.error("流程定义ID{}不存在", defId);
+            throw new ApiException("操作失败");
+        }
+        if (processDefinitionPo.getStatus() == BusinessStatusEnum.PROCESS_STATUS_ACTIVE.getStatus()) {
+            throw new ApiException("该流程已被激活,请勿重复操作!");
+        }
+        // 修改状态为激活状态
+        ProcessDefinitionPo processDefinition = new ProcessDefinitionPo();
+        processDefinition.setId(defId);
+        processDefinition.setBusinessStatus(BusinessStatusEnum.PROCESS_STATUS_ACTIVE.getStatus());
+        processDefinitionRepository.updateById(processDefinition);
+
+        // 修改流程定义表状态
+        repositoryService.activateProcessDefinitionById(processDefinitionPo.getDefinitionId());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void delProcess(Long defId) {
+        logger.info("[流程删除]---待删除的流程ID为{}", defId);
+        // 删除条件: 当前流程有且仅有一个版本且该流程未被使用
+        // 查询当前流程是否存在多版本
+        final ProcessDefinitionPo processDefinitionPo = processDefinitionRepository.getById(defId);
+        ProcessDefinitionRequest request = new ProcessDefinitionRequest();
+        request.setDefinitionId(processDefinitionPo.getDefinitionId());
+        request.setGroupId(processDefinitionPo.getGroupId());
+        request.setStatus(Constant.STATUS_NOT_DEL);
+        final Long count = processDefinitionRepository.getCountByParams(request);
+        if (count > 1) {
+            throw new ApiException("该流程存在多版本,不允许删除!");
+        }
+        // 查询该流程是否存在
+        final long processInstanceCount = historyService.createHistoricProcessInstanceQuery().processDefinitionId(processDefinitionPo.getDefinitionId()).count();
+        if (processInstanceCount > 0) {
+            throw new ApiException("该流程已存在流程实例,不允许删除!");
+        }
+
+        // 删除
+        ProcessDefinitionPo processDefinition = new ProcessDefinitionPo();
+        processDefinition.setId(defId);
+        processDefinition.setStatus(Constant.STATUS_DEL);
+        processDefinitionRepository.updateById(processDefinition);
+    }
+
+    /**
+      * @description 根据分类ID查询是否存在默认流程.
+      * @author wjd
+      * @date 2023/6/7
+      * @param categoryId 流程分类ID
+      * @return 是否存在默认流程
+      */
+    private boolean isInDefaultProcess(Long categoryId) {
+        ProcessDefinitionRequest request = new ProcessDefinitionRequest();
+        request.setCategoryId(categoryId);
+        request.setStatus(Constant.STATUS_NOT_DEL);
+        request.setIsDefault(true);
+        final Long count = processDefinitionRepository.getCountByParams(request);
+        return count == 0;
     }
 
     /**

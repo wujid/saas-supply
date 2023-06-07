@@ -52,4 +52,12 @@ public interface IProcessDefinitionRepository extends IService<ProcessDefinition
      */
     Page<ProcessDefinitionPo> getPageByParams(Page<ProcessDefinitionPo> page, ProcessDefinitionRequest request);
 
+    /**
+      * @description 根据自定义条件查询条数信息.
+      * @author wjd
+      * @date 2023/6/7
+      * @param request 查询条件
+      * @return 条数信息
+      */
+    Long getCountByParams(ProcessDefinitionRequest request);
 }
