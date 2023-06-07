@@ -23,6 +23,9 @@ public class ProcessDefinitionRequest extends BaseRequestEntity<ProcessDefinitio
     @ApiModelProperty(value = "流程分类ID")
     private Long categoryId;
 
+    @ApiModelProperty(value = "流程标题")
+    private String title;
+
     @ApiModelProperty(value = "流程部署ID")
     private String deploymentId;
 

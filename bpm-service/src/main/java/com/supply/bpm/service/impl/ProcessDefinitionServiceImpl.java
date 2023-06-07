@@ -52,6 +52,7 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
         // 一个分类中有多个流程实例但仅有一个默认流程(由isDefault控制); 一个流程允许多次修改存在多个版本但仅有一个为使用生效状态(由isGroupUse控制)
         ProcessDefinitionPo processDefinitionPo = new ProcessDefinitionPo();
         processDefinitionPo.setCategoryId(request.getCategoryId());
+        processDefinitionPo.setTitle(BpmConstant.DEFAULT_TITLE_RULE);
         processDefinitionPo.setDeploymentId(deployment.getId());
         processDefinitionPo.setProcessDefinitionId(processDefinition.getId());
         processDefinitionPo.setProcessKey(processDefinition.getKey());

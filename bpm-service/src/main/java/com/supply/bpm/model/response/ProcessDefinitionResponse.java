@@ -19,6 +19,9 @@ import java.io.Serializable;
 public class ProcessDefinitionResponse extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 3433487736340634311L;
 
+    @ApiModelProperty(value = "流程标题")
+    private String title;
+
     @ApiModelProperty(value = "流程分类ID")
     private Long categoryId;
 
