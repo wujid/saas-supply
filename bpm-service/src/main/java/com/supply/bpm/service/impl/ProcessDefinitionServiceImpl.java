@@ -5,15 +5,21 @@ import cn.hutool.core.lang.Snowflake;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.supply.bpm.constant.BpmConstant;
 import com.supply.bpm.constant.UserNodeTypeEnum;
+import com.supply.bpm.cvt.ProcessDefinitionCvt;
 import com.supply.bpm.model.po.UserNodePo;
 import com.supply.bpm.model.po.ProcessDefinitionPo;
 import com.supply.bpm.model.request.ProcessDefinitionRequest;
+import com.supply.bpm.model.response.ProcessDefinitionResponse;
 import com.supply.bpm.repository.IProcessDefinitionRepository;
 import com.supply.bpm.repository.IUserNodeRepository;
 import com.supply.bpm.service.IProcessDefinitionService;
 import com.supply.bpm.util.ActivityUtil;
+import com.supply.common.constant.BusinessStatusEnum;
+import com.supply.common.util.CommonUtil;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
@@ -81,6 +87,7 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
         processDefinitionPo.setGroupId(groupId);
         processDefinitionPo.setVersion(BpmConstant.DEFAULT_VERSION);
         processDefinitionPo.setIsGroupUse(true);
+        processDefinitionPo.setBusinessStatus(BusinessStatusEnum.PROCESS_STATUS_ACTIVE.getStatus());
         processDefinitionPo.setTenantId(request.getTenantId());
         processDefinitionRepository.save(processDefinitionPo);
 
@@ -129,5 +136,15 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
     }
 
 
-
+    @Override
+    public IPage<ProcessDefinitionResponse> getProcessDefinitionPage(ProcessDefinitionRequest request) {
+        Page<ProcessDefinitionPo> page = new Page<>(request.getPageIndex(), request.getPageSize());
+        final Page<ProcessDefinitionPo> poPage = processDefinitionRepository.getPageByParams(page, request);
+        if (poPage.getTotal() <= 0) {
+            return new Page<>(request.getPageIndex(), request.getPageSize());
+        }
+        final List<ProcessDefinitionPo> poList = poPage.getRecords();
+        final List<ProcessDefinitionResponse> responseList = ProcessDefinitionCvt.INSTANCE.poToResponseBatch(poList);
+        return CommonUtil.pageCvt(responseList, poPage);
+    }
 }
