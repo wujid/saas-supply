@@ -30,7 +30,7 @@ public class ProcessDefinitionRequest extends BaseRequestEntity<ProcessDefinitio
     private String deploymentId;
 
     @ApiModelProperty(value = "流程定义ID")
-    private String processDefinitionId;
+    private String definitionId;
 
     @ApiModelProperty(value = "流程名称")
     private String processName;

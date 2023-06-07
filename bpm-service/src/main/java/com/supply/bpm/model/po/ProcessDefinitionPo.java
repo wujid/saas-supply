@@ -38,7 +38,7 @@ public class ProcessDefinitionPo extends Model<ProcessDefinitionPo> {
     private String deploymentId;
 
     @ApiModelProperty(value = "流程定义ID")
-    private String processDefinitionId;
+    private String definitionId;
 
     @ApiModelProperty(value = "流程名称")
     private String processName;

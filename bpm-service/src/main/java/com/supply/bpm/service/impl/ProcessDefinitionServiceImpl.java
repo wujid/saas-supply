@@ -6,10 +6,12 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.supply.bpm.constant.BpmConstant;
+import com.supply.bpm.constant.UserNodeTypeEnum;
 import com.supply.bpm.model.po.UserNodePo;
 import com.supply.bpm.model.po.ProcessDefinitionPo;
 import com.supply.bpm.model.request.ProcessDefinitionRequest;
 import com.supply.bpm.repository.IProcessDefinitionRepository;
+import com.supply.bpm.repository.IUserNodeRepository;
 import com.supply.bpm.service.IProcessDefinitionService;
 import com.supply.bpm.util.ActivityUtil;
 import org.activiti.bpmn.model.BpmnModel;
@@ -24,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -40,9 +43,13 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
 
     private final IProcessDefinitionRepository processDefinitionRepository;
 
-    public ProcessDefinitionServiceImpl(RepositoryService repositoryService, IProcessDefinitionRepository processDefinitionRepository) {
+    private final IUserNodeRepository userNodeRepository;
+
+    public ProcessDefinitionServiceImpl(RepositoryService repositoryService, IProcessDefinitionRepository processDefinitionRepository,
+                                        IUserNodeRepository userNodeRepository) {
         this.repositoryService = repositoryService;
         this.processDefinitionRepository = processDefinitionRepository;
+        this.userNodeRepository = userNodeRepository;
     }
 
 
@@ -64,7 +71,7 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
         processDefinitionPo.setCategoryId(request.getCategoryId());
         processDefinitionPo.setTitle(BpmConstant.DEFAULT_TITLE_RULE);
         processDefinitionPo.setDeploymentId(deployment.getId());
-        processDefinitionPo.setProcessDefinitionId(processDefinition.getId());
+        processDefinitionPo.setDefinitionId(processDefinition.getId());
         processDefinitionPo.setProcessKey(processDefinition.getKey());
         processDefinitionPo.setProcessName(processDefinition.getName());
         processDefinitionPo.setIsDefault(true);
@@ -75,20 +82,49 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
         processDefinitionPo.setIsGroupUse(true);
         processDefinitionPo.setTenantId(request.getTenantId());
         processDefinitionRepository.save(processDefinitionPo);
+
+        // 获取用户任务节点信息并保存
+        this.userNodeInfo(processDefinition.getId(), request.getTenantId());
     }
 
-    private void userNode(String processDefinitionId) {
+    /**
+      * @description 根据流程定义ID获取用户节点信息并保存.
+      * @author wjd
+      * @date 2023/6/7
+      * @param definitionId 流程定义ID
+      * @param tenantId 租户ID
+      */
+    private void userNodeInfo(String definitionId, Long tenantId) {
         // 获取流程节点上的所有用户任务节点
-        BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinitionId);
-        Process process = bpmnModel.getProcesses().get(bpmnModel.getProcesses().size()-1);
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(definitionId);
+        Process process = bpmnModel.getProcesses().get(bpmnModel.getProcesses().size() - 1);
         Collection<FlowElement> flowElements = process.getFlowElements();
         final List<UserTask> userTaskList = ActivityUtil.getUserTaskList(flowElements);
         if (CollectionUtil.isEmpty(userTaskList)) {
             return;
         }
+        final List<UserNodePo> userNodes = new ArrayList<>();
+        int sort = 0;
         for (UserTask userTask : userTaskList) {
-            UserNodePo userNodePo = new UserNodePo();
+            sort++;
+            UserNodePo userNode = new UserNodePo();
+            userNode.setDefinitionId(definitionId);
+            userNode.setNodeId(userTask.getId());
+            userNode.setNodeName(userTask.getName());
+            if (StrUtil.isNotBlank(userTask.getOwner())) {
+                userNode.setNodeType(UserNodeTypeEnum.OWNER.getType());
+            }
+            if (StrUtil.isNotBlank(userTask.getAssignee())) {
+                userNode.setNodeType(UserNodeTypeEnum.CANDIDATE_USERS.getType());
+            }
+            if (CollectionUtil.isNotEmpty(userTask.getCandidateGroups())) {
+                userNode.setNodeType(UserNodeTypeEnum.GROUP.getType());
+            }
+            userNode.setSort(sort);
+            userNode.setTenantId(tenantId);
+            userNodes.add(userNode);
         }
+        userNodeRepository.saveBatch(userNodes);
     }
 
 

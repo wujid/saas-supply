@@ -93,7 +93,7 @@ public class ProcessDefinitionRepositoryImpl extends ServiceImpl<ProcessDefiniti
         queryWrapper.eq(null != request.getId(), ProcessDefinitionPo::getId, request.getId());
         queryWrapper.eq(null != request.getCategoryId(), ProcessDefinitionPo::getCategoryId, request.getCategoryId());
         queryWrapper.eq(StrUtil.isNotBlank(request.getDeploymentId()), ProcessDefinitionPo::getDeploymentId, request.getDeploymentId());
-        queryWrapper.eq(StrUtil.isNotBlank(request.getProcessDefinitionId()), ProcessDefinitionPo::getProcessDefinitionId, request.getProcessDefinitionId());
+        queryWrapper.eq(StrUtil.isNotBlank(request.getDefinitionId()), ProcessDefinitionPo::getDefinitionId, request.getDefinitionId());
         queryWrapper.eq(StrUtil.isNotBlank(request.getProcessName()), ProcessDefinitionPo::getProcessName, request.getProcessName());
         queryWrapper.eq(StrUtil.isNotBlank(request.getProcessKey()), ProcessDefinitionPo::getProcessKey, request.getProcessKey());
         queryWrapper.eq(null != request.getVersion(), ProcessDefinitionPo::getVersion, request.getVersion());
