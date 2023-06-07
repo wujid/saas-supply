@@ -15,5 +15,5 @@ public interface IProcessDefinitionService {
       * @date 2023/6/7
       * @param request 待新增的流程实体信息
       */
-    void addDeploymentByString(ProcessDefinitionRequest request);
+    void addDeployment(ProcessDefinitionRequest request);
 }
