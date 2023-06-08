@@ -49,6 +49,14 @@ public interface IProcessDefinitionService {
     void delProcess(Long defId);
 
     /**
+      * @description 修改流程标题.
+      * @author wjd
+      * @date 2023/6/8
+      * @param request 待修改的实体信息
+      */
+    void updateProcessTitle(ProcessDefinitionRequest request);
+
+    /**
      * @description 根据自定义条件查询带流程定义信息集.
      * @author wjd
      * @date 2023/6/7

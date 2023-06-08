@@ -185,6 +185,16 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
         processDefinitionRepository.updateById(processDefinition);
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateProcessTitle(ProcessDefinitionRequest request) {
+        logger.info("[流程标题修改]---待修改的ID为{}---新流程标题为{}", request.getId(), request.getTitle());
+        ProcessDefinitionPo processDefinition = new ProcessDefinitionPo();
+        processDefinition.setId(request.getId());
+        processDefinition.setTitle(request.getTitle());
+        processDefinitionRepository.updateById(processDefinition);
+    }
+
     /**
       * @description 根据分类ID查询是否存在默认流程.
       * @author wjd
