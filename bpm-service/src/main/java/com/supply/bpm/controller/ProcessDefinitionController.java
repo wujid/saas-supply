@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 /**
  * @author wjd
  * @description 流程定义信息权限控制层.
@@ -40,6 +43,27 @@ public class ProcessDefinitionController {
         return Result.ok();
     }
 
+    @ApiOperation(value = "流程挂起")
+    @GetMapping("/suspendProcess")
+    public Result<?> suspendProcess(Long defId) {
+        processDefinitionService.suspendProcess(defId);
+        return Result.ok();
+    }
+
+    @ApiOperation(value = "流程激活")
+    @GetMapping("/activeProcess")
+    public Result<?> activeProcess(Long defId) {
+        processDefinitionService.activeProcess(defId);
+        return Result.ok();
+    }
+
+    @ApiOperation(value = "流程删除")
+    @GetMapping("/delProcess")
+    public Result<?> delProcess(Long defId) {
+        processDefinitionService.delProcess(defId);
+        return Result.ok();
+    }
+
     @ApiOperation(value = "流程定义分页信息")
     @GetMapping("/getProcessDefinitionPage")
     public Result<IPage<ProcessDefinitionResponse>> getProcessDefinitionPage(@RequestParam Integer pageIndex, @RequestParam Integer pageSize,
@@ -59,5 +83,9 @@ public class ProcessDefinitionController {
         return Result.ok(data);
     }
 
-
+    @ApiOperation(value = "获取流程定义xml")
+    @GetMapping("/getProcessDefinitionXml")
+    public void getProcessDefinitionXml(@RequestParam String deploymentId, @RequestParam String processName, HttpServletResponse response) throws IOException {
+        processDefinitionService.getProcessDefinitionXml(deploymentId, processName, response);
+    }
 }

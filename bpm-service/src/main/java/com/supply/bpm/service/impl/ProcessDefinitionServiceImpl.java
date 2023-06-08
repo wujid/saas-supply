@@ -10,8 +10,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.supply.bpm.constant.BpmConstant;
 import com.supply.bpm.constant.UserNodeTypeEnum;
 import com.supply.bpm.cvt.ProcessDefinitionCvt;
-import com.supply.bpm.model.po.UserNodePo;
 import com.supply.bpm.model.po.ProcessDefinitionPo;
+import com.supply.bpm.model.po.UserNodePo;
 import com.supply.bpm.model.request.ProcessDefinitionRequest;
 import com.supply.bpm.model.response.ProcessDefinitionResponse;
 import com.supply.bpm.repository.IProcessDefinitionRepository;
@@ -36,6 +36,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -168,7 +172,7 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
         if (count > 1) {
             throw new ApiException("该流程存在多版本,不允许删除!");
         }
-        // 查询该流程是否存在
+        // 查询该流程是否存在流程实例
         final long processInstanceCount = historyService.createHistoricProcessInstanceQuery().processDefinitionId(processDefinitionPo.getDefinitionId()).count();
         if (processInstanceCount > 0) {
             throw new ApiException("该流程已存在流程实例,不允许删除!");
@@ -248,5 +252,19 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
         final List<ProcessDefinitionPo> poList = poPage.getRecords();
         final List<ProcessDefinitionResponse> responseList = ProcessDefinitionCvt.INSTANCE.poToResponseBatch(poList);
         return CommonUtil.pageCvt(responseList, poPage);
+    }
+
+    @Override
+    public void getProcessDefinitionXml(String deploymentId, String processName, HttpServletResponse response) throws IOException {
+        final String resourceName = processName + ".bpmn";
+        InputStream inputStream = repositoryService.getResourceAsStream(deploymentId, resourceName);
+        int count = inputStream.available();
+        byte[] bytes = new byte[count];
+        response.setContentType("text/xml");
+        OutputStream outputStream = response.getOutputStream();
+        while (inputStream.read(bytes) != -1) {
+            outputStream.write(bytes);
+        }
+        inputStream.close();
     }
 }

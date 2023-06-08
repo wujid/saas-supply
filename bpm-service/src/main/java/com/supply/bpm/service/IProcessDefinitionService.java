@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.supply.bpm.model.request.ProcessDefinitionRequest;
 import com.supply.bpm.model.response.ProcessDefinitionResponse;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 /**
  * @author wjd
  * @description .
@@ -53,4 +56,13 @@ public interface IProcessDefinitionService {
      * @return 带分页的流程定义信息集
      */
     IPage<ProcessDefinitionResponse> getProcessDefinitionPage(ProcessDefinitionRequest request);
+
+    /**
+      * @description 获取流程定义xml.
+      * @author wjd
+      * @date 2023/6/8
+      * @param deploymentId 流程部署ID
+      * @param processName 流程名称
+      */
+    void getProcessDefinitionXml(String deploymentId, String processName, HttpServletResponse response) throws IOException;
 }
