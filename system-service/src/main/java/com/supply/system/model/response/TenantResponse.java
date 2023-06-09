@@ -1,6 +1,6 @@
 package com.supply.system.model.response;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.supply.common.web.model.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -31,14 +31,14 @@ public class TenantResponse extends BaseEntity implements Serializable {
     private Integer type;
 
     @ApiModelProperty(value = "授权开始时间")
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date startTime;
 
     @ApiModelProperty(value = "授权天数")
     private Integer days;
 
     @ApiModelProperty(value = "授权结束时间")
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date endTime;
 
     @ApiModelProperty(value = "客户端ID")

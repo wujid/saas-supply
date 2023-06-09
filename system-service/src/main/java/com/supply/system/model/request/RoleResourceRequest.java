@@ -1,6 +1,6 @@
 package com.supply.system.model.request;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.supply.common.web.model.BaseRequestEntity;
 import com.supply.system.model.po.RoleResourcePo;
 import io.swagger.annotations.ApiModel;
@@ -34,14 +34,14 @@ public class RoleResourceRequest extends BaseRequestEntity<RoleResourcePo> imple
     private Long createUserId;
 
     @ApiModelProperty(value = "创建时间")
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     @ApiModelProperty(value = "修改人")
     private Long updateUserId;
 
     @ApiModelProperty(value = "修改时间")
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
     @ApiModelProperty(value = "状态")

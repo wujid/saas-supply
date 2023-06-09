@@ -1,6 +1,6 @@
 package com.supply.common.model.request.file;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.supply.common.annotation.Note;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -47,14 +47,14 @@ public class FileAttachmentRequest implements Serializable {
     private Long createUserId;
 
     @Note(description = "创建时间")
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     @Note(description = "修改人")
     private Long updateUserId;
 
     @Note(description = "修改时间")
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
     @Note(description = "状态")
