@@ -121,7 +121,6 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
                 final boolean isInUse = definitions.stream().anyMatch(definition -> definition.getIsGroupUse() == true);
                 processDefinitionPo.setIsGroupUse(!isInUse);
             }
-
         }
 
         processDefinitionPo.setBusinessStatus(BusinessStatusEnum.PROCESS_STATUS_ACTIVE.getStatus());
