@@ -42,6 +42,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -96,13 +97,33 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
         processDefinitionPo.setDefinitionId(processDefinition.getId());
         processDefinitionPo.setProcessKey(processDefinition.getKey());
         processDefinitionPo.setProcessName(processDefinition.getName());
-        processDefinitionPo.setIsDefault(true);
-        Snowflake snowflake = IdUtil.createSnowflake(1, 1);
-        long groupId = snowflake.nextId();
-        processDefinitionPo.setGroupId(groupId);
-        processDefinitionPo.setVersion(BpmConstant.DEFAULT_VERSION);
         // 判断是否存在默认流程,不存在则设置为默认流程
-        processDefinitionPo.setIsGroupUse(this.isInDefaultProcess(request.getCategoryId()));
+        processDefinitionPo.setIsDefault(this.isInDefaultProcess(request.getCategoryId()));
+        // 是否存在groupId 不存在则设置当前版本为默认版本并且当前流程为所有版本钟使用的版本
+        if (null == request.getGroupId()) {
+            Snowflake snowflake = IdUtil.createSnowflake(1, 1);
+            long groupId = snowflake.nextId();
+            processDefinitionPo.setGroupId(groupId);
+            processDefinitionPo.setVersion(BpmConstant.DEFAULT_VERSION);
+            processDefinitionPo.setIsGroupUse(true);
+        } else {
+            // 存在则将当前最高版本提升一个版本同时判断是否存在使用中的版本
+            final long groupId = request.getGroupId();
+            processDefinitionPo.setGroupId(groupId);
+            final List<ProcessDefinitionPo> definitions = this.getDefinitionsByGroupId(groupId);
+            if (CollectionUtil.isEmpty(definitions)) {
+                processDefinitionPo.setVersion(BpmConstant.DEFAULT_VERSION);
+                processDefinitionPo.setIsGroupUse(true);
+            } else {
+                final Integer version = definitions.stream().map(ProcessDefinitionPo::getVersion)
+                        .max(Comparator.comparing(x -> x)).orElse(BpmConstant.DEFAULT_VERSION - 1);
+                processDefinitionPo.setVersion(version + 1);
+                final boolean isInUse = definitions.stream().anyMatch(definition -> definition.getIsGroupUse() == true);
+                processDefinitionPo.setIsGroupUse(!isInUse);
+            }
+
+        }
+
         processDefinitionPo.setBusinessStatus(BusinessStatusEnum.PROCESS_STATUS_ACTIVE.getStatus());
         processDefinitionPo.setTenantId(request.getTenantId());
         processDefinitionRepository.save(processDefinitionPo);
@@ -240,29 +261,40 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
         processDefinitionRepository.updateById(processDefinitionPo);
     }
 
-    /**
-      * @description 根据分类ID查询是否存在默认流程.
-      * @author wjd
-      * @date 2023/6/7
-      * @param categoryId 流程分类ID
-      * @return 是否存在默认流程
-      */
-    private boolean isInDefaultProcess(Long categoryId) {
-        ProcessDefinitionRequest request = new ProcessDefinitionRequest();
-        request.setCategoryId(categoryId);
-        request.setStatus(Constant.STATUS_NOT_DEL);
-        request.setIsDefault(true);
-        final Long count = processDefinitionRepository.getCountByParams(request);
-        return count == 0;
+
+    @Override
+    public IPage<ProcessDefinitionResponse> getProcessDefinitionPage(ProcessDefinitionRequest request) {
+        Page<ProcessDefinitionPo> page = new Page<>(request.getPageIndex(), request.getPageSize());
+        final Page<ProcessDefinitionPo> poPage = processDefinitionRepository.getPageByParams(page, request);
+        if (poPage.getTotal() <= 0) {
+            return new Page<>(request.getPageIndex(), request.getPageSize());
+        }
+        final List<ProcessDefinitionPo> poList = poPage.getRecords();
+        final List<ProcessDefinitionResponse> responseList = ProcessDefinitionCvt.INSTANCE.poToResponseBatch(poList);
+        return CommonUtil.pageCvt(responseList, poPage);
+    }
+
+    @Override
+    public void getProcessDefinitionXml(String deploymentId, String processName, HttpServletResponse response) throws IOException {
+        final String resourceName = processName + ".bpmn";
+        InputStream inputStream = repositoryService.getResourceAsStream(deploymentId, resourceName);
+        int count = inputStream.available();
+        byte[] bytes = new byte[count];
+        response.setContentType("text/xml");
+        OutputStream outputStream = response.getOutputStream();
+        while (inputStream.read(bytes) != -1) {
+            outputStream.write(bytes);
+        }
+        inputStream.close();
     }
 
     /**
-      * @description 根据流程定义ID获取用户节点信息并保存.
-      * @author wjd
-      * @date 2023/6/7
-      * @param definitionId 流程定义ID
-      * @param tenantId 租户ID
-      */
+     * @description 根据流程定义ID获取用户节点信息并保存.
+     * @author wjd
+     * @date 2023/6/7
+     * @param definitionId 流程定义ID
+     * @param tenantId 租户ID
+     */
     private void userNodeInfo(String definitionId, Long tenantId) {
         // 获取流程节点上的所有用户任务节点
         BpmnModel bpmnModel = repositoryService.getBpmnModel(definitionId);
@@ -296,30 +328,33 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
         userNodeRepository.saveBatch(userNodes);
     }
 
-
-    @Override
-    public IPage<ProcessDefinitionResponse> getProcessDefinitionPage(ProcessDefinitionRequest request) {
-        Page<ProcessDefinitionPo> page = new Page<>(request.getPageIndex(), request.getPageSize());
-        final Page<ProcessDefinitionPo> poPage = processDefinitionRepository.getPageByParams(page, request);
-        if (poPage.getTotal() <= 0) {
-            return new Page<>(request.getPageIndex(), request.getPageSize());
-        }
-        final List<ProcessDefinitionPo> poList = poPage.getRecords();
-        final List<ProcessDefinitionResponse> responseList = ProcessDefinitionCvt.INSTANCE.poToResponseBatch(poList);
-        return CommonUtil.pageCvt(responseList, poPage);
+    /**
+     * @description 根据分类ID查询是否存在默认流程.
+     * @author wjd
+     * @date 2023/6/7
+     * @param categoryId 流程分类ID
+     * @return 是否存在默认流程
+     */
+    private boolean isInDefaultProcess(Long categoryId) {
+        ProcessDefinitionRequest request = new ProcessDefinitionRequest();
+        request.setCategoryId(categoryId);
+        request.setStatus(Constant.STATUS_NOT_DEL);
+        request.setIsDefault(true);
+        final Long count = processDefinitionRepository.getCountByParams(request);
+        return count == 0;
     }
 
-    @Override
-    public void getProcessDefinitionXml(String deploymentId, String processName, HttpServletResponse response) throws IOException {
-        final String resourceName = processName + ".bpmn";
-        InputStream inputStream = repositoryService.getResourceAsStream(deploymentId, resourceName);
-        int count = inputStream.available();
-        byte[] bytes = new byte[count];
-        response.setContentType("text/xml");
-        OutputStream outputStream = response.getOutputStream();
-        while (inputStream.read(bytes) != -1) {
-            outputStream.write(bytes);
-        }
-        inputStream.close();
+    /**
+      * @description 根据流程组ID查询当前流程组下的所有流程信息.
+      * @author wjd
+      * @date 2023/6/9
+      * @param groupId 流程组ID
+      * @return 流程信息集
+      */
+    private List<ProcessDefinitionPo> getDefinitionsByGroupId(Long groupId) {
+        ProcessDefinitionRequest request = new ProcessDefinitionRequest();
+        request.setGroupId(groupId);
+        request.setStatus(Constant.STATUS_NOT_DEL);
+        return  processDefinitionRepository.getListByParams(request);
     }
 }
