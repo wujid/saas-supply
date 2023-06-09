@@ -227,13 +227,18 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
         if (processDefinitionPo.getIsGroupUse()) {
             throw new ApiException("该流程版本已被设置为使用状态,请勿重复操作!");
         }
+
+        // 将当前已经使用的版本设置为非使用
+        this.updateProcessUnUseByGroupId(processDefinitionPo.getGroupId());
+
         // 判断当前流程组是否存在默认流程如果存在则修改为非默认流程并将当前流程设置为默认流程
         final ProcessDefinitionPo processDefinition = new ProcessDefinitionPo();
         processDefinition.setId(defId);
         processDefinition.setIsGroupUse(true);
 
+        // 查询出是否存在默认流程,存在则修改为非默认流程
         ProcessDefinitionRequest request = new ProcessDefinitionRequest();
-        request.setStatus(Constant.STATUS_DEL);
+        request.setStatus(Constant.STATUS_NOT_DEL);
         request.setIsDefault(true);
         request.setGroupId(processDefinitionPo.getGroupId());
         final ProcessDefinitionPo defaultProcess = processDefinitionRepository.getByParams(request);
@@ -355,5 +360,23 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
         request.setGroupId(groupId);
         request.setStatus(Constant.STATUS_NOT_DEL);
         return  processDefinitionRepository.getListByParams(request);
+    }
+
+    /**
+      * @description 根据流程组ID修改当前使用状态的流程为非使用状态.
+      * @author wjd
+      * @date 2023/6/9
+      * @param groupId 流程组ID
+      */
+    private void updateProcessUnUseByGroupId(Long groupId) {
+        final ProcessDefinitionPo processDefinition = new ProcessDefinitionPo();
+        processDefinition.setIsGroupUse(false);
+
+        ProcessDefinitionRequest request = new ProcessDefinitionRequest();
+        request.setGroupId(groupId);
+        request.setIsGroupUse(true);
+        request.setStatus(Constant.STATUS_NOT_DEL);
+
+        processDefinitionRepository.updateByParams(processDefinition, request);
     }
 }

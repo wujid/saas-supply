@@ -92,7 +92,8 @@ public class ProcessDefinitionController {
     public Result<IPage<ProcessDefinitionResponse>> getProcessDefinitionPage(@RequestParam Integer pageIndex, @RequestParam Integer pageSize,
                                                                              @RequestParam(required = false) Long categoryId, @RequestParam(required = false) Integer businessStatus,
                                                                              @RequestParam(required = false) String processName, @RequestParam(required = false) Long groupId,
-                                                                             @RequestParam(required = false) Integer version) {
+                                                                             @RequestParam(required = false) Integer version,  @RequestParam(required = false) Boolean isDefault,
+                                                                             @RequestParam(required = false) Boolean isGroupUse) {
         final Long tenantId = ContextUtil.getCurrentTenantId();
         ProcessDefinitionRequest request = new ProcessDefinitionRequest();
         request.setPageIndex(pageIndex);
@@ -100,10 +101,11 @@ public class ProcessDefinitionController {
         request.setCategoryId(categoryId);
         request.setBusinessStatus(businessStatus);
         request.setProcessName(processName);
-        request.setGroupId(groupId);
         request.setTenantId(tenantId);
-        request.setIsDefault(true);
+        request.setIsDefault(isDefault);
         request.setStatus(Constant.STATUS_NOT_DEL);
+        request.setGroupId(groupId);
+        request.setIsGroupUse(isGroupUse);
         request.setVersion(version);
         request.setOrderColumn(ProcessDefinitionPo::getCreateTime);
         final IPage<ProcessDefinitionResponse> data = processDefinitionService.getProcessDefinitionPage(request);
