@@ -195,6 +195,51 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
         processDefinitionRepository.updateById(processDefinition);
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateProcessInUse(Long defId) {
+        logger.info("[流程设置为使用状态]---待设置的流程ID为{}", defId);
+        final ProcessDefinitionPo processDefinitionPo = processDefinitionRepository.getById(defId);
+        if (null == processDefinitionPo) {
+            logger.error("流程定义ID{}不存在", defId);
+            throw new ApiException("操作失败");
+        }
+        if (processDefinitionPo.getIsGroupUse()) {
+            throw new ApiException("该流程版本已被设置为使用状态,请勿重复操作!");
+        }
+        // 判断当前流程组是否存在默认流程如果存在则修改为非默认流程并将当前流程设置为默认流程
+        final ProcessDefinitionPo processDefinition = new ProcessDefinitionPo();
+        processDefinition.setId(defId);
+        processDefinition.setIsGroupUse(true);
+
+        ProcessDefinitionRequest request = new ProcessDefinitionRequest();
+        request.setStatus(Constant.STATUS_DEL);
+        request.setIsDefault(true);
+        request.setGroupId(processDefinitionPo.getGroupId());
+        final ProcessDefinitionPo defaultProcess = processDefinitionRepository.getByParams(request);
+        if (null != defaultProcess) {
+            this.cancelDefaultProcess(defaultProcess.getId());
+            processDefinition.setIsDefault(true);
+        }
+        processDefinitionRepository.updateById(processDefinition);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateDefaultProcess(Long defId) {
+        final ProcessDefinitionPo processDefinitionPo = new ProcessDefinitionPo();
+        processDefinitionPo.setId(defId);
+        processDefinitionPo.setIsDefault(true);
+        processDefinitionRepository.updateById(processDefinitionPo);
+    }
+
+    private void cancelDefaultProcess(Long defId) {
+        final ProcessDefinitionPo processDefinitionPo = new ProcessDefinitionPo();
+        processDefinitionPo.setId(defId);
+        processDefinitionPo.setIsDefault(false);
+        processDefinitionRepository.updateById(processDefinitionPo);
+    }
+
     /**
       * @description 根据分类ID查询是否存在默认流程.
       * @author wjd

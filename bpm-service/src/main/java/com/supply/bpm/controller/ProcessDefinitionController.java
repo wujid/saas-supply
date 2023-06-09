@@ -73,11 +73,26 @@ public class ProcessDefinitionController {
         return Result.ok();
     }
 
+    @ApiOperation(value = "修改流程为当前流程版本中使用状态")
+    @GetMapping("/updateProcessInUse")
+    public Result<?> updateProcessInUse(Long defId) {
+        processDefinitionService.updateProcessInUse(defId);
+        return Result.ok();
+    }
+
+    @ApiOperation(value = "修改流程为默认流程")
+    @GetMapping("/updateDefaultProcess")
+    public Result<?> updateDefaultProcess(Long defId) {
+        processDefinitionService.updateDefaultProcess(defId);
+        return Result.ok();
+    }
+
     @ApiOperation(value = "流程定义分页信息")
     @GetMapping("/getProcessDefinitionPage")
     public Result<IPage<ProcessDefinitionResponse>> getProcessDefinitionPage(@RequestParam Integer pageIndex, @RequestParam Integer pageSize,
                                                                              @RequestParam(required = false) Long categoryId, @RequestParam(required = false) Integer businessStatus,
-                                                                             @RequestParam(required = false) String processName, @RequestParam(required = false) Long groupId) {
+                                                                             @RequestParam(required = false) String processName, @RequestParam(required = false) Long groupId,
+                                                                             @RequestParam(required = false) Integer version) {
         final Long tenantId = ContextUtil.getCurrentTenantId();
         ProcessDefinitionRequest request = new ProcessDefinitionRequest();
         request.setPageIndex(pageIndex);
@@ -89,6 +104,7 @@ public class ProcessDefinitionController {
         request.setTenantId(tenantId);
         request.setIsDefault(true);
         request.setStatus(Constant.STATUS_NOT_DEL);
+        request.setVersion(version);
         request.setOrderColumn(ProcessDefinitionPo::getCreateTime);
         final IPage<ProcessDefinitionResponse> data = processDefinitionService.getProcessDefinitionPage(request);
         return Result.ok(data);
