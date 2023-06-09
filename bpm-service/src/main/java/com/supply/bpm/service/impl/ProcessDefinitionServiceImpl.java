@@ -101,7 +101,7 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
         processDefinitionPo.setIsDefault(this.isInDefaultProcess(request.getCategoryId()));
         // 是否存在groupId 不存在则设置当前版本为默认版本并且当前流程为所有版本钟使用的版本
         if (null == request.getGroupId()) {
-            Snowflake snowflake = IdUtil.createSnowflake(1, 1);
+            Snowflake snowflake = IdUtil.getSnowflake(1, 1);
             long groupId = snowflake.nextId();
             processDefinitionPo.setGroupId(groupId);
             processDefinitionPo.setVersion(BpmConstant.DEFAULT_VERSION);
@@ -118,7 +118,7 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
                 final Integer version = definitions.stream().map(ProcessDefinitionPo::getVersion)
                         .max(Comparator.comparing(x -> x)).orElse(BpmConstant.DEFAULT_VERSION - 1);
                 processDefinitionPo.setVersion(version + 1);
-                final boolean isInUse = definitions.stream().anyMatch(definition -> definition.getIsGroupUse() == true);
+                final boolean isInUse = definitions.stream().anyMatch(ProcessDefinitionPo::getIsGroupUse);
                 processDefinitionPo.setIsGroupUse(!isInUse);
             }
         }
