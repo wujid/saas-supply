@@ -8,7 +8,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.supply.bpm.constant.BpmConstant;
-import com.supply.bpm.constant.UserNodeTypeEnum;
+import com.supply.bpm.constant.NodeTypeEnum;
 import com.supply.bpm.cvt.ProcessDefinitionCvt;
 import com.supply.bpm.model.po.ProcessDefinitionPo;
 import com.supply.bpm.model.po.NodeSetPo;
@@ -317,13 +317,13 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
             userNode.setNodeId(userTask.getId());
             userNode.setNodeName(userTask.getName());
             if (StrUtil.isNotBlank(userTask.getAssignee())) {
-                userNode.setNodeType(UserNodeTypeEnum.OWNER.getType());
+                userNode.setNodeType(NodeTypeEnum.OWNER.getType());
             }
             if (CollectionUtil.isNotEmpty(userTask.getCandidateUsers())) {
-                userNode.setNodeType(UserNodeTypeEnum.CANDIDATE_USERS.getType());
+                userNode.setNodeType(NodeTypeEnum.CANDIDATE_USERS.getType());
             }
             if (CollectionUtil.isNotEmpty(userTask.getCandidateGroups())) {
-                userNode.setNodeType(UserNodeTypeEnum.GROUP.getType());
+                userNode.setNodeType(NodeTypeEnum.GROUP.getType());
             }
             userNode.setSort(sort);
             userNode.setTenantId(tenantId);

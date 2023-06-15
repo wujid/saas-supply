@@ -28,7 +28,7 @@ public class NodeSetResponse extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "节点名称")
     private String nodeName;
 
-    @ApiModelProperty(value = "用户节点类型--1:个人任务  2:候选人任务 3:组任务")
+    @ApiModelProperty(value = "用户节点类型--1:开始节点 2:用户任务节点--个人任务 3:用户任务节点--候选人任务 4:用户任务节点--组任务 5:结束")
     private Integer nodeType;
 
     @ApiModelProperty(value = "表单URL")
