@@ -2,8 +2,8 @@ package com.supply.bpm.repository;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.supply.bpm.model.po.UserNodeButtonPo;
-import com.supply.bpm.model.request.UserNodeButtonRequest;
+import com.supply.bpm.model.po.NodeButtonPo;
+import com.supply.bpm.model.request.NodeButtonRequest;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
  * @description .
  * @date 2023-01-04
  */
-public interface IUserNodeButtonRepository extends IService<UserNodeButtonPo> {
+public interface INodeButtonRepository extends IService<NodeButtonPo> {
 
     /**
      * @description 根据自定义条件修改.
@@ -22,7 +22,7 @@ public interface IUserNodeButtonRepository extends IService<UserNodeButtonPo> {
      * @param request 条件值
      * @return int 受影响行数
      */
-    int updateByParams(UserNodeButtonPo nodeButtonPo, UserNodeButtonRequest request);
+    int updateByParams(NodeButtonPo nodeButtonPo, NodeButtonRequest request);
 
     /**
      * @description 根据自定义条件查询流程节点按钮信息.
@@ -31,7 +31,7 @@ public interface IUserNodeButtonRepository extends IService<UserNodeButtonPo> {
      * @param request 查询条件
      * @return 流程节点按钮信息
      */
-    UserNodeButtonPo getByParams(UserNodeButtonRequest request);
+    NodeButtonPo getByParams(NodeButtonRequest request);
 
     /**
      * @description 根据自定义条件查询流程节点按钮信息集.
@@ -40,7 +40,7 @@ public interface IUserNodeButtonRepository extends IService<UserNodeButtonPo> {
      * @param request 查询条件
      * @return 流程节点按钮信息集
      */
-    List<UserNodeButtonPo> getListByParams(UserNodeButtonRequest request);
+    List<NodeButtonPo> getListByParams(NodeButtonRequest request);
 
     /**
      * @description 根据自定义条件查询流程节点按钮带分页信息.
@@ -50,5 +50,5 @@ public interface IUserNodeButtonRepository extends IService<UserNodeButtonPo> {
      * @param request 查询条件
      * @return 带分页的结果
      */
-    Page<UserNodeButtonPo> getPageByParams(Page<UserNodeButtonPo> page, UserNodeButtonRequest request);
+    Page<NodeButtonPo> getPageByParams(Page<NodeButtonPo> page, NodeButtonRequest request);
 }

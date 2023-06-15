@@ -20,16 +20,16 @@ import java.util.Date;
 @ApiModel(value="流程节点按钮信息数据库映射实体")
 @Data
 @EqualsAndHashCode(callSuper=false)
-@TableName("bpm_user_node_button")
-public class UserNodeButtonPo extends Model<UserNodeButtonPo> {
+@TableName("bpm_node_button")
+public class NodeButtonPo extends Model<NodeButtonPo> {
     private static final long serialVersionUID = -6413527485886709206L;
 
     @ApiModelProperty(value = "主键ID")
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    @ApiModelProperty(value = "流程节点主键ID")
-    private Long userNodeId;
+    @ApiModelProperty(value = "流程节点设置主键ID")
+    private Long nodeSetId;
 
     @ApiModelProperty(value = "按钮类型")
     private Integer buttonType;

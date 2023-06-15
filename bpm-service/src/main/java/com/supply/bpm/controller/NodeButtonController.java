@@ -1,10 +1,10 @@
 package com.supply.bpm.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.supply.bpm.model.po.UserNodeButtonPo;
-import com.supply.bpm.model.request.UserNodeButtonRequest;
-import com.supply.bpm.model.response.UserNodeButtonResponse;
-import com.supply.bpm.service.IUserNodeButtonService;
+import com.supply.bpm.model.po.NodeButtonPo;
+import com.supply.bpm.model.request.NodeButtonRequest;
+import com.supply.bpm.model.response.NodeButtonResponse;
+import com.supply.bpm.service.INodeButtonService;
 import com.supply.common.constant.Constant;
 import com.supply.common.model.Result;
 import com.supply.common.web.util.ContextUtil;
@@ -27,48 +27,48 @@ import java.util.List;
 @Api(tags="用户节点操作按钮信息控制层")
 @RestController
 @RequestMapping("/nodeButton")
-public class UserNodeButtonController {
+public class NodeButtonController {
 
-    private final IUserNodeButtonService userNodeButtonService;
+    private final INodeButtonService nodeButtonService;
 
-    public UserNodeButtonController(IUserNodeButtonService userNodeButtonService) {
-        this.userNodeButtonService = userNodeButtonService;
+    public NodeButtonController(INodeButtonService nodeButtonService) {
+        this.nodeButtonService = nodeButtonService;
     }
 
 
     @ApiOperation(value = "新增用户节点按钮信息")
     @PostMapping("/addUserNodeButton")
-    public Result<?> addUserNodeButton(@RequestBody List<UserNodeButtonRequest> requests) {
+    public Result<?> addUserNodeButton(@RequestBody List<NodeButtonRequest> requests) {
         if (CollectionUtil.isEmpty(requests)) {
             return Result.error("不能为空");
         }
         final Long tenantId = ContextUtil.getCurrentTenantId();
         requests.forEach(request -> request.setTenantId(tenantId));
-        userNodeButtonService.addUserNodeButton(requests);
+        nodeButtonService.addUserNodeButton(requests);
         return Result.ok();
     }
 
     @ApiOperation(value = "修改用户节点按钮信息")
     @PostMapping("/updateUserNodeButton")
-    public Result<?> updateUserNodeButton(@RequestBody List<UserNodeButtonRequest> requests) {
+    public Result<?> updateUserNodeButton(@RequestBody List<NodeButtonRequest> requests) {
         if (CollectionUtil.isEmpty(requests)) {
             return Result.error("不能为空");
         }
         final Long tenantId = ContextUtil.getCurrentTenantId();
         requests.forEach(request -> request.setTenantId(tenantId));
-        userNodeButtonService.updateUserNodeButton(requests);
+        nodeButtonService.updateUserNodeButton(requests);
         return Result.ok();
     }
 
     @ApiOperation(value = "获取用户节点按钮信息集")
     @GetMapping("/getNodeButtonListByParams")
-    public Result<List<UserNodeButtonResponse>> getNodeUsersByUserNodeId(@RequestParam Long userNodeId) {
-        UserNodeButtonRequest request = new UserNodeButtonRequest();
-        request.setUserNodeId(userNodeId);
+    public Result<List<NodeButtonResponse>> getNodeUsersByUserNodeId(@RequestParam Long nodeSetId) {
+        NodeButtonRequest request = new NodeButtonRequest();
+        request.setNodeSetId(nodeSetId);
         request.setStatus(Constant.STATUS_NOT_DEL);
-        request.setOrderColumn(UserNodeButtonPo::getSort);
+        request.setOrderColumn(NodeButtonPo::getSort);
         request.setIsAsc(true);
-        final List<UserNodeButtonResponse> data = userNodeButtonService.getUserNodeButtonListByParams(request);
+        final List<NodeButtonResponse> data = nodeButtonService.getUserNodeButtonListByParams(request);
         return Result.ok(data);
     }
 

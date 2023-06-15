@@ -1,6 +1,6 @@
 package com.supply.bpm.model.request;
 
-import com.supply.bpm.model.po.UserNodeButtonPo;
+import com.supply.bpm.model.po.NodeButtonPo;
 import com.supply.common.web.model.BaseRequestEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -17,11 +17,11 @@ import java.io.Serializable;
 @ApiModel(value="流程节点按钮信息请求实体")
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class UserNodeButtonRequest extends BaseRequestEntity<UserNodeButtonPo> implements Serializable {
+public class NodeButtonRequest extends BaseRequestEntity<NodeButtonPo> implements Serializable {
     private static final long serialVersionUID = 8156328250791670697L;
 
-    @ApiModelProperty(value = "流程节点主键ID")
-    private Long userNodeId;
+    @ApiModelProperty(value = "流程节点设置主键ID")
+    private Long nodeSetId;
 
     @ApiModelProperty(value = "按钮类型")
     private Integer buttonType;

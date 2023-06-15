@@ -16,11 +16,11 @@ import java.io.Serializable;
 @ApiModel(value="流程节点按钮信息响应实体")
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class UserNodeButtonResponse extends BaseEntity implements Serializable {
+public class NodeButtonResponse extends BaseEntity implements Serializable {
     private static final long serialVersionUID = -298169580192768910L;
 
-    @ApiModelProperty(value = "流程节点主键ID")
-    private Long userNodeId;
+    @ApiModelProperty(value = "流程节点设置主键ID")
+    private Long nodeSetId;
 
     @ApiModelProperty(value = "按钮类型")
     private Integer buttonType;
