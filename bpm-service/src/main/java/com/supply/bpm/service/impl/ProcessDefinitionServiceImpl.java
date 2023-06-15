@@ -317,13 +317,13 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
             userNode.setNodeId(userTask.getId());
             userNode.setNodeName(userTask.getName());
             if (StrUtil.isNotBlank(userTask.getAssignee())) {
-                userNode.setNodeType(NodeTypeEnum.OWNER.getType());
+                userNode.setNodeType(NodeTypeEnum.USER_OWNER.getType());
             }
             if (CollectionUtil.isNotEmpty(userTask.getCandidateUsers())) {
-                userNode.setNodeType(NodeTypeEnum.CANDIDATE_USERS.getType());
+                userNode.setNodeType(NodeTypeEnum.USER_CANDIDATE_USERS.getType());
             }
             if (CollectionUtil.isNotEmpty(userTask.getCandidateGroups())) {
-                userNode.setNodeType(NodeTypeEnum.GROUP.getType());
+                userNode.setNodeType(NodeTypeEnum.USER_GROUP.getType());
             }
             userNode.setSort(sort);
             userNode.setTenantId(tenantId);

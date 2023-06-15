@@ -1,7 +1,6 @@
 package com.supply.bpm.repository.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -92,7 +91,7 @@ public class NodeUserRepositoryImpl extends ServiceImpl<NodeUserMapper, NodeUser
     private LambdaQueryWrapper<NodeUserPo> getQueryWrapper(NodeUserRequest request) {
         LambdaQueryWrapper<NodeUserPo> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(null != request.getId(), NodeUserPo::getId, request.getId());
-        queryWrapper.eq(StrUtil.isNotBlank(request.getNodeId()), NodeUserPo::getNodeId, request.getNodeId());
+        queryWrapper.eq(null != request.getNodeSetId(), NodeUserPo::getNodeSetId, request.getNodeSetId());
         queryWrapper.eq(null != request.getNodeUserType(), NodeUserPo::getNodeUserType, request.getNodeUserType());
         queryWrapper.eq(null != request.getRelationId(), NodeUserPo::getRelationId, request.getRelationId());
         queryWrapper.eq(null != request.getTenantId(), NodeUserPo::getTenantId, request.getTenantId());

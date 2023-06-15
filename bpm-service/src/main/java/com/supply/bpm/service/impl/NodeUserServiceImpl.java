@@ -46,11 +46,11 @@ public class NodeUserServiceImpl implements INodeUserService {
     public void updateNodeUser(List<NodeUserRequest> requests) {
         logger.info("[修改流程节点审批人信息集]---实体信息为{}", JSON.toJSONString(requests));
         // 删除历史审批人信息
-        final String nodeId = requests.stream().findFirst().get().getNodeId();
+        final Long nodeSetId = requests.stream().findFirst().get().getNodeSetId();
         NodeUserPo nodeUserPo = new NodeUserPo();
         nodeUserPo.setStatus(Constant.STATUS_DEL);
         NodeUserRequest request = new NodeUserRequest();
-        request.setNodeId(nodeId);
+        request.setNodeSetId(nodeSetId);
         request.setStatus(Constant.STATUS_NOT_DEL);
         nodeUserRepository.updateByParams(nodeUserPo, request);
         // 保存新审批人信息
