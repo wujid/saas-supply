@@ -43,7 +43,7 @@ public class UserNodeButtonServiceImpl implements IUserNodeButtonService {
     public void updateUserNodeButton(List<UserNodeButtonRequest> requests) {
         logger.info("[修改流程节点按钮信息集]---实体信息为{}", JSON.toJSONString(requests));
         // 删除历史流程节点按钮信息集
-        final String userNodeId = requests.stream().findFirst().get().getUserNodeId();
+        final Long userNodeId = requests.stream().findFirst().get().getUserNodeId();
         UserNodeButtonPo userNodeButtonPo = new UserNodeButtonPo();
         userNodeButtonPo.setStatus(Constant.STATUS_DEL);
         UserNodeButtonRequest request = new UserNodeButtonRequest();
