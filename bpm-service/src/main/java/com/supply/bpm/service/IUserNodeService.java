@@ -9,7 +9,7 @@ import com.supply.bpm.model.response.UserNodeResponse;
  * @description .
  * @date 2023-06-15
  */
-public interface UserNodeService {
+public interface IUserNodeService {
 
 
     /**

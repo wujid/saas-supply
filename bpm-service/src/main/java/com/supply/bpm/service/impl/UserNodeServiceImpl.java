@@ -7,7 +7,7 @@ import com.supply.bpm.model.po.UserNodePo;
 import com.supply.bpm.model.request.UserNodeRequest;
 import com.supply.bpm.model.response.UserNodeResponse;
 import com.supply.bpm.repository.IUserNodeRepository;
-import com.supply.bpm.service.UserNodeService;
+import com.supply.bpm.service.IUserNodeService;
 import com.supply.common.util.CommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ import java.util.List;
  * @date 2023-06-15
  */
 @Service
-public class UserNodeServiceImpl implements UserNodeService {
+public class UserNodeServiceImpl implements IUserNodeService {
     private static final Logger logger = LoggerFactory.getLogger(UserNodeServiceImpl.class);
 
     private final IUserNodeRepository userNodeRepository;

@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.supply.bpm.model.po.UserNodePo;
 import com.supply.bpm.model.request.UserNodeRequest;
 import com.supply.bpm.model.response.UserNodeResponse;
-import com.supply.bpm.service.UserNodeService;
+import com.supply.bpm.service.IUserNodeService;
 import com.supply.common.model.Result;
 import com.supply.common.web.util.ContextUtil;
 import io.swagger.annotations.Api;
@@ -19,14 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
  * @description .
  * @date 2023-06-15
  */
-@Api(tags="流程节点用户节点信息权限控制层")
+@Api(tags="用户节点信息控制层")
 @RestController
 @RequestMapping("/userNode")
 public class UserNodeController {
 
-    private final UserNodeService userNodeService;
+    private final IUserNodeService userNodeService;
 
-    public UserNodeController(UserNodeService userNodeService) {
+    public UserNodeController(IUserNodeService userNodeService) {
         this.userNodeService = userNodeService;
     }
 
