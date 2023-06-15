@@ -1,10 +1,10 @@
 package com.supply.bpm.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.supply.bpm.model.po.UserNodePo;
-import com.supply.bpm.model.request.UserNodeRequest;
-import com.supply.bpm.model.response.UserNodeResponse;
-import com.supply.bpm.service.IUserNodeService;
+import com.supply.bpm.model.po.NodeSetPo;
+import com.supply.bpm.model.request.NodeSetRequest;
+import com.supply.bpm.model.response.NodeSetResponse;
+import com.supply.bpm.service.INodeSetService;
 import com.supply.common.model.Result;
 import com.supply.common.web.util.ContextUtil;
 import io.swagger.annotations.Api;
@@ -16,17 +16,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author wjd
- * @description .
+ * @description 流程节点设置信息控制层.
  * @date 2023-06-15
  */
-@Api(tags="用户节点信息控制层")
+@Api(tags="流程节点设置信息控制层")
 @RestController
-@RequestMapping("/userNode")
-public class UserNodeController {
+@RequestMapping("/nodeSet")
+public class NodeSetController {
 
-    private final IUserNodeService userNodeService;
+    private final INodeSetService userNodeService;
 
-    public UserNodeController(IUserNodeService userNodeService) {
+    public NodeSetController(INodeSetService userNodeService) {
         this.userNodeService = userNodeService;
     }
 
@@ -44,16 +44,16 @@ public class UserNodeController {
                                      @RequestParam(required = false) String nodeId, @RequestParam(required = false) String nodeName,
                                      @RequestParam(required = false) Integer sort) {
         final Long tenantId = ContextUtil.getCurrentTenantId();
-        UserNodeRequest request = new UserNodeRequest();
+        NodeSetRequest request = new NodeSetRequest();
         request.setPageIndex(pageIndex);
         request.setPageSize(pageSize);
         request.setNodeId(nodeId);
         request.setNodeName(nodeName);
         request.setSort(sort);
         request.setTenantId(tenantId);
-        request.setOrderColumn(UserNodePo::getSort);
+        request.setOrderColumn(NodeSetPo::getSort);
         request.setIsAsc(true);
-        final IPage<UserNodeResponse> data = userNodeService.getUserNodePage(request);
+        final IPage<NodeSetResponse> data = userNodeService.getUserNodePage(request);
         return Result.ok(data);
     }
 }

@@ -1,6 +1,7 @@
-package com.supply.bpm.model.response;
+package com.supply.bpm.model.request;
 
-import com.supply.common.web.model.BaseEntity;
+import com.supply.bpm.model.po.NodeSetPo;
+import com.supply.common.web.model.BaseRequestEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -10,14 +11,14 @@ import java.io.Serializable;
 
 /**
  * @author wjd
- * @description 流程节点信息响应实体.
+ * @description 流程节点设置信息请求实体.
  * @date 2023-01-04
  */
-@ApiModel(value="流程节点信息响应实体")
+@ApiModel(value="流程节点设置信息请求实体")
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class UserNodeResponse extends BaseEntity implements Serializable {
-    private static final long serialVersionUID = 2865616781541573939L;
+public class NodeSetRequest extends BaseRequestEntity<NodeSetPo> implements Serializable {
+    private static final long serialVersionUID = -3651383738958307082L;
 
     @ApiModelProperty(value = "流程定义ID")
     private String definitionId;

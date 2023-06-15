@@ -1,15 +1,15 @@
 package com.supply.bpm.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.supply.bpm.model.request.UserNodeRequest;
-import com.supply.bpm.model.response.UserNodeResponse;
+import com.supply.bpm.model.request.NodeSetRequest;
+import com.supply.bpm.model.response.NodeSetResponse;
 
 /**
  * @author wjd
  * @description .
  * @date 2023-06-15
  */
-public interface IUserNodeService {
+public interface INodeSetService {
 
 
     /**
@@ -28,5 +28,5 @@ public interface IUserNodeService {
       * @param request 查询条件
       * @return 流程节点分页信息
       */
-    IPage<UserNodeResponse> getUserNodePage(UserNodeRequest request);
+    IPage<NodeSetResponse> getUserNodePage(NodeSetRequest request);
 }

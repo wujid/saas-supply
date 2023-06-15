@@ -14,14 +14,14 @@ import java.util.Date;
 
 /**
  * @author wjd
- * @description 流程用户任务节点信息数据库映射实体.
+ * @description 流程节点设置信息数据库映射实体.
  * @date 2023-01-04
  */
-@ApiModel(value="流程用户任务节点信息数据库映射实体")
+@ApiModel(value="流程节点设置信息数据库映射实体")
 @Data
 @EqualsAndHashCode(callSuper=false)
-@TableName("bpm_user_node")
-public class UserNodePo extends Model<UserNodePo> {
+@TableName("bpm_node_set")
+public class NodeSetPo extends Model<NodeSetPo> {
     private static final long serialVersionUID = 3092225331029344502L;
 
     @ApiModelProperty(value = "主键ID")
@@ -37,7 +37,7 @@ public class UserNodePo extends Model<UserNodePo> {
     @ApiModelProperty(value = "节点名称")
     private String nodeName;
 
-    @ApiModelProperty(value = "用户节点类型--1:个人任务  2:候选人任务 3:组任务")
+    @ApiModelProperty(value = "用户节点类型--1:个人任务 2:候选人任务 3:组任务")
     private Integer nodeType;
 
     @ApiModelProperty(value = "表单URL")

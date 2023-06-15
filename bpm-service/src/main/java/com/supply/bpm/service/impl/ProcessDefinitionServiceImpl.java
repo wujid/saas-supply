@@ -11,11 +11,11 @@ import com.supply.bpm.constant.BpmConstant;
 import com.supply.bpm.constant.UserNodeTypeEnum;
 import com.supply.bpm.cvt.ProcessDefinitionCvt;
 import com.supply.bpm.model.po.ProcessDefinitionPo;
-import com.supply.bpm.model.po.UserNodePo;
+import com.supply.bpm.model.po.NodeSetPo;
 import com.supply.bpm.model.request.ProcessDefinitionRequest;
 import com.supply.bpm.model.response.ProcessDefinitionResponse;
 import com.supply.bpm.repository.IProcessDefinitionRepository;
-import com.supply.bpm.repository.IUserNodeRepository;
+import com.supply.bpm.repository.INodeSetRepository;
 import com.supply.bpm.service.IProcessDefinitionService;
 import com.supply.bpm.util.ActivityUtil;
 import com.supply.common.constant.BusinessStatusEnum;
@@ -62,11 +62,11 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
 
     private final IProcessDefinitionRepository processDefinitionRepository;
 
-    private final IUserNodeRepository userNodeRepository;
+    private final INodeSetRepository userNodeRepository;
 
     public ProcessDefinitionServiceImpl(RepositoryService repositoryService, RuntimeService runtimeService,
                                         HistoryService historyService, IProcessDefinitionRepository processDefinitionRepository,
-                                        IUserNodeRepository userNodeRepository) {
+                                        INodeSetRepository userNodeRepository) {
         this.repositoryService = repositoryService;
         this.runtimeService = runtimeService;
         this.historyService = historyService;
@@ -308,11 +308,11 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
         if (CollectionUtil.isEmpty(userTaskList)) {
             return;
         }
-        final List<UserNodePo> userNodes = new ArrayList<>();
+        final List<NodeSetPo> userNodes = new ArrayList<>();
         int sort = 0;
         for (UserTask userTask : userTaskList) {
             sort++;
-            UserNodePo userNode = new UserNodePo();
+            NodeSetPo userNode = new NodeSetPo();
             userNode.setDefinitionId(definitionId);
             userNode.setNodeId(userTask.getId());
             userNode.setNodeName(userTask.getName());
