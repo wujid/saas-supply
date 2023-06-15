@@ -32,6 +32,9 @@ public class UserNodeRequest extends BaseRequestEntity<UserNodePo> implements Se
     @ApiModelProperty(value = "用户节点类型--1:个人任务  2:候选人任务 3:组任务")
     private Integer nodeType;
 
+    @ApiModelProperty(value = "表单URL")
+    private String formUrl;
+
     @ApiModelProperty(value = "排序")
     private Integer sort;
 

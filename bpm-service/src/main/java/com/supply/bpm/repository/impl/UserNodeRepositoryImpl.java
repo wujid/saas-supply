@@ -94,6 +94,8 @@ public class UserNodeRepositoryImpl extends ServiceImpl<UserNodeMapper, UserNode
         queryWrapper.eq(StrUtil.isNotBlank(request.getDefinitionId()), UserNodePo::getDefinitionId, request.getDefinitionId());
         queryWrapper.eq(StrUtil.isNotBlank(request.getNodeId()), UserNodePo::getNodeId, request.getNodeId());
         queryWrapper.eq(StrUtil.isNotBlank(request.getNodeName()), UserNodePo::getNodeName, request.getNodeName());
+        queryWrapper.eq(null != request.getNodeType(), UserNodePo::getNodeType, request.getNodeType());
+        queryWrapper.eq(null != request.getSort(), UserNodePo::getSort, request.getSort());
         queryWrapper.eq(null != request.getTenantId(), UserNodePo::getTenantId, request.getTenantId());
         queryWrapper.eq(null != request.getStatus(), UserNodePo::getStatus, request.getStatus());
         queryWrapper.apply(null != request.getApplySql(), request.getApplySql());
