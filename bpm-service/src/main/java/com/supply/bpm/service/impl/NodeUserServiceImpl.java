@@ -35,7 +35,7 @@ public class NodeUserServiceImpl implements INodeUserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void addNodeUser(List<NodeUserRequest> requests) {
+    public void addNodeUsers(List<NodeUserRequest> requests) {
         logger.info("[新增流程节点审批人信息集]---实体信息为{}", JSON.toJSONString(requests));
         final List<NodeUserPo> nodeUserPoList = NodeUserCvt.INSTANCE.requestToPoBatch(requests);
         nodeUserRepository.saveBatch(nodeUserPoList);
@@ -43,7 +43,7 @@ public class NodeUserServiceImpl implements INodeUserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateNodeUser(List<NodeUserRequest> requests) {
+    public void updateNodeUsers(List<NodeUserRequest> requests) {
         logger.info("[修改流程节点审批人信息集]---实体信息为{}", JSON.toJSONString(requests));
         // 删除历史审批人信息
         final Long nodeSetId = requests.stream().findFirst().get().getNodeSetId();

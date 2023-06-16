@@ -48,12 +48,12 @@ public interface IProcessDefinitionService {
     void delProcess(Long defId);
 
     /**
-      * @description 修改流程标题.
+      * @description 根据主键ID修改流程定义信息.
       * @author wjd
       * @date 2023/6/8
       * @param request 待修改的实体信息
       */
-    void updateProcessTitle(ProcessDefinitionRequest request);
+    void updateProcessById(ProcessDefinitionRequest request);
 
     /**
       * @description 修改流程为当前流程版本中使用状态.
@@ -89,4 +89,6 @@ public interface IProcessDefinitionService {
       * @param processName 流程名称
       */
     void getProcessDefinitionXml(String deploymentId, String processName, HttpServletResponse response) throws IOException;
+
+    ProcessDefinitionResponse getByParams(ProcessDefinitionRequest request);
 }

@@ -19,14 +19,14 @@ public interface INodeSetService {
       * @param id 主键ID
       * @param formUrl 详情表单url
       */
-    void updateUserNodeFormUrl(Long id, String formUrl);
+    void updateNodeSetFormUrl(Long id, String formUrl);
 
     /**
-      * @description 根据自定义条件查询流程节点信息带分页.
+      * @description 根据自定义条件查询流程节点分页信息.
       * @author wjd
       * @date 2023/6/15
       * @param request 查询条件
       * @return 流程节点分页信息
       */
-    IPage<NodeSetResponse> getUserNodePage(NodeSetRequest request);
+    IPage<NodeSetResponse> getNodeSetPage(NodeSetRequest request);
 }

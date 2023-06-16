@@ -34,7 +34,7 @@ public class NodeSetServiceImpl implements INodeSetService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateUserNodeFormUrl(Long id, String formUrl) {
+    public void updateNodeSetFormUrl(Long id, String formUrl) {
         logger.info("[根据用户节点ID修改详情表单url]---待修改的用户节点id{}对应的表单url为{}", id, formUrl);
         NodeSetPo nodeSetPo = new NodeSetPo();
         nodeSetPo.setId(id);
@@ -43,7 +43,7 @@ public class NodeSetServiceImpl implements INodeSetService {
     }
 
     @Override
-    public IPage<NodeSetResponse> getUserNodePage(NodeSetRequest request) {
+    public IPage<NodeSetResponse> getNodeSetPage(NodeSetRequest request) {
         Page<NodeSetPo> page = new Page<>(request.getPageIndex(), request.getPageSize());
         final Page<NodeSetPo> poPage = nodeSetRepository.getPageByParams(page, request);
         if (poPage.getTotal() <= 0) {

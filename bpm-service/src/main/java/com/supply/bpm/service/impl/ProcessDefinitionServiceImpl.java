@@ -207,11 +207,9 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateProcessTitle(ProcessDefinitionRequest request) {
-        logger.info("[流程标题修改]---待修改的ID为{}---新流程标题为{}", request.getId(), request.getTitle());
-        ProcessDefinitionPo processDefinition = new ProcessDefinitionPo();
-        processDefinition.setId(request.getId());
-        processDefinition.setTitle(request.getTitle());
+    public void updateProcessById(ProcessDefinitionRequest request) {
+        logger.info("根据主键ID修改流程定义信息,待修改的实体信息为{}", JSON.toJSONString(request));
+        final ProcessDefinitionPo processDefinition = ProcessDefinitionCvt.INSTANCE.requestToPo(request);
         processDefinitionRepository.updateById(processDefinition);
     }
 
@@ -290,6 +288,12 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
             outputStream.write(bytes);
         }
         inputStream.close();
+    }
+
+    @Override
+    public ProcessDefinitionResponse getByParams(ProcessDefinitionRequest request) {
+        final ProcessDefinitionPo definitionPo = processDefinitionRepository.getByParams(request);
+        return ProcessDefinitionCvt.INSTANCE.poToResponse(definitionPo);
     }
 
     /**

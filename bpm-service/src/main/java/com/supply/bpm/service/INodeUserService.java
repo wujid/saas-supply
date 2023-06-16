@@ -19,7 +19,7 @@ public interface INodeUserService {
      * @date 2023/1/5
      * @param requests 待新增的实体信息集
      */
-    void addNodeUser(List<NodeUserRequest> requests);
+    void addNodeUsers(List<NodeUserRequest> requests);
 
     /**
      * @description 修改流程节点审批人信息.
@@ -27,7 +27,7 @@ public interface INodeUserService {
      * @date 2023/1/5
      * @param requests 新审批人信息集
      */
-    void updateNodeUser(List<NodeUserRequest> requests);
+    void updateNodeUsers(List<NodeUserRequest> requests);
 
     /**
       * @description 获取流程审批人分页信息.

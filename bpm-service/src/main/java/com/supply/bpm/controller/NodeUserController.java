@@ -36,26 +36,26 @@ public class NodeUserController {
     }
 
     @ApiOperation(value = "新增流程节点审批人信息")
-    @PostMapping("/addNodeUser")
-    public Result<?> addNodeUser(@RequestBody List<NodeUserRequest> requests) {
+    @PostMapping("/addNodeUsers")
+    public Result<?> addNodeUsers(@RequestBody List<NodeUserRequest> requests) {
         if (CollectionUtil.isEmpty(requests)) {
             return Result.error("不能为空");
         }
         final Long tenantId = ContextUtil.getCurrentTenantId();
         requests.forEach(request -> request.setTenantId(tenantId));
-        nodeUserService.addNodeUser(requests);
+        nodeUserService.addNodeUsers(requests);
         return Result.ok();
     }
 
     @ApiOperation(value = "修改流程节点审批人信息")
-    @PostMapping("/updateNodeUser")
-    public Result<?> updateNodeUser(@RequestBody List<NodeUserRequest> requests) {
+    @PostMapping("/updateNodeUsers")
+    public Result<?> updateNodeUsers(@RequestBody List<NodeUserRequest> requests) {
         if (CollectionUtil.isEmpty(requests)) {
             return Result.error("不能为空");
         }
         final Long tenantId = ContextUtil.getCurrentTenantId();
         requests.forEach(request -> request.setTenantId(tenantId));
-        nodeUserService.updateNodeUser(requests);
+        nodeUserService.updateNodeUsers(requests);
         return Result.ok();
     }
 

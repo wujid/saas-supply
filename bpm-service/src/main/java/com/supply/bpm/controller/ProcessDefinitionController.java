@@ -69,7 +69,20 @@ public class ProcessDefinitionController {
     @ApiOperation(value = "修改流程标题")
     @PostMapping("/updateProcessTitle")
     public Result<?> updateProcessTitle(@RequestBody ProcessDefinitionRequest request) {
-        processDefinitionService.updateProcessTitle(request);
+        ProcessDefinitionRequest processDefinitionRequest = new ProcessDefinitionRequest();
+        processDefinitionRequest.setId(request.getId());
+        processDefinitionRequest.setTitle(request.getTitle());
+        processDefinitionService.updateProcessById(processDefinitionRequest);
+        return Result.ok();
+    }
+
+    @ApiOperation(value = "修改表单URL")
+    @PostMapping("/updateProcessFormUrl")
+    public Result<?> updateProcessFormUrl(@RequestBody ProcessDefinitionRequest request) {
+        ProcessDefinitionRequest processDefinitionRequest = new ProcessDefinitionRequest();
+        processDefinitionRequest.setId(request.getId());
+        processDefinitionRequest.setFormUrl(request.getFormUrl());
+        processDefinitionService.updateProcessById(processDefinitionRequest);
         return Result.ok();
     }
 
@@ -116,5 +129,14 @@ public class ProcessDefinitionController {
     @GetMapping("/getProcessDefinitionXml")
     public void getProcessDefinitionXml(@RequestParam String deploymentId, @RequestParam String processName, HttpServletResponse response) throws IOException {
         processDefinitionService.getProcessDefinitionXml(deploymentId, processName, response);
+    }
+
+    @ApiOperation(value = "根据流程定义ID获取流程信息")
+    @GetMapping("/getByDefinitionId")
+    public Result<?> getByDefinitionId(@RequestParam String definitionId) {
+        ProcessDefinitionRequest request = new ProcessDefinitionRequest();
+        request.setDefinitionId(definitionId);
+        final ProcessDefinitionResponse data = processDefinitionService.getByParams(request);
+        return Result.ok(data);
     }
 }

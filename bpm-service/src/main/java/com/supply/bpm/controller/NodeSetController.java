@@ -32,17 +32,17 @@ public class NodeSetController {
 
 
     @ApiOperation(value = "根据主键ID修改详情表单url")
-    @GetMapping("/updateUserNodeFormUrl")
-    public Result<?> updateUserNodeFormUrl(@RequestParam Long id, @RequestParam String formUrl) {
-        userNodeService.updateUserNodeFormUrl(id, formUrl);
+    @GetMapping("/updateNodeSetFormUrl")
+    public Result<?> updateNodeSetFormUrl(@RequestParam Long id, @RequestParam String formUrl) {
+        userNodeService.updateNodeSetFormUrl(id, formUrl);
         return Result.ok();
     }
 
-    @ApiOperation(value = "根据主键ID修改详情表单url")
-    @GetMapping("/getUserNodePage")
+    @ApiOperation(value = "根据自定义条件查询流程节点分页信息")
+    @GetMapping("/getNodeSetPage")
     public Result<?> getUserNodePage(@RequestParam Integer pageIndex, @RequestParam Integer pageSize,
                                      @RequestParam(required = false) String nodeId, @RequestParam(required = false) String nodeName,
-                                     @RequestParam(required = false) Integer sort) {
+                                     @RequestParam(required = false) Integer sort, @RequestParam(required = false) String definitionId) {
         final Long tenantId = ContextUtil.getCurrentTenantId();
         NodeSetRequest request = new NodeSetRequest();
         request.setPageIndex(pageIndex);
@@ -50,10 +50,11 @@ public class NodeSetController {
         request.setNodeId(nodeId);
         request.setNodeName(nodeName);
         request.setSort(sort);
+        request.setDefinitionId(definitionId);
         request.setTenantId(tenantId);
         request.setOrderColumn(NodeSetPo::getSort);
         request.setIsAsc(true);
-        final IPage<NodeSetResponse> data = userNodeService.getUserNodePage(request);
+        final IPage<NodeSetResponse> data = userNodeService.getNodeSetPage(request);
         return Result.ok(data);
     }
 }
