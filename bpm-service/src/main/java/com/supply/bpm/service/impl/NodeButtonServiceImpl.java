@@ -11,6 +11,7 @@ import com.supply.bpm.repository.INodeButtonRepository;
 import com.supply.bpm.service.INodeButtonService;
 import com.supply.common.constant.BusinessStatusEnum;
 import com.supply.common.constant.Constant;
+import com.supply.common.exception.ApiException;
 import com.supply.common.util.CommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,8 @@ public class NodeButtonServiceImpl implements INodeButtonService {
     @Transactional(rollbackFor = Exception.class)
     public void addNodeButton(NodeButtonRequest request) {
         logger.info("[新增流程节点按钮]---实体信息为{}", JSON.toJSONString(request));
+        // 验证按钮唯一性
+        this.saveValidate(request);
         final NodeButtonPo nodeButtonPo = NodeButtonCvt.INSTANCE.requestToPo(request);
         nodeButtonPo.setBusinessStatus(BusinessStatusEnum.IN_ACTIVE.getStatus());
         nodeButtonRepository.save(nodeButtonPo);
@@ -47,6 +50,8 @@ public class NodeButtonServiceImpl implements INodeButtonService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateNodeButton(NodeButtonRequest request) {
+        // 验证按钮唯一性
+        this.saveValidate(request);
         logger.info("[修改流程节点按钮]---实体信息为{}", JSON.toJSONString(request));
         final NodeButtonPo nodeButtonPo = NodeButtonCvt.INSTANCE.requestToPo(request);
         nodeButtonRepository.updateById(nodeButtonPo);
@@ -92,5 +97,23 @@ public class NodeButtonServiceImpl implements INodeButtonService {
         final List<NodeButtonPo> poList = page.getRecords();
         final List<NodeButtonResponse> responseList = NodeButtonCvt.INSTANCE.poToResponseBatch(poList);
         return CommonUtil.pageCvt(responseList, poPage);
+    }
+
+    /**
+      * @description 新增&修改验证按钮唯一性.
+      * @author wjd
+      * @date 2023/6/18
+      * @param request 待验证的实体
+      */
+    private void saveValidate(NodeButtonRequest request) {
+        NodeButtonRequest nodeButtonRequest = new NodeButtonRequest();
+        nodeButtonRequest.setNodeSetId(request.getNodeSetId());
+        nodeButtonRequest.setTenantId(request.getTenantId());
+        nodeButtonRequest.setStatus(Constant.STATUS_NOT_DEL);
+        nodeButtonRequest.setNeId(request.getId());
+        final Long count = nodeButtonRepository.getCountByParams(nodeButtonRequest);
+        if (count > 0) {
+            throw new ApiException("该按钮类型已存在!");
+        }
     }
 }

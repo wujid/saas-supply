@@ -40,4 +40,7 @@ public class NodeButtonRequest extends BaseRequestEntity<NodeButtonPo> implement
 
     @ApiModelProperty(value = "租户ID")
     private Long tenantId;
+
+    @ApiModelProperty(value = "不包含的ID")
+    private Long neId;
 }

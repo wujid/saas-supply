@@ -12,6 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,7 +35,7 @@ public class NodeButtonController {
 
     @ApiOperation(value = "新增流程节点按钮")
     @PostMapping("/addNodeButton")
-    public Result<?> addNodeButton(NodeButtonRequest request) {
+    public Result<?> addNodeButton(@RequestBody NodeButtonRequest request) {
         final Long tenantId = ContextUtil.getCurrentTenantId();
         request.setTenantId(tenantId);
         nodeButtonService.addNodeButton(request);
@@ -43,7 +44,7 @@ public class NodeButtonController {
 
     @ApiOperation(value = "修改流程节点按钮")
     @PostMapping("/updateNodeButton")
-    public Result<?> updateNodeButton(NodeButtonRequest request) {
+    public Result<?> updateNodeButton(@RequestBody NodeButtonRequest request) {
         final Long tenantId = ContextUtil.getCurrentTenantId();
         request.setTenantId(tenantId);
         nodeButtonService.updateNodeButton(request);
@@ -52,22 +53,22 @@ public class NodeButtonController {
 
     @ApiOperation(value = "流程节点按钮删除")
     @GetMapping("/delNodeButton")
-    public Result<?> delNodeButton(Long defId) {
-        nodeButtonService.delNodeButton(defId);
+    public Result<?> delNodeButton(@RequestParam Long id) {
+        nodeButtonService.delNodeButton(id);
         return Result.ok();
     }
 
     @ApiOperation(value = "流程节点按钮冻结")
     @GetMapping("/freezeNodeButton")
-    public Result<?> freezeNodeButton(Long defId) {
-        nodeButtonService.freezeNodeButton(defId);
+    public Result<?> freezeNodeButton(@RequestParam Long id) {
+        nodeButtonService.freezeNodeButton(id);
         return Result.ok();
     }
 
     @ApiOperation(value = "流程节点按钮解冻")
     @GetMapping("/activeNodeButton")
-    public Result<?> activeNodeButton(Long defId) {
-        nodeButtonService.activeNodeButton(defId);
+    public Result<?> activeNodeButton(@RequestParam Long id) {
+        nodeButtonService.activeNodeButton(id);
         return Result.ok();
     }
 

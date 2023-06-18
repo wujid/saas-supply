@@ -51,4 +51,6 @@ public interface INodeButtonRepository extends IService<NodeButtonPo> {
      * @return 带分页的结果
      */
     Page<NodeButtonPo> getPageByParams(Page<NodeButtonPo> page, NodeButtonRequest request);
+
+    Long getCountByParams(NodeButtonRequest request);
 }

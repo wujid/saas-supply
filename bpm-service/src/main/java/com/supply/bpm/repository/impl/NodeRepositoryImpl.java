@@ -80,6 +80,12 @@ public class NodeRepositoryImpl extends ServiceImpl<NodeButtonMapper, NodeButton
         return nodeButtonMapper.selectPage(page, queryWrapper);
     }
 
+    @Override
+    public Long getCountByParams(NodeButtonRequest request) {
+        final LambdaQueryWrapper<NodeButtonPo> queryWrapper = this.getQueryWrapper(request);
+        return nodeButtonMapper.selectCount(queryWrapper);
+    }
+
 
     /**
      * @author wjd
@@ -97,6 +103,7 @@ public class NodeRepositoryImpl extends ServiceImpl<NodeButtonMapper, NodeButton
         queryWrapper.eq(null != request.getBusinessStatus(), NodeButtonPo::getBusinessStatus, request.getBusinessStatus());
         queryWrapper.eq(null != request.getTenantId(), NodeButtonPo::getTenantId, request.getTenantId());
         queryWrapper.eq(null != request.getStatus(), NodeButtonPo::getStatus, request.getStatus());
+        queryWrapper.ne(null != request.getNeId(), NodeButtonPo::getId, request.getNeId());
         queryWrapper.apply(null != request.getApplySql(), request.getApplySql());
         queryWrapper.orderBy(null != request.getOrderColumn(),  request.getIsAsc(), request.getOrderColumn());
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(request.getOrderColumnList()), request.getIsAsc(), request.getOrderColumnList());
