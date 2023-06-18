@@ -1,6 +1,6 @@
 package com.supply.bpm.controller;
 
-import cn.hutool.core.collection.CollectionUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.supply.bpm.model.po.NodeButtonPo;
 import com.supply.bpm.model.request.NodeButtonRequest;
 import com.supply.bpm.model.response.NodeButtonResponse;
@@ -12,12 +12,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * @author wjd
@@ -35,40 +32,60 @@ public class NodeButtonController {
         this.nodeButtonService = nodeButtonService;
     }
 
-
-    @ApiOperation(value = "新增用户节点按钮信息")
-    @PostMapping("/addUserNodeButton")
-    public Result<?> addUserNodeButton(@RequestBody List<NodeButtonRequest> requests) {
-        if (CollectionUtil.isEmpty(requests)) {
-            return Result.error("不能为空");
-        }
+    @ApiOperation(value = "新增流程节点按钮")
+    @PostMapping("/addNodeButton")
+    public Result<?> addNodeButton(NodeButtonRequest request) {
         final Long tenantId = ContextUtil.getCurrentTenantId();
-        requests.forEach(request -> request.setTenantId(tenantId));
-        nodeButtonService.addUserNodeButton(requests);
+        request.setTenantId(tenantId);
+        nodeButtonService.addNodeButton(request);
         return Result.ok();
     }
 
-    @ApiOperation(value = "修改用户节点按钮信息")
-    @PostMapping("/updateUserNodeButton")
-    public Result<?> updateUserNodeButton(@RequestBody List<NodeButtonRequest> requests) {
-        if (CollectionUtil.isEmpty(requests)) {
-            return Result.error("不能为空");
-        }
+    @ApiOperation(value = "修改流程节点按钮")
+    @PostMapping("/updateNodeButton")
+    public Result<?> updateNodeButton(NodeButtonRequest request) {
         final Long tenantId = ContextUtil.getCurrentTenantId();
-        requests.forEach(request -> request.setTenantId(tenantId));
-        nodeButtonService.updateUserNodeButton(requests);
+        request.setTenantId(tenantId);
+        nodeButtonService.updateNodeButton(request);
         return Result.ok();
     }
 
-    @ApiOperation(value = "获取用户节点按钮信息集")
-    @GetMapping("/getNodeButtonListByParams")
-    public Result<List<NodeButtonResponse>> getNodeUsersByUserNodeId(@RequestParam Long nodeSetId) {
+    @ApiOperation(value = "流程节点按钮删除")
+    @GetMapping("/delNodeButton")
+    public Result<?> delNodeButton(Long defId) {
+        nodeButtonService.delNodeButton(defId);
+        return Result.ok();
+    }
+
+    @ApiOperation(value = "流程节点按钮冻结")
+    @GetMapping("/freezeNodeButton")
+    public Result<?> freezeNodeButton(Long defId) {
+        nodeButtonService.freezeNodeButton(defId);
+        return Result.ok();
+    }
+
+    @ApiOperation(value = "流程节点按钮解冻")
+    @GetMapping("/activeNodeButton")
+    public Result<?> activeNodeButton(Long defId) {
+        nodeButtonService.activeNodeButton(defId);
+        return Result.ok();
+    }
+
+    @ApiOperation(value = "流程节点按钮分页信息")
+    @GetMapping("/getNodeButtonPage")
+    public Result<?> getNodeButtonPage(@RequestParam Integer pageIndex, @RequestParam Integer pageSize,
+                                       @RequestParam(required = false) Long nodeSetId, @RequestParam(required = false) Integer businessStatus) {
+        final Long tenantId = ContextUtil.getCurrentTenantId();
         NodeButtonRequest request = new NodeButtonRequest();
+        request.setPageIndex(pageIndex);
+        request.setPageSize(pageSize);
         request.setNodeSetId(nodeSetId);
+        request.setBusinessStatus(businessStatus);
+        request.setTenantId(tenantId);
         request.setStatus(Constant.STATUS_NOT_DEL);
         request.setOrderColumn(NodeButtonPo::getSort);
         request.setIsAsc(true);
-        final List<NodeButtonResponse> data = nodeButtonService.getUserNodeButtonListByParams(request);
+        final IPage<NodeButtonResponse> data = nodeButtonService.getNodeButtonPage(request);
         return Result.ok(data);
     }
 

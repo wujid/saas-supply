@@ -66,11 +66,12 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
-    public List<CategoryResponse> getCategoryTree(Long parentId, String name) {
+    public List<CategoryResponse> getCategoryTree(Long parentId, String name, Long tenantId) {
         List<CategoryResponse> result = new ArrayList<>();
         CategoryRequest request = new CategoryRequest();
         request.setParentId(parentId);
         request.setStatus(Constant.STATUS_NOT_DEL);
+        request.setTenantId(tenantId);
         request.setOrderColumn(CategoryPo::getSort);
         request.setIsAsc(true);
         final List<CategoryPo> categoryPoList = categoryRepository.getListByParams(request);

@@ -34,4 +34,7 @@ public class CategoryRequest extends BaseRequestEntity<CategoryPo> implements Se
     @ApiModelProperty(value = "序号")
     private Integer sort;
 
+    @ApiModelProperty(value = "租户ID")
+    private Long tenantId;
+
 }

@@ -42,7 +42,7 @@ public interface ICategoryService {
       * @date 2022/12/20
       * @param parentId 父ID条件
       * @param name 名称条件
-      * @return java.util.List<com.supply.bpm.model.response.CategoryResponse>
+      * @return 流程分类树
       */
-    List<CategoryResponse> getCategoryTree(Long parentId, String name);
+    List<CategoryResponse> getCategoryTree(Long parentId, String name, Long tenantId);
 }

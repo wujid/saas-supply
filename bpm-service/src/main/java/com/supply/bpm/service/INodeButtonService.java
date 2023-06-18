@@ -1,9 +1,8 @@
 package com.supply.bpm.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.supply.bpm.model.request.NodeButtonRequest;
 import com.supply.bpm.model.response.NodeButtonResponse;
-
-import java.util.List;
 
 /**
  * @author wjd
@@ -12,28 +11,15 @@ import java.util.List;
  */
 public interface INodeButtonService {
 
-    /**
-     * @description 新增流程节点按钮信息.
-     * @author wjd
-     * @date 2023/1/5
-     * @param requests 待新增的实体信息集
-     */
-    void addUserNodeButton(List<NodeButtonRequest> requests);
+    void addNodeButton(NodeButtonRequest request);
 
-    /**
-     * @description 修改流程节点按钮信息.
-     * @author wjd
-     * @date 2023/1/5
-     * @param requests 待修改的实体信息集
-     */
-    void updateUserNodeButton(List<NodeButtonRequest> requests);
+    void updateNodeButton(NodeButtonRequest request);
 
-    /**
-     * @description 根据自定义条件查询流程节点按钮信息集.
-     * @author wjd
-     * @date 2023/1/5
-     * @param request 查询条件
-     * @return 流程节点按钮信息集
-     */
-    List<NodeButtonResponse> getUserNodeButtonListByParams(NodeButtonRequest request);
+    void delNodeButton(Long id);
+
+    void freezeNodeButton(Long id);
+
+    void activeNodeButton(Long id);
+
+    IPage<NodeButtonResponse> getNodeButtonPage(NodeButtonRequest request);
 }

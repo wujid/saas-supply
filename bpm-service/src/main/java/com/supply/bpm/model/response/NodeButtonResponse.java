@@ -34,6 +34,9 @@ public class NodeButtonResponse extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "排序")
     private String sort;
 
+    @ApiModelProperty(value = "业务状态")
+    private Integer businessStatus;
+
     @ApiModelProperty(value = "租户ID")
     private Long tenantId;
 }
