@@ -96,6 +96,7 @@ public class CategoryRepositoryImpl extends ServiceImpl<CategoryMapper, Category
         queryWrapper.eq(StrUtil.isNotBlank(request.getName()), CategoryPo::getName, request.getName());
         queryWrapper.eq(null != request.getSort(), CategoryPo::getSort, request.getSort());
         queryWrapper.eq(null != request.getStatus(), CategoryPo::getStatus, request.getStatus());
+        queryWrapper.eq(null != request.getTenantId(), CategoryPo::getTenantId, request.getTenantId());
         queryWrapper.apply(null != request.getApplySql(), request.getApplySql());
         queryWrapper.orderBy(null != request.getOrderColumn(),  request.getIsAsc(), request.getOrderColumn());
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(request.getOrderColumnList()), request.getIsAsc(), request.getOrderColumnList());
