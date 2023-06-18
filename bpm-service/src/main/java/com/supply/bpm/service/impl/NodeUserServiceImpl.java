@@ -108,7 +108,8 @@ public class NodeUserServiceImpl implements INodeUserService {
                 }
                 final Set<String> userNames = users.stream().map(SysUserResponse::getName).collect(Collectors.toSet());
                 final String userName = StrUtil.join(",", userNames);
-                throw new ApiException("用户{}已被关联", userName);
+                final String errorMessage = StrUtil.format("用户{}已被关联", userName);
+                throw new ApiException(errorMessage);
             }
         }
     }

@@ -6,6 +6,7 @@ import com.supply.bpm.model.po.NodeUserPo;
 import com.supply.bpm.model.request.NodeUserRequest;
 import com.supply.bpm.model.response.NodeUserResponse;
 import com.supply.bpm.service.INodeUserService;
+import com.supply.common.constant.Constant;
 import com.supply.common.model.Result;
 import com.supply.common.web.util.ContextUtil;
 import io.swagger.annotations.Api;
@@ -65,6 +66,7 @@ public class NodeUserController {
         request.setTenantId(tenantId);
         request.setNodeSetId(nodeSetId);
         request.setNodeUserType(nodeUserType);
+        request.setStatus(Constant.STATUS_NOT_DEL);
         request.setOrderColumn(NodeUserPo::getCreateTime);
         final IPage<NodeUserResponse> data = nodeUserService.getNodeUserPage(request);
         return Result.ok(data);
