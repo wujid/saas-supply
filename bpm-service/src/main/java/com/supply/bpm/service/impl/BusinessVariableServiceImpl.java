@@ -35,27 +35,29 @@ public class BusinessVariableServiceImpl implements IBusinessVariableService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void addBusinessVariable(List<BusinessVariableRequest> requests) {
-        logger.info("[新增流程业务参数信息集]---实体信息为{}", JSON.toJSONString(requests));
-        final List<BusinessVariablePo> businessVariablePoList = BusinessVariableCvt.INSTANCE.requestToPoBatch(requests);
-        businessVariableRepository.saveBatch(businessVariablePoList);
+    public void addBusinessVariable(BusinessVariableRequest request) {
+        logger.info("[新增流程业务参数信息]---实体信息为{}", JSON.toJSONString(request));
+        final BusinessVariablePo businessVariable = BusinessVariableCvt.INSTANCE.requestToPo(request);
+        businessVariableRepository.save(businessVariable);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateBusinessVariable(List<BusinessVariableRequest> requests) {
-        logger.info("[修改流程业务参数信息集]---实体信息为{}", JSON.toJSONString(requests));
-        // 删除历史流程业务参数信息集
-        final String definitionId = requests.stream().findFirst().get().getDefinitionId();
-        BusinessVariablePo businessVariablePo = new BusinessVariablePo();
-        businessVariablePo.setStatus(Constant.STATUS_DEL);
-        BusinessVariableRequest request = new BusinessVariableRequest();
-        request.setDefinitionId(definitionId);
-        request.setStatus(Constant.STATUS_NOT_DEL);
-        businessVariableRepository.updateByParams(businessVariablePo, request);
+    public void updateBusinessVariable(BusinessVariableRequest request) {
+        logger.info("[修改流程业务参数信息]---实体信息为{}", JSON.toJSONString(request));
         // 保存流程业务参数信息集
-        final List<BusinessVariablePo> businessVariablePoList = BusinessVariableCvt.INSTANCE.requestToPoBatch(requests);
-        businessVariableRepository.saveBatch(businessVariablePoList);
+        final BusinessVariablePo businessVariable = BusinessVariableCvt.INSTANCE.requestToPo(request);
+        businessVariableRepository.updateById(businessVariable);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void delBusinessVariable(Long id) {
+        logger.info("[删除流程业务参数]---待删除的主键ID为{}", id);
+        final BusinessVariablePo businessVariable = new BusinessVariablePo();
+        businessVariable.setId(id);
+        businessVariable.setStatus(Constant.STATUS_DEL);
+        businessVariableRepository.updateById(businessVariable);
     }
 
     @Override

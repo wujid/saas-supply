@@ -1,6 +1,5 @@
 package com.supply.bpm.controller;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.supply.bpm.model.request.BusinessVariableRequest;
 import com.supply.bpm.model.response.BusinessVariableResponse;
@@ -16,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * @author wjd
@@ -37,33 +34,33 @@ public class BusinessVariableController {
 
     @ApiOperation(value = "新增流程业务参数")
     @PostMapping("/addBusinessVariable")
-    public Result<?> addNodeUser(@RequestBody List<BusinessVariableRequest> requests) {
-        if (CollectionUtil.isEmpty(requests)) {
-            return Result.error("不能为空");
-        }
+    public Result<?> addBusinessVariable(@RequestBody BusinessVariableRequest request) {
         final Long tenantId = ContextUtil.getCurrentTenantId();
-        requests.forEach(request -> request.setTenantId(tenantId));
-        businessVariableService.addBusinessVariable(requests);
+        request.setTenantId(tenantId);
+        businessVariableService.addBusinessVariable(request);
         return Result.ok();
     }
 
     @ApiOperation(value = "修改流程业务参数")
     @PostMapping("/updateBusinessVariable")
-    public Result<?> updateNodeUser(@RequestBody List<BusinessVariableRequest> requests) {
-        if (CollectionUtil.isEmpty(requests)) {
-            return Result.error("不能为空");
-        }
-        final Long tenantId = ContextUtil.getCurrentTenantId();
-        requests.forEach(request -> request.setTenantId(tenantId));
-        businessVariableService.updateBusinessVariable(requests);
+    public Result<?> updateNodeUser(@RequestBody BusinessVariableRequest request) {
+        businessVariableService.updateBusinessVariable(request);
         return Result.ok();
     }
 
+    @ApiOperation(value = "根据主键ID删除流程业务参数")
+    @GetMapping("/delBusinessVariable")
+    public Result<?> delBusinessVariable(@RequestParam Long id) {
+        businessVariableService.delBusinessVariable(id);
+        return Result.ok();
+    }
+
+
     @ApiOperation(value = "流程业务参数分页信息")
-    @GetMapping("/getProcessDefinitionPage")
-    public Result<IPage<BusinessVariableResponse>> getProcessDefinitionPage(@RequestParam Integer pageIndex, @RequestParam Integer pageSize,
-                                                                             @RequestParam(required = false) String definitionId, @RequestParam(required = false) String variableKey,
-                                                                             @RequestParam(required = false) String variableName) {
+    @GetMapping("/getBusinessVariablePage")
+    public Result<IPage<BusinessVariableResponse>> getBusinessVariablePage(@RequestParam Integer pageIndex, @RequestParam Integer pageSize,
+                                                                           @RequestParam(required = false) String definitionId, @RequestParam(required = false) String variableKey,
+                                                                           @RequestParam(required = false) String variableName) {
         BusinessVariableRequest request = new BusinessVariableRequest();
         request.setPageIndex(pageIndex);
         request.setPageSize(pageSize);

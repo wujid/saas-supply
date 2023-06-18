@@ -4,8 +4,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.supply.bpm.model.request.BusinessVariableRequest;
 import com.supply.bpm.model.response.BusinessVariableResponse;
 
-import java.util.List;
-
 /**
  * @author wjd
  * @description .
@@ -17,17 +15,25 @@ public interface IBusinessVariableService {
       * @description 新增流程业务参数.
       * @author wjd
       * @date 2023/1/5
-      * @param requests 待保存的实体信息集
+      * @param request 待保存的实体信息集
       */
-    void addBusinessVariable(List<BusinessVariableRequest> requests);
+    void addBusinessVariable(BusinessVariableRequest request);
 
     /**
       * @description 修改流程业务参数.
       * @author wjd
       * @date 2023/1/5
-      * @param requests 待保存的实体信息集
+      * @param request 待保存的实体信息集
       */
-    void updateBusinessVariable(List<BusinessVariableRequest> requests);
+    void updateBusinessVariable(BusinessVariableRequest request);
+
+    /**
+      * @description 根据主键ID删除流程业务参数.
+      * @author wjd
+      * @date 2023/6/16
+      * @param id 主键ID
+      */
+    void delBusinessVariable(Long id);
 
     /**
       * @description 根据自定义条件查询流程业务参数分页信息.
