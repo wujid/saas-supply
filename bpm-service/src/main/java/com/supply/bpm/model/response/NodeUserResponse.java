@@ -22,9 +22,6 @@ public class NodeUserResponse extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "流程节点设置主键ID")
     private Long nodeSetId;
 
-    @ApiModelProperty(value = "节点名称")
-    private String nodeName;
-
     @ApiModelProperty(value = "节点人员类型")
     private Integer nodeUserType;
 
@@ -33,4 +30,7 @@ public class NodeUserResponse extends BaseEntity implements Serializable {
 
     @ApiModelProperty(value = "租户ID")
     private Long tenantId;
+
+    @ApiModelProperty(value = "节点人员类型名称")
+    private String relationName;
 }

@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * @author wjd
@@ -32,4 +33,7 @@ public class NodeUserRequest extends BaseRequestEntity<NodeUserPo> implements Se
 
     @ApiModelProperty(value = "租户ID")
     private Long tenantId;
+
+    @ApiModelProperty(value = "关联ID")
+    private Set<Long> relationIds;
 }

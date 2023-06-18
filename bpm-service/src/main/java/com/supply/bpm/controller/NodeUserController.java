@@ -47,15 +47,10 @@ public class NodeUserController {
         return Result.ok();
     }
 
-    @ApiOperation(value = "修改流程节点审批人信息")
-    @PostMapping("/updateNodeUsers")
-    public Result<?> updateNodeUsers(@RequestBody List<NodeUserRequest> requests) {
-        if (CollectionUtil.isEmpty(requests)) {
-            return Result.error("不能为空");
-        }
-        final Long tenantId = ContextUtil.getCurrentTenantId();
-        requests.forEach(request -> request.setTenantId(tenantId));
-        nodeUserService.updateNodeUsers(requests);
+    @ApiOperation(value = "删除流程节点审批人信息")
+    @GetMapping("/delNodeUser")
+    public Result<?> delNodeUser(@RequestParam Long id) {
+        nodeUserService.delNodeUser(id);
         return Result.ok();
     }
 

@@ -22,12 +22,12 @@ public interface INodeUserService {
     void addNodeUsers(List<NodeUserRequest> requests);
 
     /**
-     * @description 修改流程节点审批人信息.
-     * @author wjd
-     * @date 2023/1/5
-     * @param requests 新审批人信息集
-     */
-    void updateNodeUsers(List<NodeUserRequest> requests);
+      * @description 删除流程节点审批人信息.
+      * @author wjd
+      * @date 2023/6/18
+      * @param id 主键ID
+      */
+    void delNodeUser(Long id);
 
     /**
       * @description 获取流程审批人分页信息.
