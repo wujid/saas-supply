@@ -39,5 +39,5 @@ public interface INodeSetService {
       * @param request 查询条件
       * @return 下一个节点审批人信息
       */
-    List<NodeSetResponse> startBpmNextNode(NodeSetRequest request);
+    List<NodeSetResponse> startBpmNextNodeInfo(NodeSetRequest request);
 }

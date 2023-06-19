@@ -88,7 +88,7 @@ public class NodeSetServiceImpl implements INodeSetService {
     }
 
     @Override
-    public List<NodeSetResponse> startBpmNextNode(NodeSetRequest request) {
+    public List<NodeSetResponse> startBpmNextNodeInfo(NodeSetRequest request) {
         final String definitionId = request.getDefinitionId();
         final Map<String, Object> variablesMap = request.getVariablesMap();
         // 获取BpmnModel对象
