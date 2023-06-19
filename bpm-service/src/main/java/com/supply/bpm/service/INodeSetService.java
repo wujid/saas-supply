@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.supply.bpm.model.request.NodeSetRequest;
 import com.supply.bpm.model.response.NodeSetResponse;
 
+import java.util.List;
+
 /**
  * @author wjd
  * @description .
@@ -29,4 +31,13 @@ public interface INodeSetService {
       * @return 流程节点分页信息
       */
     IPage<NodeSetResponse> getNodeSetPage(NodeSetRequest request);
+
+    /**
+      * @description 发起流程获取下一个节点审批人信息.
+      * @author wjd
+      * @date 2023/6/19
+      * @param request 查询条件
+      * @return 下一个节点审批人信息
+      */
+    List<NodeSetResponse> startBpmNextNode(NodeSetRequest request);
 }

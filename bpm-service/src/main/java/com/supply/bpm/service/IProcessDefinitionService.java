@@ -6,6 +6,7 @@ import com.supply.bpm.model.response.ProcessDefinitionResponse;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author wjd
@@ -90,5 +91,21 @@ public interface IProcessDefinitionService {
       */
     void getProcessDefinitionXml(String deploymentId, String processName, HttpServletResponse response) throws IOException;
 
+    /**
+      * @description 根据自定义条件查询流程定义信息.
+      * @author wjd
+      * @date 2023/6/19
+      * @param request 查询条件
+      * @return 流程定义信息
+      */
     ProcessDefinitionResponse getByParams(ProcessDefinitionRequest request);
+
+    /**
+      * @description 根据流程分类编码查询流程定义信息集.
+      * @author wjd
+      * @date 2023/6/19
+      * @param categoryCode 流程分类编码
+      * @return 流程定义信息集
+      */
+    List<ProcessDefinitionResponse> getListByCategoryCode(String categoryCode);
 }

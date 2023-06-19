@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author wjd
@@ -137,6 +138,13 @@ public class ProcessDefinitionController {
         ProcessDefinitionRequest request = new ProcessDefinitionRequest();
         request.setDefinitionId(definitionId);
         final ProcessDefinitionResponse data = processDefinitionService.getByParams(request);
+        return Result.ok(data);
+    }
+
+    @ApiOperation(value = "根据流程定义ID获取流程信息")
+    @GetMapping("/getListByCategoryCode")
+    public Result<?> getListByCategoryCode(@RequestParam String categoryCode) {
+        final List<ProcessDefinitionResponse> data = processDefinitionService.getListByCategoryCode(categoryCode);
         return Result.ok(data);
     }
 }

@@ -10,10 +10,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.supply.bpm.constant.BpmConstant;
 import com.supply.bpm.constant.NodeTypeEnum;
 import com.supply.bpm.cvt.ProcessDefinitionCvt;
+import com.supply.bpm.model.po.CategoryPo;
 import com.supply.bpm.model.po.ProcessDefinitionPo;
 import com.supply.bpm.model.po.NodeSetPo;
+import com.supply.bpm.model.request.CategoryRequest;
 import com.supply.bpm.model.request.ProcessDefinitionRequest;
 import com.supply.bpm.model.response.ProcessDefinitionResponse;
+import com.supply.bpm.repository.ICategoryRepository;
 import com.supply.bpm.repository.IProcessDefinitionRepository;
 import com.supply.bpm.repository.INodeSetRepository;
 import com.supply.bpm.service.IProcessDefinitionService;
@@ -64,14 +67,17 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
 
     private final INodeSetRepository userNodeRepository;
 
+    private final ICategoryRepository categoryRepository;
+
     public ProcessDefinitionServiceImpl(RepositoryService repositoryService, RuntimeService runtimeService,
                                         HistoryService historyService, IProcessDefinitionRepository processDefinitionRepository,
-                                        INodeSetRepository userNodeRepository) {
+                                        INodeSetRepository userNodeRepository, ICategoryRepository categoryRepository) {
         this.repositoryService = repositoryService;
         this.runtimeService = runtimeService;
         this.historyService = historyService;
         this.processDefinitionRepository = processDefinitionRepository;
         this.userNodeRepository = userNodeRepository;
+        this.categoryRepository = categoryRepository;
     }
 
 
@@ -296,6 +302,24 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
         return ProcessDefinitionCvt.INSTANCE.poToResponse(definitionPo);
     }
 
+    @Override
+    public List<ProcessDefinitionResponse> getListByCategoryCode(String categoryCode) {
+        CategoryRequest categoryRequest = new CategoryRequest();
+        categoryRequest.setCode(categoryCode);
+        categoryRequest.setStatus(Constant.STATUS_NOT_DEL);
+        final CategoryPo category = categoryRepository.getByParams(categoryRequest);
+        if (null == category) {
+            final String errorMessage = StrUtil.format("流程分类编码{}不存在", categoryCode);
+            throw new ApiException(errorMessage);
+        }
+        ProcessDefinitionRequest request = new ProcessDefinitionRequest();
+        request.setCategoryId(category.getId());
+        request.setBusinessStatus(BusinessStatusEnum.PROCESS_STATUS_ACTIVE.getStatus());
+        request.setStatus(Constant.STATUS_NOT_DEL);
+        final List<ProcessDefinitionPo> list = processDefinitionRepository.getListByParams(request);
+        return ProcessDefinitionCvt.INSTANCE.poToResponseBatch(list);
+    }
+
     /**
      * @description 根据流程定义ID获取用户节点信息并保存.
      * @author wjd
@@ -322,12 +346,21 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
             userNode.setNodeName(userTask.getName());
             if (StrUtil.isNotBlank(userTask.getAssignee())) {
                 userNode.setNodeType(NodeTypeEnum.USER_OWNER.getType());
+                final String nodeElName = StrUtil.subBetween(userTask.getAssignee(), "{", "}");
+                userNode.setNodeElName(nodeElName);
+
             }
             if (CollectionUtil.isNotEmpty(userTask.getCandidateUsers())) {
                 userNode.setNodeType(NodeTypeEnum.USER_CANDIDATE_USERS.getType());
+                final String elName = userTask.getCandidateUsers().stream().findFirst().get();
+                final String nodeElName = StrUtil.subBetween(elName, "{", "}");
+                userNode.setNodeElName(nodeElName);
             }
             if (CollectionUtil.isNotEmpty(userTask.getCandidateGroups())) {
                 userNode.setNodeType(NodeTypeEnum.USER_GROUP.getType());
+                final String elName = userTask.getCandidateGroups().stream().findFirst().get();
+                final String nodeElName = StrUtil.subBetween(elName, "{", "}");
+                userNode.setNodeElName(nodeElName);
             }
             userNode.setSort(sort);
             userNode.setTenantId(tenantId);

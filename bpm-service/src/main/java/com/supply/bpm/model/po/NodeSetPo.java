@@ -5,12 +5,14 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.supply.common.model.response.sys.SysUserResponse;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author wjd
@@ -40,6 +42,9 @@ public class NodeSetPo extends Model<NodeSetPo> {
     @ApiModelProperty(value = "用户节点类型--1:开始节点 2:用户任务节点--个人任务 3:用户任务节点--候选人任务 4:用户任务节点--组任务 5:结束")
     private Integer nodeType;
 
+    @ApiModelProperty(value = "节点EL表达式名称")
+    private String nodeElName;
+
     @ApiModelProperty(value = "表单URL")
     private String formUrl;
 
@@ -65,5 +70,8 @@ public class NodeSetPo extends Model<NodeSetPo> {
 
     @ApiModelProperty(value = "状态")
     private Integer status;
+
+    @ApiModelProperty(value = "当前节点审批人")
+    private List<SysUserResponse> nodeUsers;
 
 }
