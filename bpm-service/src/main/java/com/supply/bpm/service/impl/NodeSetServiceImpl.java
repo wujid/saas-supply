@@ -3,6 +3,7 @@ package com.supply.bpm.service.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.supply.bpm.constant.NodeTypeEnum;
 import com.supply.bpm.constant.NodeUserTypeEnum;
 import com.supply.bpm.cvt.NodeSetCvt;
 import com.supply.bpm.model.po.NodeSetPo;
@@ -109,10 +110,11 @@ public class NodeSetServiceImpl implements INodeSetService {
         }
         final Map<String, UserTask> userTaskMap = userTasks.stream().collect(Collectors.toMap(UserTask::getId, e -> e, (k1, k2) -> k1));
 
-        // 根据流程定义获取已保存的流程节点信息
+        // 根据流程定义获取已保存的流程节点信息(仅查询节点类型为个人及候选人)
         NodeSetRequest nodeSetRequest = new NodeSetRequest();
         nodeSetRequest.setDefinitionId(definitionId);
         nodeSetRequest.setStatus(Constant.STATUS_NOT_DEL);
+        nodeSetRequest.setNodeTypes(Set.of(NodeTypeEnum.USER_OWNER.getType(), NodeTypeEnum.USER_CANDIDATE_USERS.getType()));
         final List<NodeSetPo> nodeSets = nodeSetRepository.getListByParams(nodeSetRequest);
         if (CollectionUtil.isEmpty(nodeSets)) {
             return null;
