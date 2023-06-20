@@ -98,6 +98,7 @@ public class NodeSetRepositoryImpl extends ServiceImpl<NodeSetMapper, NodeSetPo>
         queryWrapper.eq(null != request.getSort(), NodeSetPo::getSort, request.getSort());
         queryWrapper.eq(null != request.getTenantId(), NodeSetPo::getTenantId, request.getTenantId());
         queryWrapper.eq(null != request.getStatus(), NodeSetPo::getStatus, request.getStatus());
+        queryWrapper.in(CollectionUtil.isNotEmpty(request.getNodeTypes()), NodeSetPo::getNodeType, request.getNodeTypes());
         queryWrapper.apply(null != request.getApplySql(), request.getApplySql());
         queryWrapper.orderBy(null != request.getOrderColumn(),  request.getIsAsc(), request.getOrderColumn());
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(request.getOrderColumnList()), request.getIsAsc(), request.getOrderColumnList());

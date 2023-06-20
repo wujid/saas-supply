@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author wjd
@@ -31,7 +32,7 @@ public class NodeSetRequest extends BaseRequestEntity<NodeSetPo> implements Seri
     @ApiModelProperty(value = "节点名称")
     private String nodeName;
 
-    @ApiModelProperty(value = "用户节点类型--1:开始节点 2:用户任务节点--个人任务 3:用户任务节点--候选人任务 4:用户任务节点--组任务 5:结束")
+    @ApiModelProperty(value = "节点类型--1:开始节点 2:用户任务节点--个人任务 3:用户任务节点--候选人任务 4:用户任务节点--组任务 5:结束")
     private Integer nodeType;
 
     @ApiModelProperty(value = "节点EL表达式名称")
@@ -45,6 +46,9 @@ public class NodeSetRequest extends BaseRequestEntity<NodeSetPo> implements Seri
 
     @ApiModelProperty(value = "租户ID")
     private Long tenantId;
+
+    @ApiModelProperty(value = "节点类型集")
+    private Set<Integer> nodeTypes;
 
     @ApiModelProperty("流程运行参数")
     private Map<String, Object> variablesMap = new HashMap<>();

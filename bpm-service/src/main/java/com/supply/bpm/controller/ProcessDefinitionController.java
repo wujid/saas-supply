@@ -142,8 +142,8 @@ public class ProcessDefinitionController {
     }
 
     @ApiOperation(value = "根据流程分类编码查询流程定义信息集")
-    @GetMapping("/getListByCategoryCode")
-    public Result<?> getListByCategoryCode(@RequestParam String categoryCode) {
+    @GetMapping("/getDefinitionsByCategoryCode")
+    public Result<?> getDefinitionsByCategoryCode(@RequestParam String categoryCode) {
         final List<ProcessDefinitionResponse> data = processDefinitionService.getListByCategoryCode(categoryCode);
         return Result.ok(data);
     }
