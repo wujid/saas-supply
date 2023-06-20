@@ -1,5 +1,6 @@
 package com.supply.business.service.impl;
 
+import cn.hutool.core.lang.Snowflake;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.supply.business.constant.BusinessConstant;
@@ -25,8 +26,11 @@ public class WorkLeaveServiceImpl implements IWorkLeaveService {
 
     private final IWorkLeaveRepository workLeaveRepository;
 
-    public WorkLeaveServiceImpl(IWorkLeaveRepository workLeaveRepository) {
+    private final Snowflake snowflake;
+
+    public WorkLeaveServiceImpl(IWorkLeaveRepository workLeaveRepository, Snowflake snowflake) {
         this.workLeaveRepository = workLeaveRepository;
+        this.snowflake = snowflake;
     }
 
 
@@ -34,6 +38,8 @@ public class WorkLeaveServiceImpl implements IWorkLeaveService {
     @Transactional(rollbackFor = Exception.class)
     public void addWorkLeave(WorkLeaveRequest request) {
         final WorkLeavePo workLeavePo = WorkLeaveCvt.INSTANCE.requestToPo(request);
+        final String businessId = snowflake.nextIdStr();
+        workLeavePo.setBusinessId(businessId);
         workLeavePo.setBusinessStatus(BusinessConstant.IN_PROCESS);
         workLeaveRepository.save(workLeavePo);
     }

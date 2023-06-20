@@ -16,7 +16,7 @@ import java.util.Set;
  */
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class BaseRequestEntity<T> extends BaseEntity implements Serializable {
+public class BaseRequestEntity<T> extends BpmRequestEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "当前页")
