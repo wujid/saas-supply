@@ -39,7 +39,7 @@ public class WorkLeaveResponse extends BaseEntity implements Serializable {
     private Integer remark;
 
     @ApiModelProperty(value = "业务唯一ID")
-    private String businessId;
+    private String bpmBusinessId;
 
     @ApiModelProperty(value = "业务状态")
     private Integer businessStatus;

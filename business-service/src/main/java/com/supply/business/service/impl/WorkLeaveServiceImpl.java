@@ -39,7 +39,7 @@ public class WorkLeaveServiceImpl implements IWorkLeaveService {
     public void addWorkLeave(WorkLeaveRequest request) {
         final WorkLeavePo workLeavePo = WorkLeaveCvt.INSTANCE.requestToPo(request);
         final String businessId = snowflake.nextIdStr();
-        workLeavePo.setBusinessId(businessId);
+        workLeavePo.setBpmBusinessId(businessId);
         workLeavePo.setBusinessStatus(BusinessConstant.IN_PROCESS);
         workLeaveRepository.save(workLeavePo);
     }
