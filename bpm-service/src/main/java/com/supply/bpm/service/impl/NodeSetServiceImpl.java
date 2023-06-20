@@ -120,11 +120,12 @@ public class NodeSetServiceImpl implements INodeSetService {
 
         // 获取下一个节点审批人信息
         final List<NodeSetPo> nexNodes = nodeSets.stream().filter(nodeSet -> userTaskMap.containsKey(nodeSet.getNodeId())).collect(Collectors.toList());
-        for (NodeSetPo nodeSet : nexNodes) {
+        final List<NodeSetResponse> nodeSetResponses = NodeSetCvt.INSTANCE.poToResponseBatch(nexNodes);
+        for (NodeSetResponse nodeSet : nodeSetResponses) {
             final List<SysUserResponse> users = this.getNodeUsers(nodeSet);
             nodeSet.setNodeUsers(users);
         }
-        return NodeSetCvt.INSTANCE.poToResponseBatch(nexNodes);
+        return nodeSetResponses;
     }
 
     /**
@@ -134,7 +135,7 @@ public class NodeSetServiceImpl implements INodeSetService {
       * @param nodeSet 节点信息
       * @return 节点下的所有审批人信息
       */
-    private List<SysUserResponse> getNodeUsers(NodeSetPo nodeSet) {
+    private List<SysUserResponse> getNodeUsers(NodeSetResponse nodeSet) {
         // 根据节点ID查询关联人员信息
         final Long nodeSetId = nodeSet.getId();
         NodeUserRequest request = new NodeUserRequest();

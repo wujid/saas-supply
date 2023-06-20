@@ -1,5 +1,6 @@
 package com.supply.bpm.model.response;
 
+import com.supply.common.model.response.sys.SysUserResponse;
 import com.supply.common.web.model.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -7,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author wjd
@@ -42,4 +44,7 @@ public class NodeSetResponse extends BaseEntity implements Serializable {
 
     @ApiModelProperty(value = "租户ID")
     private Long tenantId;
+
+    @ApiModelProperty(value = "当前节点审批人")
+    private List<SysUserResponse> nodeUsers;
 }

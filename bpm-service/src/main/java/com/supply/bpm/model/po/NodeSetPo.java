@@ -70,8 +70,4 @@ public class NodeSetPo extends Model<NodeSetPo> {
 
     @ApiModelProperty(value = "状态")
     private Integer status;
-
-    @ApiModelProperty(value = "当前节点审批人")
-    private List<SysUserResponse> nodeUsers;
-
 }

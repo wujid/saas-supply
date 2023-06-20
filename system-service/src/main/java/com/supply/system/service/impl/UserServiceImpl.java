@@ -105,7 +105,9 @@ public class UserServiceImpl implements IUserService {
         userRoleRepository.saveBatch(userRolePoList);
 
         // 更新头像附件和用户关联关系
-        fileClient.updateAttachmentRelation(request.getAttachmentId(), avatarId);
+        if (null != request.getAttachmentId()) {
+            fileClient.updateAttachmentRelation(request.getAttachmentId(), avatarId);
+        }
     }
 
     @Override

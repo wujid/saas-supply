@@ -51,7 +51,8 @@ public class NodeUserServiceImpl implements INodeUserService {
     public void addNodeUsers(List<NodeUserRequest> requests) {
         logger.info("[新增流程节点审批人信息集]---实体信息为{}", JSON.toJSONString(requests));
         // 验证是否已经关联
-        this.addValidate(requests);
+        final NodeUserRequest request = requests.stream().findFirst().get();
+        this.addValidate(requests, request.getNodeSetId());
         final List<NodeUserPo> nodeUserPoList = NodeUserCvt.INSTANCE.requestToPoBatch(requests);
         nodeUserRepository.saveBatch(nodeUserPoList);
     }
@@ -86,7 +87,7 @@ public class NodeUserServiceImpl implements INodeUserService {
       * @date 2023/6/18
       * @param requests 待验证的
       */
-    private void addValidate(List<NodeUserRequest> requests) {
+    private void addValidate(List<NodeUserRequest> requests, Long nodeSetId) {
         // 用户类型对应的关联ID集
         final Map<Integer, Set<Long>> userTypeMap = requests.stream()
                 .collect(Collectors.groupingBy(NodeUserRequest::getNodeUserType, Collectors.mapping(NodeUserRequest::getRelationId, Collectors.toSet())));
@@ -96,6 +97,7 @@ public class NodeUserServiceImpl implements INodeUserService {
         // 用户关联
         if (userTypeMap.containsKey(NodeUserTypeEnum.USER.getType())) {
             final Set<Long> relationIds = userTypeMap.get(NodeUserTypeEnum.USER.getType());
+            request.setNodeSetId(nodeSetId);
             request.setNodeUserType(NodeUserTypeEnum.USER.getType());
             request.setRelationIds(relationIds);
             final List<NodeUserPo> nodeUsers = nodeUserRepository.getListByParams(request);
