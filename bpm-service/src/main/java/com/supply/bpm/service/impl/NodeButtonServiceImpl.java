@@ -108,6 +108,7 @@ public class NodeButtonServiceImpl implements INodeButtonService {
     private void saveValidate(NodeButtonRequest request) {
         NodeButtonRequest nodeButtonRequest = new NodeButtonRequest();
         nodeButtonRequest.setNodeSetId(request.getNodeSetId());
+        nodeButtonRequest.setButtonType(request.getButtonType());
         nodeButtonRequest.setTenantId(request.getTenantId());
         nodeButtonRequest.setStatus(Constant.STATUS_NOT_DEL);
         nodeButtonRequest.setNeId(request.getId());
