@@ -80,6 +80,17 @@ public class BusinessVariableRepositoryImpl extends ServiceImpl<BusinessVariable
         return businessVariableMapper.selectPage(page, queryWrapper);
     }
 
+    @Override
+    public List<BusinessVariablePo> getListByDefinitionId(String definitionId) {
+        if (StrUtil.isBlank(definitionId)) {
+            return null;
+        }
+        BusinessVariableRequest request = new BusinessVariableRequest();
+        request.setDefinitionId(definitionId);
+        final LambdaQueryWrapper<BusinessVariablePo> queryWrapper = this.getQueryWrapper(request);
+        return businessVariableMapper.selectList(queryWrapper);
+    }
+
 
     /**
      * @author wjd

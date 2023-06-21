@@ -51,4 +51,6 @@ public interface IBusinessVariableRepository extends IService<BusinessVariablePo
      * @return 带分页的结果
      */
     Page<BusinessVariablePo> getPageByParams(Page<BusinessVariablePo> page, BusinessVariableRequest request);
+
+    List<BusinessVariablePo> getListByDefinitionId(String definitionId);
 }

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,5 +34,5 @@ public class BpmRequestEntity extends BaseEntity implements Serializable {
     private String bpmBusinessId;
 
     @ApiModelProperty(value = "流程所需业务参数")
-    private Map<String, Object> bpmBusinessVariableMap;
+    private Map<String, Object> bpmBusinessVariableMap = new HashMap<>();
 }

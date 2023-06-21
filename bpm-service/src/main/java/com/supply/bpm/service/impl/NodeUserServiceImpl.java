@@ -7,9 +7,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.supply.bpm.constant.NodeUserTypeEnum;
 import com.supply.bpm.cvt.NodeUserCvt;
+import com.supply.bpm.model.po.NodeSetPo;
 import com.supply.bpm.model.po.NodeUserPo;
 import com.supply.bpm.model.request.NodeUserRequest;
 import com.supply.bpm.model.response.NodeUserResponse;
+import com.supply.bpm.repository.INodeSetRepository;
 import com.supply.bpm.repository.INodeUserRepository;
 import com.supply.bpm.service.INodeUserService;
 import com.supply.common.constant.Constant;
@@ -39,10 +41,14 @@ public class NodeUserServiceImpl implements INodeUserService {
 
     private final INodeUserRepository nodeUserRepository;
 
+    private final INodeSetRepository nodeSetRepository;
+
     private final SystemUserUtil userUtil;
 
-    public NodeUserServiceImpl(INodeUserRepository nodeUserRepository, SystemUserUtil userUtil) {
+    public NodeUserServiceImpl(INodeUserRepository nodeUserRepository, INodeSetRepository nodeSetRepository,
+                               SystemUserUtil userUtil) {
         this.nodeUserRepository = nodeUserRepository;
+        this.nodeSetRepository = nodeSetRepository;
         this.userUtil = userUtil;
     }
 
@@ -141,13 +147,30 @@ public class NodeUserServiceImpl implements INodeUserService {
             }
         }
 
+        // 节点信息
+        Map<Long, NodeSetPo> nodeSetMap = new HashMap<>();
+        final Set<Long> nodeSetIds = list.stream().map(NodeUserResponse::getNodeSetId).collect(Collectors.toSet());
+        final List<NodeSetPo> nodeSetPos = nodeSetRepository.listByIds(nodeSetIds);
+        if (CollectionUtil.isNotEmpty(nodeSetPos)) {
+            nodeSetMap = nodeSetPos.stream().collect(Collectors.toMap(NodeSetPo::getId, e -> e, (k1, k2) -> k1));
+        }
+
         // 信息组装
         for (NodeUserResponse nodeUser : list) {
+            // 关联类型
             final Integer userType = nodeUser.getNodeUserType();
             final Long userId = nodeUser.getRelationId();
             if (userType == NodeUserTypeEnum.USER.getType() && userMap.containsKey(userId)) {
                 final String userName = userMap.get(userId);
                 nodeUser.setRelationName(userName);
+            }
+            // 节点信息
+            final Long nodeSetId = nodeUser.getNodeSetId();
+            if (nodeSetMap.containsKey(nodeSetId)) {
+                final NodeSetPo nodeSetPo = nodeSetMap.get(nodeSetId);
+                nodeUser.setNodeId(nodeSetPo.getNodeId());
+                nodeUser.setNodeName(nodeSetPo.getNodeName());
+                nodeUser.setNodeType(nodeSetPo.getNodeType());
             }
         }
     }
