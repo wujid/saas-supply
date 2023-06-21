@@ -1,8 +1,10 @@
 package com.supply.business.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.Snowflake;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.supply.business.api.BpmClient;
 import com.supply.business.constant.BusinessConstant;
 import com.supply.business.cvt.WorkLeaveCvt;
 import com.supply.business.model.po.WorkLeavePo;
@@ -11,10 +13,12 @@ import com.supply.business.model.response.WorkLeaveResponse;
 import com.supply.business.repository.IWorkLeaveRepository;
 import com.supply.business.service.IWorkLeaveService;
 import com.supply.common.util.CommonUtil;
+import com.supply.common.web.model.BpmRequestEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author wjd
@@ -28,9 +32,12 @@ public class WorkLeaveServiceImpl implements IWorkLeaveService {
 
     private final Snowflake snowflake;
 
-    public WorkLeaveServiceImpl(IWorkLeaveRepository workLeaveRepository, Snowflake snowflake) {
+    private final BpmClient bpmClient;
+
+    public WorkLeaveServiceImpl(IWorkLeaveRepository workLeaveRepository, Snowflake snowflake, BpmClient bpmClient) {
         this.workLeaveRepository = workLeaveRepository;
         this.snowflake = snowflake;
+        this.bpmClient = bpmClient;
     }
 
 
@@ -39,9 +46,15 @@ public class WorkLeaveServiceImpl implements IWorkLeaveService {
     public void addWorkLeave(WorkLeaveRequest request) {
         final WorkLeavePo workLeavePo = WorkLeaveCvt.INSTANCE.requestToPo(request);
         final String businessId = snowflake.nextIdStr();
-        workLeavePo.setBpmBusinessId(businessId);
+        workLeavePo.setBusinessId(businessId);
         workLeavePo.setBusinessStatus(BusinessConstant.IN_PROCESS);
         workLeaveRepository.save(workLeavePo);
+        request.setBpmBusinessId(businessId);
+
+        BpmRequestEntity bpmRequest = request;
+        final Map<String, Object> map = BeanUtil.beanToMap(request);
+        bpmRequest.setBpmBusinessVariableMap(map);
+        bpmClient.startProcess(bpmRequest);
     }
 
     @Override

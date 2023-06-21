@@ -103,12 +103,7 @@ public class NodeSetServiceImpl implements INodeSetService {
         if (null == startFlowElement) {
             throw new ApiException("流程起始节点未定义,请检查流程图!");
         }
-        List<UserTask> userTasks = new ArrayList<>();
-        ActivityUtil.getNextNode(flowElements, startFlowElement, variablesMap, userTasks);
-        if (CollectionUtil.isEmpty(userTasks)) {
-            throw new ApiException("未能获取到下一节点信息");
-        }
-        final Map<String, UserTask> userTaskMap = userTasks.stream().collect(Collectors.toMap(UserTask::getId, e -> e, (k1, k2) -> k1));
+        final Map<String, UserTask> userTaskMap = ActivityUtil.getNextNodeMap(flowElements, startFlowElement, variablesMap);
 
         // 根据流程定义获取已保存的流程节点信息(仅查询任务类型为个人任务)
         NodeSetRequest nodeSetRequest = new NodeSetRequest();

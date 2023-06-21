@@ -9,6 +9,7 @@ import com.supply.bpm.mapper.NodeUserMapper;
 import com.supply.bpm.model.po.NodeUserPo;
 import com.supply.bpm.model.request.NodeUserRequest;
 import com.supply.bpm.repository.INodeUserRepository;
+import com.supply.common.constant.Constant;
 import com.supply.common.constant.OperatorTypeEnum;
 import com.supply.common.web.annotation.BaseData;
 import com.supply.common.web.annotation.IgnoreFill;
@@ -78,6 +79,15 @@ public class NodeUserRepositoryImpl extends ServiceImpl<NodeUserMapper, NodeUser
     public Page<NodeUserPo> getPageByParams(Page<NodeUserPo> page, NodeUserRequest request) {
         final LambdaQueryWrapper<NodeUserPo> queryWrapper = this.getQueryWrapper(request);
         return nodeUserMapper.selectPage(page, queryWrapper);
+    }
+
+    @Override
+    public List<NodeUserPo> getListByNodeSetId(Long nodeSetId) {
+        NodeUserRequest request = new NodeUserRequest();
+        request.setNodeSetId(nodeSetId);
+        request.setStatus(Constant.STATUS_NOT_DEL);
+        final LambdaQueryWrapper<NodeUserPo> queryWrapper = this.getQueryWrapper(request);
+        return nodeUserMapper.selectList(queryWrapper);
     }
 
 

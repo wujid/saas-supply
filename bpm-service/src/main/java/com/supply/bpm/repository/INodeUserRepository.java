@@ -51,4 +51,6 @@ public interface INodeUserRepository extends IService<NodeUserPo> {
      * @return 带分页的结果
      */
     Page<NodeUserPo> getPageByParams(Page<NodeUserPo> page, NodeUserRequest request);
+
+    List<NodeUserPo> getListByNodeSetId(Long nodeSetId);
 }

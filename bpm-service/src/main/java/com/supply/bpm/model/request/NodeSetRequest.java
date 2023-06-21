@@ -50,6 +50,9 @@ public class NodeSetRequest extends BaseRequestEntity<NodeSetPo> implements Seri
     @ApiModelProperty(value = "节点类型集")
     private Set<Integer> nodeTypes;
 
+    @ApiModelProperty(value = "节点ID集")
+    private Set<String> nodeIds;
+
     @ApiModelProperty("流程运行参数")
     private Map<String, Object> variablesMap = new HashMap<>();
 }

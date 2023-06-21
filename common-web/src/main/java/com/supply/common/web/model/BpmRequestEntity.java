@@ -7,7 +7,6 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,8 +23,8 @@ public class BpmRequestEntity extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "流程定义ID")
     private String bpmDefinitionId;
 
-    @ApiModelProperty(value = "流程节点对应选择人员")
-    private List<Map<Long, Long>> bpmNodeUsers;
+    @ApiModelProperty(value = "流程节点ID对应选择人员")
+    private Map<Long, Long> bpmNodeUserMap;
 
     @ApiModelProperty(value = "流程发起人ID")
     private Long bpmStartUserId;

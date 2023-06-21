@@ -60,4 +60,6 @@ public interface IProcessDefinitionRepository extends IService<ProcessDefinition
       * @return 条数信息
       */
     Long getCountByParams(ProcessDefinitionRequest request);
+
+    ProcessDefinitionPo getByDefinitionId(String definitionId);
 }

@@ -1,5 +1,6 @@
 package com.supply.bpm.util;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.XmlUtil;
 import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.ExclusiveGateway;
@@ -25,8 +26,10 @@ import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author wjd
@@ -81,6 +84,17 @@ public class ActivityUtil {
             return null;
         }
         return node.getNodeValue();
+    }
+
+    public static Map<String, UserTask> getNextNodeMap(Collection<FlowElement> flowElements, FlowElement flowElement, Map<String, Object> businessVariableMap) {
+        List<UserTask> userTasks = new ArrayList<>();
+        getNextNode(flowElements, flowElement, businessVariableMap, userTasks);
+
+        Map<String, UserTask> userTaskMap = new HashMap<>();
+        if (CollectionUtil.isNotEmpty(userTasks)) {
+            userTaskMap = userTasks.stream().collect(Collectors.toMap(UserTask::getId, e -> e, (k1, k2) -> k1));
+        }
+        return userTaskMap;
     }
 
     /**
