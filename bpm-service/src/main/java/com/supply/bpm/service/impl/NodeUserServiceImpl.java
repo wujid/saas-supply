@@ -16,6 +16,7 @@ import com.supply.bpm.repository.INodeUserRepository;
 import com.supply.bpm.service.INodeUserService;
 import com.supply.common.constant.Constant;
 import com.supply.common.exception.ApiException;
+import com.supply.common.model.response.sys.SysRoleResponse;
 import com.supply.common.model.response.sys.SysUserResponse;
 import com.supply.common.util.CommonUtil;
 import com.supply.common.util.SystemUserUtil;
@@ -137,13 +138,23 @@ public class NodeUserServiceImpl implements INodeUserService {
         final Map<Integer, Set<Long>> userTypeMap = list.stream()
                 .collect(Collectors.groupingBy(NodeUserResponse::getNodeUserType, Collectors.mapping(NodeUserResponse::getRelationId, Collectors.toSet())));
 
-        // 获取用户信息及用户ID对应的用户名称映射关系
+        // 获取用户ID对应的用户信息
         Map<Long, String> userMap = new HashMap<>();
         if (userTypeMap.containsKey(NodeUserTypeEnum.USER.getType())) {
             final Set<Long> userIds = userTypeMap.get(NodeUserTypeEnum.USER.getType());
             final List<SysUserResponse> users = userUtil.getUsersByIds(userIds);
             if (CollectionUtil.isNotEmpty(users)) {
                 userMap = users.stream().collect(Collectors.toMap(SysUserResponse::getId, SysUserResponse::getName, (k1, k2) -> k1));
+            }
+        }
+
+        // 获取角色ID对应的角色信息
+        Map<Long, String> roleMap = new HashMap<>();
+        if (userTypeMap.containsKey(NodeUserTypeEnum.ROLE.getType())) {
+            final Set<Long> roleIds = userTypeMap.get(NodeUserTypeEnum.ROLE.getType());
+            final List<SysRoleResponse> roles = userUtil.getRolesByRoleId(roleIds);
+            if (CollectionUtil.isNotEmpty(roles)) {
+                roleMap = roles.stream().collect(Collectors.toMap(SysRoleResponse::getId, SysRoleResponse::getName, (k1, k2) -> k1));
             }
         }
 
@@ -159,10 +170,14 @@ public class NodeUserServiceImpl implements INodeUserService {
         for (NodeUserResponse nodeUser : list) {
             // 关联类型
             final Integer userType = nodeUser.getNodeUserType();
-            final Long userId = nodeUser.getRelationId();
-            if (userType == NodeUserTypeEnum.USER.getType() && userMap.containsKey(userId)) {
-                final String userName = userMap.get(userId);
+            final Long relationId = nodeUser.getRelationId();
+            if (userType == NodeUserTypeEnum.USER.getType() && userMap.containsKey(relationId)) {
+                final String userName = userMap.get(relationId);
                 nodeUser.setRelationName(userName);
+            }
+            if (userType == NodeUserTypeEnum.ROLE.getType() && roleMap.containsKey(relationId)) {
+                final String roleName = roleMap.get(relationId);
+                nodeUser.setRelationName(roleName);
             }
             // 节点信息
             final Long nodeSetId = nodeUser.getNodeSetId();

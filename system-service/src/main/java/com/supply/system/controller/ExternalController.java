@@ -5,16 +5,19 @@ import com.supply.common.constant.Constant;
 import com.supply.common.model.Result;
 import com.supply.system.model.request.DataScopeTypeRequest;
 import com.supply.system.model.request.ResourceRequest;
+import com.supply.system.model.request.RoleRequest;
 import com.supply.system.model.request.TenantRequest;
 import com.supply.system.model.request.UserRequest;
 import com.supply.system.model.request.UserRoleRequest;
 import com.supply.system.model.response.DataScopeTypeResponse;
 import com.supply.system.model.response.ResourceResponse;
+import com.supply.system.model.response.RoleResponse;
 import com.supply.system.model.response.TenantResponse;
 import com.supply.system.model.response.UserResponse;
 import com.supply.system.model.response.UserRoleResponse;
 import com.supply.system.service.IDataScopeService;
 import com.supply.system.service.IResourceService;
+import com.supply.system.service.IRoleService;
 import com.supply.system.service.ITenantService;
 import com.supply.system.service.IUserRoleService;
 import com.supply.system.service.IUserService;
@@ -52,14 +55,17 @@ public class ExternalController {
 
     private final IUserRoleService userRoleService;
 
+    private final IRoleService roleService;
+
     public ExternalController(IUserService userService, ITenantService tenantService,
                               IResourceService resourceService, IDataScopeService dataScopeService,
-                              IUserRoleService userRoleService) {
+                              IUserRoleService userRoleService, IRoleService roleService) {
         this.userService = userService;
         this.tenantService = tenantService;
         this.resourceService = resourceService;
         this.dataScopeService = dataScopeService;
         this.userRoleService = userRoleService;
+        this.roleService = roleService;
     }
 
 
@@ -139,6 +145,15 @@ public class ExternalController {
             userIds = list.stream().map(UserRoleResponse::getUserId).collect(Collectors.toSet());
         }
         return Result.ok(userIds);
+    }
+
+    @ApiOperation(value = "根据角色ID集查询角色信息集")
+    @PostMapping("/getRolesByIds")
+    public Result<List<RoleResponse>> getRolesByIds(@RequestBody Set<Long> roleIds) {
+        RoleRequest request = new RoleRequest();
+        request.setRoleIds(roleIds);
+        final List<RoleResponse> data = roleService.getListByParams(request);
+        return Result.ok(data);
     }
 
 }

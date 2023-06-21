@@ -1,5 +1,6 @@
 package com.supply.common.util;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.supply.common.api.SystemClient;
@@ -11,6 +12,7 @@ import com.supply.common.model.request.sys.SysTenantRequest;
 import com.supply.common.model.request.sys.SysUserRequest;
 import com.supply.common.model.response.sys.SysDataScopeTypeResponse;
 import com.supply.common.model.response.sys.SysResourceResponse;
+import com.supply.common.model.response.sys.SysRoleResponse;
 import com.supply.common.model.response.sys.SysTenantResponse;
 import com.supply.common.model.response.sys.SysUserResponse;
 import org.slf4j.Logger;
@@ -179,7 +181,7 @@ public class SystemUserUtil {
     public List<SysUserResponse> getUsersByParams(SysUserRequest request) {
         final Result<List<SysUserResponse>> result = systemClient.getUsesByParams(request);
         if (!result.isOk()) {
-            final String message = StrUtil.format("根据用自定义条件{}查询用户集信息异常!", JSON.toJSONString(request));
+            final String message = StrUtil.format("根据自定义条件{}查询用户集信息异常!", JSON.toJSONString(request));
             logger.error(message);
             throw new ApiException(message);
         }
@@ -196,7 +198,7 @@ public class SystemUserUtil {
     public SysUserResponse getUserByParams(SysUserRequest request) {
         final Result<SysUserResponse> result = systemClient.getUseByParams(request);
         if (!result.isOk()) {
-            final String message = StrUtil.format("根据用自定义条件{}查询用户信息异常!", JSON.toJSONString(request));
+            final String message = StrUtil.format("根据自定义条件{}查询用户信息异常!", JSON.toJSONString(request));
             logger.error(message);
             throw new ApiException(message);
         }
@@ -213,7 +215,27 @@ public class SystemUserUtil {
     public SysTenantResponse getTenantByParams(SysTenantRequest request) {
         final Result<SysTenantResponse> result = systemClient.getTenantByParams(request);
         if (!result.isOk()) {
-            final String message = StrUtil.format("根据用自定义条件{}查询租户信息异常!", JSON.toJSONString(request));
+            final String message = StrUtil.format("根据自定义条件{}查询租户信息异常!", JSON.toJSONString(request));
+            logger.error(message);
+            throw new ApiException(message);
+        }
+        return result.getData();
+    }
+
+    /**
+      * @description 根据角色ID集查询角色信息集.
+      * @author wjd
+      * @date 2023/6/21
+      * @param roleIds 角色ID集
+      * @return 角色信息集
+      */
+    public List<SysRoleResponse> getRolesByRoleId(Set<Long> roleIds) {
+        if (CollectionUtil.isEmpty(roleIds)) {
+            return null;
+        }
+        final Result<List<SysRoleResponse>> result = systemClient.getRolesByIds(roleIds);
+        if (!result.isOk()) {
+            final String message = StrUtil.format("根据用角色ID{}查询角色信息异常!", JSON.toJSONString(roleIds));
             logger.error(message);
             throw new ApiException(message);
         }

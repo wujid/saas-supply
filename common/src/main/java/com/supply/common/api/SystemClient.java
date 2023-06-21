@@ -7,6 +7,7 @@ import com.supply.common.model.request.sys.SysTenantRequest;
 import com.supply.common.model.request.sys.SysUserRequest;
 import com.supply.common.model.response.sys.SysDataScopeTypeResponse;
 import com.supply.common.model.response.sys.SysResourceResponse;
+import com.supply.common.model.response.sys.SysRoleResponse;
 import com.supply.common.model.response.sys.SysTenantResponse;
 import com.supply.common.model.response.sys.SysUserResponse;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -58,4 +59,8 @@ public interface SystemClient {
     @Note(description = "根据自定义条件查询租户信息")
     @PostMapping("/external/getTenantByParams")
     Result<SysTenantResponse> getTenantByParams(@RequestBody SysTenantRequest request);
+
+    @Note(description = "根据角色ID集查询角色信息集")
+    @PostMapping("/external/getRolesByIds")
+    Result<List<SysRoleResponse>> getRolesByIds(@RequestBody Set<Long> roleIds);
 }
