@@ -6,6 +6,7 @@ import com.supply.common.constant.Constant;
 import com.supply.common.constant.OperatorTypeEnum;
 import com.supply.common.web.annotation.BaseData;
 import com.supply.common.web.annotation.IgnoreFill;
+import com.supply.common.web.util.ContextUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -97,6 +98,7 @@ public class BaseDataAspect {
         final Field[] fields = obj.getClass().getDeclaredFields();
         // 当前用户ID
         final String userId = this.getCurrentUserId();
+        final Long tenantId = ContextUtil.getCurrentTenantId();
         for (Field field : fields) {
             final Object fieldValue = this.getFieldValue(obj, field);
             // 当操作类型为新增/新增修改时为创建时间&创建人赋值
@@ -134,6 +136,15 @@ public class BaseDataAspect {
                         && field.getType().equals(Integer.class) && null == fieldValue;
                 if (statusIsBlank) {
                     setFieldValue(obj, field, Constant.STATUS_NOT_DEL);
+                }
+
+                // 租户
+                if (null != tenantId) {
+                    final boolean tenantIdIsBlank = StrUtil.equals(field.getName(), "tenantId")
+                            && field.getType().equals(Long.class) && null == fieldValue;
+                    if (tenantIdIsBlank) {
+                        setFieldValue(obj, field, tenantId);
+                    }
                 }
             }
             // 当操作类型为修改/新增修改时为修改时间&修改人赋值
