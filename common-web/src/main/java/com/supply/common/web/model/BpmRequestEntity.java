@@ -1,5 +1,6 @@
 package com.supply.common.web.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -17,6 +18,7 @@ import java.util.Map;
 @Data
 @ApiModel(value="流程发起请求通用数据封装")
 @EqualsAndHashCode(callSuper=false)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BpmRequestEntity extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 3753798563257257421L;
 

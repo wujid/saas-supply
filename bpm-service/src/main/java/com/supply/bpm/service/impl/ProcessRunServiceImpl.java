@@ -162,7 +162,7 @@ public class ProcessRunServiceImpl implements IProcessRunService {
                 businessVariableMap.put(nodeSet.getNodeElName(), userId);
             }
             // 候选人任务赋值所有可选人员
-            if (nodeType == NodeTypeEnum.USER_OWNER.getType()) {
+            if (nodeType == NodeTypeEnum.USER_CANDIDATE_USERS.getType()) {
                 final String userIds = this.getCandidateUserIdsByNodeSetId(nodeSetId, nodeSet.getNodeName());
                 businessVariableMap.put(nodeSet.getNodeElName(), userIds);
             }

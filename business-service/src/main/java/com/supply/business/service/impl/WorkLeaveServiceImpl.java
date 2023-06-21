@@ -51,8 +51,11 @@ public class WorkLeaveServiceImpl implements IWorkLeaveService {
         workLeaveRepository.save(workLeavePo);
         request.setBpmBusinessId(businessId);
 
+        // 转换并设置流程发起人及流程所需的业务参数
         BpmRequestEntity bpmRequest = request;
+        // 可直接转换后由流程自行过滤也可准确给值(只能多不能少防止流程因缺失参数异常)
         final Map<String, Object> map = BeanUtil.beanToMap(request);
+        bpmRequest.setBpmStartUserId(request.getApplyUserId());
         bpmRequest.setBpmBusinessVariableMap(map);
         bpmClient.startProcess(bpmRequest);
     }

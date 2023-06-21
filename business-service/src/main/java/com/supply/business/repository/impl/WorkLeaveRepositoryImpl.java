@@ -62,7 +62,7 @@ public class WorkLeaveRepositoryImpl extends ServiceImpl<WorkLeaveMapper, WorkLe
     private LambdaQueryWrapper<WorkLeavePo> getQueryWrapper(WorkLeaveRequest request) {
         LambdaQueryWrapper<WorkLeavePo> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(null != request.getId(), WorkLeavePo::getId, request.getId());
-        queryWrapper.eq(null != request.getStatus(), WorkLeavePo::getBusinessStatus, request.getStatus());
+        queryWrapper.eq(null != request.getBusinessStatus(), WorkLeavePo::getBusinessStatus, request.getStatus());
         queryWrapper.eq(null != request.getStatus(), WorkLeavePo::getStatus, request.getStatus());
         queryWrapper.apply(null != request.getApplySql(), request.getApplySql());
         queryWrapper.orderBy(null != request.getOrderColumn(), request.getIsAsc(), request.getOrderColumn());

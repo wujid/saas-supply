@@ -28,3 +28,8 @@ group: ${env_group:supply}
 
 server:
   port: 8091
+
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
