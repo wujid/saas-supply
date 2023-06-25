@@ -37,7 +37,7 @@ public class WorkLeaveRequest extends BaseRequestEntity<WorkLeavePo> implements 
     private Integer days;
 
     @ApiModelProperty(value = "备注")
-    private Integer remark;
+    private String remark;
 
     @ApiModelProperty(value = "业务唯一ID")
     private String businessId;

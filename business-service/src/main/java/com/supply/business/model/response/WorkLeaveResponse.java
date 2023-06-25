@@ -1,5 +1,6 @@
 package com.supply.business.model.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.supply.common.web.model.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -27,16 +28,18 @@ public class WorkLeaveResponse extends BaseEntity implements Serializable {
     private String applyUserName;
 
     @ApiModelProperty(value = "开始时间")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date startTime;
 
     @ApiModelProperty(value = "结束时间")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date endTime;
 
     @ApiModelProperty(value = "天数")
     private Integer days;
 
     @ApiModelProperty(value = "备注")
-    private Integer remark;
+    private String remark;
 
     @ApiModelProperty(value = "业务唯一ID")
     private String businessId;

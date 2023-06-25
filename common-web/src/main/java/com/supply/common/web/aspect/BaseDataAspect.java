@@ -6,7 +6,6 @@ import com.supply.common.constant.Constant;
 import com.supply.common.constant.OperatorTypeEnum;
 import com.supply.common.web.annotation.BaseData;
 import com.supply.common.web.annotation.IgnoreFill;
-import com.supply.common.web.util.ContextUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -24,15 +23,16 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
- * @Description 填补基础数据规则
+ * @description 填补基础数据规则
  * 当参数上存在注解@IgnoreFill时则忽略填充
  * 新增时填补创建人&创建时间&状态
  * 新增修改时填补创建人&创建时间&修改人&修改时间&状态
  * 修改时填补修改人&修改时间
- * @Author wjd
- * @Date 2021/12/25
+ * @author wjd
+ * @date 2021/12/25
  */
 @Aspect
 @Component
@@ -98,7 +98,8 @@ public class BaseDataAspect {
         final Field[] fields = obj.getClass().getDeclaredFields();
         // 当前用户ID
         final String userId = this.getCurrentUserId();
-        final Long tenantId = ContextUtil.getCurrentTenantId();
+        // 当前租户
+        final Long tenantId = this.getCurrentTenantId();
         for (Field field : fields) {
             final Object fieldValue = this.getFieldValue(obj, field);
             // 当操作类型为新增/新增修改时为创建时间&创建人赋值
@@ -206,11 +207,22 @@ public class BaseDataAspect {
 
     private String getCurrentUserId() {
         HttpServletRequest request =
-                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes()))
                         .getRequest();
         final String userId = request.getHeader("userId");
         if (StrUtil.isNotBlank(userId)) {
             return userId;
+        }
+        return null;
+    }
+
+    public Long getCurrentTenantId() {
+        HttpServletRequest request =
+                ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes()))
+                        .getRequest();
+        final String tenantId = request.getHeader(Constant.TENANT_ID_KEY);
+        if (StrUtil.isNotBlank(tenantId)) {
+            return Long.valueOf(tenantId);
         }
         return null;
     }
