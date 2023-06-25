@@ -63,4 +63,8 @@ public interface SystemClient {
     @Note(description = "根据角色ID集查询角色信息集")
     @PostMapping("/external/getRolesByIds")
     Result<List<SysRoleResponse>> getRolesByIds(@RequestBody Set<Long> roleIds);
+
+    @Note(description = "获取用户对应的角色ID集")
+    @GetMapping("/external/getRoleIdsByUserId")
+    Result<Set<Long>> getRoleIdsByUserId(@RequestParam Long userId);
 }

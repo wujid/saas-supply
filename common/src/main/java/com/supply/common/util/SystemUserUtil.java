@@ -242,4 +242,24 @@ public class SystemUserUtil {
         return result.getData();
     }
 
+    /**
+      * @description 根据用户ID查询对应的角色ID集.
+      * @author wjd
+      * @date 2023/6/25
+      * @param userId 用户ID
+      * @return 角色ID集
+      */
+    public Set<Long> getRoleIdsByUserId(Long userId) {
+        if (null == userId) {
+            return null;
+        }
+        final Result<Set<Long>> result = systemClient.getRoleIdsByUserId(userId);
+        if (!result.isOk()) {
+            final String message = StrUtil.format("根据用户ID{}查询对应的角色ID集异常!", userId);
+            logger.error(message);
+            throw new ApiException(message);
+        }
+        return result.getData();
+    }
+
 }

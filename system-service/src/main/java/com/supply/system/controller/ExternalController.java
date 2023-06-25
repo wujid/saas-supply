@@ -156,4 +156,18 @@ public class ExternalController {
         return Result.ok(data);
     }
 
+    @ApiOperation(value = "获取用户对应的角色ID集")
+    @GetMapping("/getRoleIdsByUserId")
+    public Result<Set<Long>> getRoleIdsByUserId(@RequestParam Long userId) {
+        Set<Long> roleIds = new HashSet<>();
+        UserRoleRequest request = new UserRoleRequest();
+        request.setStatus(Constant.STATUS_NOT_DEL);
+        request.setUserId(userId);
+        final List<UserRoleResponse> list = userRoleService.getUserRoleListByParams(request);
+        if (CollectionUtil.isNotEmpty(list)) {
+            roleIds = list.stream().map(UserRoleResponse::getRoleId).collect(Collectors.toSet());
+        }
+        return Result.ok(roleIds);
+    }
+
 }

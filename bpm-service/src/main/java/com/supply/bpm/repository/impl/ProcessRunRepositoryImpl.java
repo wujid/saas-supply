@@ -9,6 +9,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.supply.bpm.mapper.ProcessRunMapper;
 import com.supply.bpm.model.po.ProcessRunPo;
 import com.supply.bpm.model.request.ProcessRunRequest;
+import com.supply.bpm.model.request.TaskRequest;
+import com.supply.bpm.model.response.TaskResponse;
 import com.supply.bpm.repository.IProcessRunRepository;
 import com.supply.common.constant.OperatorTypeEnum;
 import com.supply.common.web.annotation.BaseData;
@@ -72,7 +74,11 @@ public class ProcessRunRepositoryImpl extends ServiceImpl<ProcessRunMapper, Proc
         return processRunMapper.selectPage(page, queryWrapper);
     }
 
-
+    @Override
+    public Page<TaskResponse> getMyTask(TaskRequest request) {
+        Page<TaskRequest> page = new Page<>(request.getPageIndex(), request.getPageSize());
+        return processRunMapper.getMyTask(page, request);
+    }
 
 
     /**

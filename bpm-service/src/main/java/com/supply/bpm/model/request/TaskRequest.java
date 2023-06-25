@@ -1,6 +1,6 @@
 package com.supply.bpm.model.request;
 
-import com.supply.common.web.model.BaseEntity;
+import com.supply.common.web.model.BaseRequestEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -17,7 +17,8 @@ import java.util.Set;
 @ApiModel(value="流程任务请求实体")
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class TaskRequest extends BaseEntity implements Serializable {
+public class TaskRequest extends BaseRequestEntity<Object> implements Serializable {
+    private static final long serialVersionUID = -5974758069976525781L;
 
     @ApiModelProperty(value = "流程定义名称")
     private String processName;
@@ -29,7 +30,7 @@ public class TaskRequest extends BaseEntity implements Serializable {
     private Long startUserId;
 
     @ApiModelProperty(value = "流程分类ID")
-    private String categoryId;
+    private Long categoryId;
 
     @ApiModelProperty(value = "审批人")
     private String assigneeId;

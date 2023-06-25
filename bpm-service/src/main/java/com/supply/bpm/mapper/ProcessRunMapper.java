@@ -1,7 +1,6 @@
 package com.supply.bpm.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.supply.bpm.model.po.ProcessRunPo;
 import com.supply.bpm.model.request.TaskRequest;
@@ -18,5 +17,5 @@ import org.apache.ibatis.annotations.Param;
 public interface ProcessRunMapper extends BaseMapper<ProcessRunPo> {
 
 
-    IPage<TaskResponse> getMyTask(@Param("page") Page<TaskRequest> page, @Param("request") TaskRequest request);
+    Page<TaskResponse> getMyTask(@Param("page") Page<TaskRequest> page, @Param("request") TaskRequest request);
 }
