@@ -32,6 +32,9 @@ public class TaskRequest extends BaseRequestEntity<Object> implements Serializab
     @ApiModelProperty(value = "流程分类ID")
     private Long categoryId;
 
+    @ApiModelProperty(value = "业务状态")
+    private Integer businessStatus;
+
     @ApiModelProperty(value = "审批人")
     private String assigneeId;
 

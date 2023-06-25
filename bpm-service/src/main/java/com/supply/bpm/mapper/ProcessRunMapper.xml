@@ -34,7 +34,8 @@
             bp.process_key,
             bp.process_name,
             bp.category_id,
-            bp.category_name
+            bp.category_name,
+            bp.business_status
         from
             act_ru_task res
                 left join act_ru_identitylink i on i.task_id_ = res.id_
@@ -51,16 +52,29 @@
                         left join bpm_category cat on def.category_id = cat.id
             ) bp on bp.instance_id = res.proc_inst_id_
         <where>
-            <if test="request.assigneeId != null and request.assigneeId != '' ">
+            (
                 res.assignee_ = #{request.assigneeId}
-               or ( res.assignee_ is null and i.type_ = 'candidate' and i.user_id_ = #{request.assigneeId} )
+                or ( res.assignee_ is null and i.type_ = 'candidate' and i.user_id_ = #{request.assigneeId} )
+                <if test="request.assigneeGroups != null and request.assigneeGroups.size()>0" >
+                    or ( res.assignee_ is null and i.type_ = 'candidate' and i.group_id_ in
+                    <foreach collection="request.assigneeGroups" item="item" open="(" close=")" separator="," >
+                        #{item}
+                    </foreach>
+                    )
+                </if>
+            )
+
+            <if test="request.processName != null and request.processName != '' ">
+                and bp.process_name LIKE concat('%', #{request.processName}, '%')
             </if>
-            <if test="request.assigneeGroups != null and request.assigneeGroups.size()>0" >
-               or ( res.assignee_ is null and i.type_ = 'candidate' and i.group_id_ in
-                <foreach collection="request.assigneeGroups" item="item" open="(" close=")" separator="," >
-                    #{item}
-                </foreach>
-                )
+            <if test="request.startUserId != null">
+                AND bp.start_user_id = #{request.startUserId}
+            </if>
+            <if test="request.categoryId != null">
+                AND bp.category_id = #{request.categoryId}
+            </if>
+            <if test="request.businessStatus != null">
+                AND bp.business_status = #{request.businessStatus}
             </if>
         </where>
         order by

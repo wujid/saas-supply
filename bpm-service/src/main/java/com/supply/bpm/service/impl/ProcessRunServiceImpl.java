@@ -19,6 +19,7 @@ import com.supply.bpm.repository.IProcessDefinitionRepository;
 import com.supply.bpm.repository.IProcessRunRepository;
 import com.supply.bpm.service.IProcessRunService;
 import com.supply.bpm.util.ActivityUtil;
+import com.supply.common.constant.BusinessStatusEnum;
 import com.supply.common.constant.Constant;
 import com.supply.common.exception.ApiException;
 import com.supply.common.model.response.sys.SysUserResponse;
@@ -130,6 +131,7 @@ public class ProcessRunServiceImpl implements IProcessRunService {
         processRun.setInstanceId(instanceId);
         processRun.setBusinessId(businessId);
         processRun.setStartUserId(startUserId);
+        processRun.setBusinessStatus(BusinessStatusEnum.PROCESS_STATUS_ACTIVE.getStatus());
         final String businessTitle = this.getBusinessTitle(definitionId, startUserId, businessVariableMap);
         processRun.setBusinessTitle(businessTitle);
         processRunRepository.save(processRun);

@@ -35,6 +35,9 @@ public class ProcessRunRequest extends BaseRequestEntity<ProcessRunPo> implement
     @ApiModelProperty(value = "流程发起人ID")
     private Long startUserId;
 
+    @ApiModelProperty(value = "业务状态")
+    private Integer businessStatus;
+
     @ApiModelProperty(value = "租户ID")
     private Long tenantId;
 }

@@ -8,11 +8,15 @@ import com.supply.bpm.model.request.TaskRequest;
 import com.supply.bpm.model.response.TaskResponse;
 import com.supply.bpm.repository.IProcessRunRepository;
 import com.supply.bpm.service.ITaskManageService;
+import com.supply.common.model.response.sys.SysUserResponse;
 import com.supply.common.util.SystemUserUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -51,6 +55,32 @@ public class TaskManageServiceImpl implements ITaskManageService {
         if (taskPage.getTotal() <= 0) {
             return new Page<>(request.getPageIndex(), request.getPageSize());
         }
+        final List<TaskResponse> list = taskPage.getRecords();
+        this.getExtData(list);
         return taskPage;
+    }
+
+    /**
+     * @description 任务管理拓展信息.
+     * @author wjd
+     * @date 2023/6/18
+     */
+    private void getExtData(List<TaskResponse> list) {
+        if (CollectionUtil.isEmpty(list)) {
+            return;
+        }
+        Map<Long, String> startUserMap = new HashMap<>();
+        final Set<Long> startUserIds = list.stream().map(TaskResponse::getStartUserId).collect(Collectors.toSet());
+        final List<SysUserResponse> startUsers = systemUserUtil.getUsersByIds(startUserIds);
+        if (CollectionUtil.isNotEmpty(startUsers)) {
+            startUserMap = startUsers.stream().collect(Collectors.toMap(SysUserResponse::getId, SysUserResponse::getName, (k1, k2) -> k1));
+        }
+        for(TaskResponse task : list) {
+            final Long startUserId = task.getStartUserId();
+            if (startUserMap.containsKey(startUserId)) {
+                final String startUserName = startUserMap.get(startUserId);
+                task.setStartUserName(startUserName);
+            }
+        }
     }
 }

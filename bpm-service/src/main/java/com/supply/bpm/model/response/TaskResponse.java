@@ -20,7 +20,7 @@ public class TaskResponse extends BaseEntity implements Serializable {
     private static final long serialVersionUID = -2871582615535724612L;
 
     @ApiModelProperty(value = "任务ID")
-    private String task_id;
+    private String taskId;
 
     @ApiModelProperty(value = "流程执行实例ID")
     private String executionId;
@@ -52,10 +52,16 @@ public class TaskResponse extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "流程发起人ID")
     private Long startUserId;
 
+    @ApiModelProperty(value = "流程发起人名称")
+    private String startUserName;
+
     @ApiModelProperty(value = "流程分类ID")
     private String categoryId;
 
     @ApiModelProperty(value = "流程分类名称")
     private String categoryName;
+
+    @ApiModelProperty(value = "业务状态")
+    private Integer businessStatus;
 
 }
