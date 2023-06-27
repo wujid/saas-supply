@@ -82,7 +82,7 @@ public class UserThirdRepositoryImpl extends ServiceImpl<UserThirdMapper, UserTh
         queryWrapper.eq(null != request.getThirdType(), UserThirdPo::getNickName, request.getNickName());
         queryWrapper.eq(null != request.getTenantId(), UserThirdPo::getNickName, request.getNickName());
         queryWrapper.eq(null != request.getStatus(), UserThirdPo::getStatus, request.getStatus());
-        queryWrapper.apply(StrUtil.isNotBlank(request.getApplySql()), request.getApplySql());
+        queryWrapper.apply(StrUtil.isNotBlank(request.getAuthSql()), request.getAuthSql());
         queryWrapper.orderBy(null != request.getOrderColumn(),  request.getIsAsc(), request.getOrderColumn());
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(request.getOrderColumnList()), request.getIsAsc(), request.getOrderColumnList());
         return queryWrapper;

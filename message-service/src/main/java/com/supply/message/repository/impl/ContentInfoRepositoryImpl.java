@@ -92,7 +92,7 @@ public class ContentInfoRepositoryImpl extends ServiceImpl<ContentInfoMapper, Co
         queryWrapper.eq(null != request.getReceiverUserId(), ContentInfoPo::getReceiverUserId, request.getReceiverUserId());
         queryWrapper.eq(null != request.getBusinessStatus(), ContentInfoPo::getBusinessStatus, request.getBusinessStatus());
         queryWrapper.eq(null != request.getStatus(), ContentInfoPo::getStatus, request.getStatus());
-        queryWrapper.apply(null != request.getApplySql(), request.getApplySql());
+        queryWrapper.apply(null != request.getAuthSql(), request.getAuthSql());
         queryWrapper.orderBy(null != request.getOrderColumn(),  request.getIsAsc(), request.getOrderColumn());
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(request.getOrderColumnList()), request.getIsAsc(), request.getOrderColumnList());
         return queryWrapper;

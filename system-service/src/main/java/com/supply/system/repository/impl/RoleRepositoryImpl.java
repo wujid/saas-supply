@@ -119,7 +119,7 @@ public class RoleRepositoryImpl extends ServiceImpl<RoleMapper, RolePo> implemen
         queryWrapper.ne(null != request.getNeId(), RolePo::getId, request.getNeId());
         queryWrapper.in(CollectionUtil.isNotEmpty(request.getRoleIds()), RolePo::getId, request.getRoleIds());
         queryWrapper.notIn(CollectionUtil.isNotEmpty(request.getNotInRoleIds()), RolePo::getId, request.getNotInRoleIds());
-        queryWrapper.apply(null != request.getApplySql(), request.getApplySql());
+        queryWrapper.apply(null != request.getAuthSql(), request.getAuthSql());
         queryWrapper.orderBy(null != request.getOrderColumn(),  request.getIsAsc(), request.getOrderColumn());
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(request.getOrderColumnList()), request.getIsAsc(), request.getOrderColumnList());
         return queryWrapper;

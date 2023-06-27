@@ -104,7 +104,7 @@ public class NodeRepositoryImpl extends ServiceImpl<NodeButtonMapper, NodeButton
         queryWrapper.eq(null != request.getTenantId(), NodeButtonPo::getTenantId, request.getTenantId());
         queryWrapper.eq(null != request.getStatus(), NodeButtonPo::getStatus, request.getStatus());
         queryWrapper.ne(null != request.getNeId(), NodeButtonPo::getId, request.getNeId());
-        queryWrapper.apply(null != request.getApplySql(), request.getApplySql());
+        queryWrapper.apply(null != request.getAuthSql(), request.getAuthSql());
         queryWrapper.orderBy(null != request.getOrderColumn(),  request.getIsAsc(), request.getOrderColumn());
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(request.getOrderColumnList()), request.getIsAsc(), request.getOrderColumnList());
         return queryWrapper;

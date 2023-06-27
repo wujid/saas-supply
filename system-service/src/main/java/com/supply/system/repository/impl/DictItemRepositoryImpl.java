@@ -96,7 +96,7 @@ public class DictItemRepositoryImpl extends ServiceImpl<DictItemMapper, DictItem
         queryWrapper.eq(StrUtil.isNotBlank(request.getValue()), DictItemPo::getValue, request.getValue());
         queryWrapper.eq(null != request.getSort(), DictItemPo::getSort, request.getSort());
         queryWrapper.eq(null != request.getStatus(), DictItemPo::getStatus, request.getStatus());
-        queryWrapper.apply(null != request.getApplySql(), request.getApplySql());
+        queryWrapper.apply(null != request.getAuthSql(), request.getAuthSql());
         queryWrapper.orderBy(null != request.getOrderColumn(),  request.getIsAsc(), request.getOrderColumn());
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(request.getOrderColumnList()), request.getIsAsc(), request.getOrderColumnList());
         return queryWrapper;

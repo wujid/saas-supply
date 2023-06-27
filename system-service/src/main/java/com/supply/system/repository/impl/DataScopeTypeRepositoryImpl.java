@@ -73,7 +73,7 @@ public class DataScopeTypeRepositoryImpl extends ServiceImpl<DataScopeTypeMapper
         queryWrapper.eq(null != request.getDataScopeType(), DataScopeTypePo::getDataScopeType, request.getDataScopeType());
         queryWrapper.eq(null != request.getTenantId(), DataScopeTypePo::getTenantId, request.getTenantId());
         queryWrapper.eq(null != request.getStatus(), DataScopeTypePo::getStatus, request.getStatus());
-        queryWrapper.apply(null != request.getApplySql(), request.getApplySql());
+        queryWrapper.apply(null != request.getAuthSql(), request.getAuthSql());
         queryWrapper.orderBy(null != request.getOrderColumn(), request.getIsAsc(), request.getOrderColumn());
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(request.getOrderColumnList()), request.getIsAsc(), request.getOrderColumnList());
         return queryWrapper;

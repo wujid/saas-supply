@@ -117,7 +117,7 @@ public class UserController {
         request.setOrderColumn(UserPo::getCreateTime);
         if (isUseDataScope) {
             final String dataScopeSql = DataScopeUtil.getDataScopeSql("ACCOUNT_MANAGE", "org_id", "depart_id", "id");
-            request.setApplySql(dataScopeSql);
+            request.setAuthSql(dataScopeSql);
         }
         final IPage<UserResponse> userPage = userService.getUserPage(request);
         return Result.ok(userPage);

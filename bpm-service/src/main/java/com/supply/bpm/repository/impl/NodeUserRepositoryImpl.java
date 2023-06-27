@@ -107,7 +107,7 @@ public class NodeUserRepositoryImpl extends ServiceImpl<NodeUserMapper, NodeUser
         queryWrapper.eq(null != request.getTenantId(), NodeUserPo::getTenantId, request.getTenantId());
         queryWrapper.eq(null != request.getStatus(), NodeUserPo::getStatus, request.getStatus());
         queryWrapper.in(CollectionUtil.isNotEmpty(request.getRelationIds()), NodeUserPo::getRelationId, request.getRelationIds());
-        queryWrapper.apply(null != request.getApplySql(), request.getApplySql());
+        queryWrapper.apply(null != request.getAuthSql(), request.getAuthSql());
         queryWrapper.orderBy(null != request.getOrderColumn(),  request.getIsAsc(), request.getOrderColumn());
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(request.getOrderColumnList()), request.getIsAsc(), request.getOrderColumnList());
         return queryWrapper;

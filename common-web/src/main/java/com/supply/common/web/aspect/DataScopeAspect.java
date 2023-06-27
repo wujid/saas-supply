@@ -32,7 +32,7 @@ public class DataScopeAspect {
             Object params = point.getArgs()[0];
             if (params instanceof BaseRequestEntity) {
                 BaseRequestEntity baseEntity = (BaseRequestEntity) params;
-                baseEntity.setApplySql(sql);
+                baseEntity.setAuthSql(sql);
             }
         }
         logger.info("资源{}权限sql--{}", dataScope.resourceCode(), sql);
@@ -48,7 +48,7 @@ public class DataScopeAspect {
         Object params = joinPoint.getArgs()[0];
         if (params instanceof BaseRequestEntity) {
             BaseRequestEntity baseEntity = (BaseRequestEntity) params;
-            baseEntity.setApplySql(null);
+            baseEntity.setAuthSql(null);
         }
     }
 

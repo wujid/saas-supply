@@ -115,7 +115,7 @@ public class ResourceRepositoryImpl extends ServiceImpl<ResourceMapper, Resource
         queryWrapper.eq(null != request.getStatus(), ResourcePo::getStatus, request.getStatus());
         queryWrapper.in(CollectionUtil.isNotEmpty(request.getResourceIds()), ResourcePo::getId, request.getResourceIds());
         queryWrapper.ne(null != request.getNeId(), ResourcePo::getId, request.getNeId());
-        queryWrapper.apply(StrUtil.isNotBlank(request.getApplySql()), request.getApplySql());
+        queryWrapper.apply(StrUtil.isNotBlank(request.getAuthSql()), request.getAuthSql());
         queryWrapper.orderBy(null != request.getOrderColumn(), request.getIsAsc(), request.getOrderColumn());
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(request.getOrderColumnList()), request.getIsAsc(), request.getOrderColumnList());
         return queryWrapper;

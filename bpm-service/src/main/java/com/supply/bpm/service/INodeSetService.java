@@ -33,11 +33,20 @@ public interface INodeSetService {
     IPage<NodeSetResponse> getNodeSetPage(NodeSetRequest request);
 
     /**
-      * @description 发起流程获取下一个节点审批人信息.
+      * @description 发起流程获取下一个审批节点信息.
       * @author wjd
       * @date 2023/6/19
       * @param request 查询条件
       * @return 下一个节点审批人信息
       */
     List<NodeSetResponse> startBpmNextNodeInfo(NodeSetRequest request);
+
+    /**
+      * @description 根据任务ID获取下一个审批节点信息.
+      * @author wjd
+      * @date 2023/6/27
+      * @param taskId 任务ID
+      * @return 下一个审批节点信息
+      */
+    List<NodeSetResponse> getNextNodeInfoByTaskId(String taskId);
 }

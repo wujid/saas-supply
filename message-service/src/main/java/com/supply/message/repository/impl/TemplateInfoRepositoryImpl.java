@@ -81,7 +81,7 @@ public class TemplateInfoRepositoryImpl extends ServiceImpl<TemplateInfoMapper, 
         queryWrapper.eq(null != request.getCode(), TemplateInfoPo::getCode, request.getCode());
         queryWrapper.eq(null != request.getMsgType(), TemplateInfoPo::getMsgType, request.getMsgType());
         queryWrapper.ne(null != request.getNeId(), TemplateInfoPo::getId, request.getNeId());
-        queryWrapper.apply(null != request.getApplySql(), request.getApplySql());
+        queryWrapper.apply(null != request.getAuthSql(), request.getAuthSql());
         queryWrapper.orderBy(null != request.getOrderColumn(),  request.getIsAsc(), request.getOrderColumn());
         queryWrapper.eq(null != request.getStatus(), TemplateInfoPo::getStatus, request.getStatus());
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(request.getOrderColumnList()), request.getIsAsc(), request.getOrderColumnList());

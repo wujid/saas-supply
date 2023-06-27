@@ -83,7 +83,7 @@ public class DictRepositoryImpl extends ServiceImpl<DictMapper, DictPo> implemen
         queryWrapper.eq(null != request.getStatus(), DictPo::getStatus, request.getStatus());
         queryWrapper.ne(null != request.getNeId(), DictPo::getId, request.getNeId());
         queryWrapper.in(CollectionUtil.isNotEmpty(request.getCodeList()), DictPo::getCode, request.getCodeList());
-        queryWrapper.apply(null != request.getApplySql(), request.getApplySql());
+        queryWrapper.apply(null != request.getAuthSql(), request.getAuthSql());
         queryWrapper.orderBy(null != request.getOrderColumn(),  request.getIsAsc(), request.getOrderColumn());
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(request.getOrderColumnList()), request.getIsAsc(), request.getOrderColumnList());
         return queryWrapper;

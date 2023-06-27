@@ -80,7 +80,7 @@ public class TemplateTenantRepositoryImpl extends ServiceImpl<TemplateTenantMapp
         queryWrapper.eq(null != request.getTemplateId(), TemplateTenantPo::getTemplateId, request.getTemplateId());
         queryWrapper.eq(null != request.getTenantId(), TemplateTenantPo::getTenantId, request.getTenantId());
         queryWrapper.eq(null != request.getStatus(), TemplateTenantPo::getStatus, request.getStatus());
-        queryWrapper.apply(null != request.getApplySql(), request.getApplySql());
+        queryWrapper.apply(null != request.getAuthSql(), request.getAuthSql());
         queryWrapper.orderBy(null != request.getOrderColumn(), request.getIsAsc(), request.getOrderColumn());
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(request.getOrderColumnList()), request.getIsAsc(), request.getOrderColumnList());
         return queryWrapper;

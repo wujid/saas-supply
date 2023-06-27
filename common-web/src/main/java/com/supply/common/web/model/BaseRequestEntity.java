@@ -34,8 +34,8 @@ public class BaseRequestEntity<T> extends BpmRequestEntity implements Serializab
     @ApiModelProperty(value = "是否递增")
     private Boolean isAsc = false;
 
-    @ApiModelProperty(value = "自定义sql")
-    private String applySql;
+    @ApiModelProperty(value = "自定义权限sql")
+    private String authSql;
 
     @ApiModelProperty(value = "附件ID")
     private Long attachmentId;

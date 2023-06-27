@@ -64,7 +64,7 @@ public class WorkLeaveRepositoryImpl extends ServiceImpl<WorkLeaveMapper, WorkLe
         queryWrapper.eq(null != request.getId(), WorkLeavePo::getId, request.getId());
         queryWrapper.eq(null != request.getBusinessStatus(), WorkLeavePo::getBusinessStatus, request.getStatus());
         queryWrapper.eq(null != request.getStatus(), WorkLeavePo::getStatus, request.getStatus());
-        queryWrapper.apply(null != request.getApplySql(), request.getApplySql());
+        queryWrapper.apply(null != request.getAuthSql(), request.getAuthSql());
         queryWrapper.orderBy(null != request.getOrderColumn(), request.getIsAsc(), request.getOrderColumn());
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(request.getOrderColumnList()), request.getIsAsc(), request.getOrderColumnList());
         return queryWrapper;

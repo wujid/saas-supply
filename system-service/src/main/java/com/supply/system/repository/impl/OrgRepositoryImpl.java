@@ -93,7 +93,7 @@ public class OrgRepositoryImpl extends ServiceImpl<OrgMapper, OrgPo> implements 
         queryWrapper.eq(null != request.getBusinessStatus(), OrgPo::getBusinessStatus, request.getBusinessStatus());
         queryWrapper.eq(null != request.getStatus(), OrgPo::getStatus, request.getStatus());
         queryWrapper.eq(null != request.getIsMain(), OrgPo::getIsMain, request.getIsMain());
-        queryWrapper.apply(null != request.getApplySql(), request.getApplySql());
+        queryWrapper.apply(null != request.getAuthSql(), request.getAuthSql());
         queryWrapper.orderBy(null != request.getOrderColumn(), request.getIsAsc(), request.getOrderColumn());
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(request.getOrderColumnList()), request.getIsAsc(), request.getOrderColumnList());
         return queryWrapper;

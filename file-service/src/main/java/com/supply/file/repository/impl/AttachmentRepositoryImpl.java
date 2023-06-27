@@ -92,7 +92,7 @@ public class AttachmentRepositoryImpl extends ServiceImpl<AttachmentMapper, Atta
         queryWrapper.eq(null != request.getBusinessStatus(), AttachmentPo::getBusinessStatus, request.getBusinessStatus());
         queryWrapper.eq(null != request.getStatus(), AttachmentPo::getStatus, request.getStatus());
         queryWrapper.in(CollectionUtil.isNotEmpty(request.getIds()), AttachmentPo::getId, request.getIds());
-        queryWrapper.apply(null != request.getApplySql(), request.getApplySql());
+        queryWrapper.apply(null != request.getAuthSql(), request.getAuthSql());
         queryWrapper.orderBy(null != request.getOrderColumn(),  request.getIsAsc(), request.getOrderColumn());
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(request.getOrderColumnList()), request.getIsAsc(), request.getOrderColumnList());
         return queryWrapper;

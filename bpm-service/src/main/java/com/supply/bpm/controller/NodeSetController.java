@@ -62,10 +62,17 @@ public class NodeSetController {
         return Result.ok(data);
     }
 
-    @ApiOperation(value = "发起流程获取下一个节点审批人信息")
+    @ApiOperation(value = "发起流程获取下一个审批节点信息")
     @PostMapping("/startBpmNextNodeInfo")
     public Result<?> startBpmNextNodeInfo(@RequestBody NodeSetRequest request) {
         final List<NodeSetResponse> data = userNodeService.startBpmNextNodeInfo(request);
+        return Result.ok(data);
+    }
+
+    @ApiOperation(value = "根据任务ID获取下一个审批节点信息")
+    @GetMapping("/getNextNodeInfoByTaskId")
+    public Result<?> getNextNodeInfoByTaskId(@RequestParam String taskId) {
+        final List<NodeSetResponse> data = userNodeService.getNextNodeInfoByTaskId(taskId);
         return Result.ok(data);
     }
 }

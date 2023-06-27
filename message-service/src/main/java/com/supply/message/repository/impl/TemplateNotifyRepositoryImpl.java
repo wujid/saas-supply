@@ -82,7 +82,7 @@ public class TemplateNotifyRepositoryImpl extends ServiceImpl<TemplateNotifyMapp
         queryWrapper.eq(null != request.getNotifyType(), TemplateNotifyPo::getNotifyType, request.getNotifyType());
         queryWrapper.eq(StrUtil.isNotBlank(request.getNotifyTemplate()), TemplateNotifyPo::getNotifyTemplate, request.getNotifyTemplate());
         queryWrapper.eq(null != request.getStatus(), TemplateNotifyPo::getStatus, request.getStatus());
-        queryWrapper.apply(null != request.getApplySql(), request.getApplySql());
+        queryWrapper.apply(null != request.getAuthSql(), request.getAuthSql());
         queryWrapper.orderBy(null != request.getOrderColumn(), request.getIsAsc(), request.getOrderColumn());
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(request.getOrderColumnList()), request.getIsAsc(), request.getOrderColumnList());
         return queryWrapper;

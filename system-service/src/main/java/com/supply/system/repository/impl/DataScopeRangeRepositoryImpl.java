@@ -87,7 +87,7 @@ public class DataScopeRangeRepositoryImpl extends ServiceImpl<DataScopeRangeMapp
         queryWrapper.eq(null != request.getDataScopeRange(), DataScopeRangePo::getDataScopeRange, request.getDataScopeRange());
         queryWrapper.eq(null != request.getDataScopeId(), DataScopeRangePo::getDataScopeId, request.getDataScopeId());
         queryWrapper.eq(null != request.getStatus(), DataScopeRangePo::getStatus, request.getStatus());
-        queryWrapper.apply(null != request.getApplySql(), request.getApplySql());
+        queryWrapper.apply(null != request.getAuthSql(), request.getAuthSql());
         queryWrapper.orderBy(null != request.getOrderColumn(), request.getIsAsc(), request.getOrderColumn());
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(request.getOrderColumnList()), request.getIsAsc(), request.getOrderColumnList());
         return queryWrapper;

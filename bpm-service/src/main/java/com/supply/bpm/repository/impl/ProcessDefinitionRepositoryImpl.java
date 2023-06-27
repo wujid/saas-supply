@@ -116,7 +116,7 @@ public class ProcessDefinitionRepositoryImpl extends ServiceImpl<ProcessDefiniti
         queryWrapper.eq(null != request.getGroupId(), ProcessDefinitionPo::getGroupId, request.getGroupId());
         queryWrapper.eq(null != request.getIsGroupUse(), ProcessDefinitionPo::getIsGroupUse, request.getIsGroupUse());
         queryWrapper.eq(null != request.getStatus(), ProcessDefinitionPo::getStatus, request.getStatus());
-        queryWrapper.apply(null != request.getApplySql(), request.getApplySql());
+        queryWrapper.apply(null != request.getAuthSql(), request.getAuthSql());
         queryWrapper.eq(null != request.getTenantId(), ProcessDefinitionPo::getTenantId, request.getTenantId());
         queryWrapper.orderBy(null != request.getOrderColumn(),  request.getIsAsc(), request.getOrderColumn());
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(request.getOrderColumnList()), request.getIsAsc(), request.getOrderColumnList());

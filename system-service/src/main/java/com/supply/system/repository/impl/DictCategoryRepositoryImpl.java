@@ -106,7 +106,7 @@ public class DictCategoryRepositoryImpl extends ServiceImpl<DictCategoryMapper, 
         queryWrapper.eq(null != request.getHasChildren(), DictCategoryPo::getHasChildren, request.getHasChildren());
         queryWrapper.ne(null != request.getNeId(), DictCategoryPo::getId, request.getNeId());
         queryWrapper.like(StrUtil.isNotBlank(request.getLikeName()), DictCategoryPo::getName, request.getLikeName());
-        queryWrapper.apply(null != request.getApplySql(), request.getApplySql());
+        queryWrapper.apply(null != request.getAuthSql(), request.getAuthSql());
         queryWrapper.orderBy(null != request.getOrderColumn(),  request.getIsAsc(), request.getOrderColumn());
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(request.getOrderColumnList()), request.getIsAsc(), request.getOrderColumnList());
         return queryWrapper;

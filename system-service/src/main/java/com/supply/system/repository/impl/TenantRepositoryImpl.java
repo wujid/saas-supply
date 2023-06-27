@@ -100,7 +100,7 @@ public class TenantRepositoryImpl extends ServiceImpl<TenantMapper, TenantPo> im
         queryWrapper.like(StrUtil.isNotBlank(request.getLikeName()), TenantPo::getName, request.getLikeName());
         queryWrapper.apply(StrUtil.isNotBlank(request.getEndTimeStart()), "DATE_FORMAT(end_time, '%Y-%m-%d') >= DATE_FORMAT({0}, '%Y-%m-%d')", request.getEndTimeStart());
         queryWrapper.apply(StrUtil.isNotBlank(request.getEndTimeEnd()), "DATE_FORMAT(end_time, '%Y-%m-%d') <= DATE_FORMAT({0}, '%Y-%m-%d')", request.getEndTimeEnd());
-        queryWrapper.apply(null != request.getApplySql(), request.getApplySql());
+        queryWrapper.apply(null != request.getAuthSql(), request.getAuthSql());
         queryWrapper.orderBy(null != request.getOrderColumn(),  request.getIsAsc(), request.getOrderColumn());
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(request.getOrderColumnList()), request.getIsAsc(), request.getOrderColumnList());
         return queryWrapper;

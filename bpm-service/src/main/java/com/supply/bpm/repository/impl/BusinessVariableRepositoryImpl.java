@@ -107,7 +107,7 @@ public class BusinessVariableRepositoryImpl extends ServiceImpl<BusinessVariable
         queryWrapper.eq(StrUtil.isNotBlank(request.getVariableName()), BusinessVariablePo::getVariableName, request.getVariableName());
         queryWrapper.eq(null != request.getTenantId(), BusinessVariablePo::getTenantId, request.getTenantId());
         queryWrapper.eq(null != request.getStatus(), BusinessVariablePo::getStatus, request.getStatus());
-        queryWrapper.apply(null != request.getApplySql(), request.getApplySql());
+        queryWrapper.apply(null != request.getAuthSql(), request.getAuthSql());
         queryWrapper.orderBy(null != request.getOrderColumn(),  request.getIsAsc(), request.getOrderColumn());
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(request.getOrderColumnList()), request.getIsAsc(), request.getOrderColumnList());
         return queryWrapper;

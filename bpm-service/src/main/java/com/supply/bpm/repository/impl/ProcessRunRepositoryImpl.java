@@ -96,7 +96,7 @@ public class ProcessRunRepositoryImpl extends ServiceImpl<ProcessRunMapper, Proc
         queryWrapper.eq(StrUtil.isNotBlank(request.getBusinessId()), ProcessRunPo::getBusinessId, request.getBusinessId());
         queryWrapper.eq(null != request.getStartUserId(), ProcessRunPo::getStartUserId, request.getStartUserId());
         queryWrapper.eq(null != request.getStatus(), ProcessRunPo::getStatus, request.getStatus());
-        queryWrapper.apply(null != request.getApplySql(), request.getApplySql());
+        queryWrapper.apply(null != request.getAuthSql(), request.getAuthSql());
         queryWrapper.orderBy(null != request.getOrderColumn(),  request.getIsAsc(), request.getOrderColumn());
         queryWrapper.eq(null != request.getTenantId(), ProcessRunPo::getTenantId, request.getTenantId());
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(request.getOrderColumnList()), request.getIsAsc(), request.getOrderColumnList());

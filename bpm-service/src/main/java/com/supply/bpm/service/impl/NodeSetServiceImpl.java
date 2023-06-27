@@ -26,6 +26,9 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -57,12 +60,19 @@ public class NodeSetServiceImpl implements INodeSetService {
 
     private final SystemUserUtil userUtil;
 
+    private final TaskService taskService;
+
+    private final RuntimeService runtimeService;
+
     public NodeSetServiceImpl(INodeSetRepository nodeSetRepository, RepositoryService repositoryService,
-                              INodeUserRepository nodeUserRepository, SystemUserUtil userUtil) {
+                              INodeUserRepository nodeUserRepository, SystemUserUtil userUtil,
+                              TaskService taskService, RuntimeService runtimeService) {
         this.nodeSetRepository = nodeSetRepository;
         this.repositoryService = repositoryService;
         this.nodeUserRepository = nodeUserRepository;
         this.userUtil = userUtil;
+        this.taskService = taskService;
+        this.runtimeService = runtimeService;
     }
 
 
@@ -103,7 +113,30 @@ public class NodeSetServiceImpl implements INodeSetService {
         if (null == startFlowElement) {
             throw new ApiException("流程起始节点未定义,请检查流程图!");
         }
-        final Map<String, UserTask> userTaskMap = ActivityUtil.getNextNodeMap(flowElements, startFlowElement, variablesMap);
+        final List<NodeSetResponse> nextNodeInfo = this.getNextNode(flowElements, startFlowElement, definitionId, variablesMap);
+        return nextNodeInfo;
+    }
+
+    @Override
+    public List<NodeSetResponse> getNextNodeInfoByTaskId(String taskId) {
+        final Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        final Map<String, Object> variablesMap = runtimeService.getVariables(task.getExecutionId());
+        final String definitionId = task.getProcessDefinitionId();
+        //获取BpmnModel对象
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(definitionId);
+        //获取Process对象
+        Process process = bpmnModel.getProcesses().get(bpmnModel.getProcesses().size()-1);
+        //获取所有的FlowElement信息
+        Collection<FlowElement> flowElements = process.getFlowElements();
+        //获取当前节点信息
+        FlowElement flowElement = ActivityUtil.getFlowElementById(task.getTaskDefinitionKey(), flowElements);
+        final List<NodeSetResponse> nextNodeInfo = this.getNextNode(flowElements, flowElement, definitionId, variablesMap);
+        return nextNodeInfo;
+    }
+
+
+    private List<NodeSetResponse> getNextNode(Collection<FlowElement> flowElements , FlowElement currentFlowElement, String definitionId, Map<String, Object> variablesMap) {
+        final Map<String, UserTask> userTaskMap = ActivityUtil.getNextNodeMap(flowElements, currentFlowElement, variablesMap);
 
         // 根据流程定义获取已保存的流程节点信息(仅查询任务类型为个人任务)
         NodeSetRequest nodeSetRequest = new NodeSetRequest();
@@ -124,6 +157,8 @@ public class NodeSetServiceImpl implements INodeSetService {
         }
         return nodeSetResponses;
     }
+
+
 
     /**
       * @description 获取节点下的所有审批人信息.

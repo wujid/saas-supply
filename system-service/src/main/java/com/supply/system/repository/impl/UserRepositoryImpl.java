@@ -109,7 +109,7 @@ public class UserRepositoryImpl extends ServiceImpl<UserMapper, UserPo> implemen
         queryWrapper.like(StrUtil.isNotBlank(request.getLikeEmail()), UserPo::getEmail, request.getLikeEmail());
         queryWrapper.ne(null != request.getNeId(), UserPo::getId, request.getNeId());
         queryWrapper.apply(null != request.getRoleId(), "id IN ( SELECT user_id FROM sys_user_role WHERE `status` = 0 AND role_id = {0} )", request.getRoleId());
-        queryWrapper.apply(StrUtil.isNotBlank(request.getApplySql()), request.getApplySql());
+        queryWrapper.apply(StrUtil.isNotBlank(request.getAuthSql()), request.getAuthSql());
         queryWrapper.orderBy(null != request.getOrderColumn(),  request.getIsAsc(), request.getOrderColumn());
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(request.getOrderColumnList()), request.getIsAsc(), request.getOrderColumnList());
         return queryWrapper;
