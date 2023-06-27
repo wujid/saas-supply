@@ -99,6 +99,12 @@ public class NodeButtonServiceImpl implements INodeButtonService {
         return CommonUtil.pageCvt(responseList, poPage);
     }
 
+    @Override
+    public List<NodeButtonResponse> getListByParams(NodeButtonRequest request) {
+        final List<NodeButtonPo> list = nodeButtonRepository.getListByParams(request);
+        return NodeButtonCvt.INSTANCE.poToResponseBatch(list);
+    }
+
     /**
       * @description 新增&修改验证按钮唯一性.
       * @author wjd

@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.supply.bpm.model.request.NodeButtonRequest;
 import com.supply.bpm.model.response.NodeButtonResponse;
 
+import java.util.List;
+
 /**
  * @author wjd
  * @description .
@@ -22,4 +24,13 @@ public interface INodeButtonService {
     void activeNodeButton(Long id);
 
     IPage<NodeButtonResponse> getNodeButtonPage(NodeButtonRequest request);
+
+    /**
+      * @description 根据自定义条件查询流程节点按钮信息集.
+      * @author wjd
+      * @date 2023/6/27
+      * @param request 查询条件
+      * @return 流程节点按钮信息集
+      */
+    List<NodeButtonResponse> getListByParams(NodeButtonRequest request);
 }

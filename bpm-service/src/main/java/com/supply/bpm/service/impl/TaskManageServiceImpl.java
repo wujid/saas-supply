@@ -38,6 +38,7 @@ public class TaskManageServiceImpl implements ITaskManageService {
         this.systemUserUtil = systemUserUtil;
     }
 
+
     @Override
     public IPage<TaskResponse> getMyTask(TaskRequest request) {
         // 如果审批人不为空,查询当前审批人所属角色

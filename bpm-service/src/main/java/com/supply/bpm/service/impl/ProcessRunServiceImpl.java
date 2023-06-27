@@ -4,15 +4,21 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
+import com.supply.bpm.constant.NodeButtonTypeEnum;
 import com.supply.bpm.constant.NodeTypeEnum;
 import com.supply.bpm.constant.NodeUserTypeEnum;
 import com.supply.bpm.model.po.BusinessVariablePo;
+import com.supply.bpm.model.po.NodeButtonPo;
 import com.supply.bpm.model.po.NodeSetPo;
 import com.supply.bpm.model.po.NodeUserPo;
 import com.supply.bpm.model.po.ProcessDefinitionPo;
 import com.supply.bpm.model.po.ProcessRunPo;
+import com.supply.bpm.model.request.NodeButtonRequest;
 import com.supply.bpm.model.request.NodeSetRequest;
+import com.supply.bpm.model.request.ProcessRunRequest;
+import com.supply.bpm.model.request.TaskHandleRequest;
 import com.supply.bpm.repository.IBusinessVariableRepository;
+import com.supply.bpm.repository.INodeButtonRepository;
 import com.supply.bpm.repository.INodeSetRepository;
 import com.supply.bpm.repository.INodeUserRepository;
 import com.supply.bpm.repository.IProcessDefinitionRepository;
@@ -22,6 +28,7 @@ import com.supply.bpm.util.ActivityUtil;
 import com.supply.common.constant.BusinessStatusEnum;
 import com.supply.common.constant.Constant;
 import com.supply.common.exception.ApiException;
+import com.supply.common.model.Result;
 import com.supply.common.model.response.sys.SysUserResponse;
 import com.supply.common.util.CommonUtil;
 import com.supply.common.util.SystemUserUtil;
@@ -33,11 +40,14 @@ import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -66,24 +76,33 @@ public class ProcessRunServiceImpl implements IProcessRunService {
 
     private final INodeUserRepository nodeUserRepository;
 
+    private final INodeButtonRepository nodeButtonRepository;
+
     private final RepositoryService repositoryService;
 
-    private final RuntimeService runtimeservice;
+    private final RuntimeService runtimeService;
+
+    private final TaskService taskService;
+
+    private final RestTemplate restTemplate;
 
     private final SystemUserUtil userUtil;
 
-
     public ProcessRunServiceImpl(IProcessRunRepository processRunRepository, IProcessDefinitionRepository processDefinitionRepository,
                                  IBusinessVariableRepository businessVariableRepository, INodeSetRepository nodeSetRepository,
-                                 INodeUserRepository nodeUserRepository, RepositoryService repositoryService,
-                                 RuntimeService runtimeservice, SystemUserUtil userUtil) {
+                                 INodeUserRepository nodeUserRepository, INodeButtonRepository nodeButtonRepository,
+                                 RepositoryService repositoryService, RuntimeService runtimeService,
+                                 TaskService taskService, RestTemplate restTemplate, SystemUserUtil userUtil) {
         this.processRunRepository = processRunRepository;
         this.processDefinitionRepository = processDefinitionRepository;
         this.businessVariableRepository = businessVariableRepository;
         this.nodeSetRepository = nodeSetRepository;
         this.nodeUserRepository = nodeUserRepository;
+        this.nodeButtonRepository = nodeButtonRepository;
         this.repositoryService = repositoryService;
-        this.runtimeservice = runtimeservice;
+        this.runtimeService = runtimeService;
+        this.taskService = taskService;
+        this.restTemplate = restTemplate;
         this.userUtil = userUtil;
     }
 
@@ -122,7 +141,7 @@ public class ProcessRunServiceImpl implements IProcessRunService {
 
         // 启动流程
         final String businessId = request.getBpmBusinessId();
-        final ProcessInstance processInstance = runtimeservice.startProcessInstanceById(definitionId, businessId, businessVariableMap);
+        final ProcessInstance processInstance = runtimeService.startProcessInstanceById(definitionId, businessId, businessVariableMap);
         final String instanceId = processInstance.getProcessInstanceId();
 
         // 保存流程运行信息
@@ -137,13 +156,90 @@ public class ProcessRunServiceImpl implements IProcessRunService {
         processRunRepository.save(processRun);
     }
 
+    @Override
+    public void completeTask(TaskHandleRequest request) {
+        final Task task = taskService.createTaskQuery().taskId(request.getTaskId()).singleResult();
+        final Integer buttonType = request.getButtonType();
+        // 同意
+        if (buttonType == NodeButtonTypeEnum.AGREE.getType()) {
+            this.agreeTask(request, task);
+            return;
+        }
+        // 反对
+        if (buttonType == NodeButtonTypeEnum.AGAINST.getType()) {
+            runtimeService.deleteProcessInstance(task.getProcessInstanceId(), null);
+            return;
+        }
+        // 驳回到发起人
+        if (buttonType == NodeButtonTypeEnum.REJECT_TO_START_USER.getType()) {
+            return;
+        }
+    }
+
+    private void agreeTask(TaskHandleRequest request, Task task) {
+        final String taskId = request.getTaskId();
+        //获取BpmnModel对象
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(task.getProcessDefinitionId());
+        //获取Process对象
+        Process process = bpmnModel.getProcesses().get(bpmnModel.getProcesses().size()-1);
+        //获取所有的FlowElement信息
+        Collection<FlowElement> flowElements = process.getFlowElements();
+        //获取当前节点信息
+        FlowElement flowElement = ActivityUtil.getFlowElementById(task.getTaskDefinitionKey(), flowElements);
+        // 流程参数信息
+        final Map<String, Object> variablesMap = runtimeService.getVariables(task.getProcessInstanceId());
+        // 下一步审批人赋值
+        this.setNextNodeVariables(task.getProcessDefinitionId(), flowElements, flowElement, variablesMap, request.getNodeUserMap());
+        // 完成当前任务
+        taskService.claim(taskId, request.getAssigneeId().toString());
+        taskService.complete(taskId);
+
+        // 执行当前审批节点对应的脚本任务
+        this.executeScript(task.getProcessInstanceId(), request.getNodeSetId(), request.getButtonType());
+
+        // 判断当前流程实例是否完成,如果完成则执行对应的脚本任务
+        // 查询运行中的流程实例信息
+        final long count = runtimeService.createProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).count();
+        if (count == 0L) {
+
+        }
+    }
+
+    private void executeScript(String instanceId, Long nodeSetId, Integer buttonType) {
+        // 根据流程运行实例ID获取关联的业务ID
+        ProcessRunRequest request = new ProcessRunRequest();
+        request.setInstanceId(instanceId);
+        request.setStatus(Constant.STATUS_NOT_DEL);
+        final ProcessRunPo processRun = processRunRepository.getByParams(request);
+        final String businessId = processRun.getBusinessId();
+
+        // 获取流程在该审批节点下的脚本
+        NodeButtonRequest nodeButtonRequest = new NodeButtonRequest();
+        nodeButtonRequest.setNodeSetId(nodeSetId);
+        nodeButtonRequest.setButtonType(buttonType);
+        nodeButtonRequest.setStatus(Constant.STATUS_NOT_DEL);
+        final NodeButtonPo nodeButton = nodeButtonRepository.getByParams(nodeButtonRequest);
+        final String script = nodeButton.getScript();
+        // 执行脚本
+        if (StrUtil.isNotBlank(script)) {
+            final Map<String, Object> paramsMap = new HashMap<>();
+            paramsMap.put("businessId", businessId);
+            paramsMap.put("operateType", buttonType);
+            final String finalUrl = CommonUtil.getContentByRule(script, paramsMap);
+            restTemplate.getForEntity(finalUrl, Result.class);
+        }
+    }
+
     /**
       * @description 为流程下一个节点审批人赋值.
       * @author wjd
       * @date 2023/6/21
       */
-    private void setNextNodeVariables(String definitionId, Collection<FlowElement> flowElements, FlowElement startFlowElement, Map<String, Object> businessVariableMap, Map<Long, Long> nodeUserMap) {
-        final Map<String, UserTask> userTaskMap = ActivityUtil.getNextNodeMap(flowElements, startFlowElement, businessVariableMap);
+    private void setNextNodeVariables(String definitionId, Collection<FlowElement> flowElements, FlowElement flowElement, Map<String, Object> businessVariableMap, Map<Long, Long> nodeUserMap) {
+        final Map<String, UserTask> userTaskMap = ActivityUtil.getNextNodeMap(flowElements, flowElement, businessVariableMap);
+        if (CollectionUtil.isEmpty(userTaskMap)) {
+            return;
+        }
         final Set<String> nodeIds = userTaskMap.keySet();
         NodeSetRequest nodeSetRequest = new NodeSetRequest();
         nodeSetRequest.setDefinitionId(definitionId);

@@ -13,11 +13,11 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum NodeButtonTypeEnum {
 
-    USER(1, "同意"),
+    AGREE(1, "同意"),
 
-    ROLE(2, "反对"),
+    AGAINST(2, "反对"),
 
-    DEPT(3, "驳回到发起人");
+    REJECT_TO_START_USER(3, "驳回到发起人");
 
 
     @Note(description = "节点操作类型")
