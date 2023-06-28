@@ -29,12 +29,12 @@
         <!-- Activiti -->
         <dependency>
             <groupId>org.activiti</groupId>
-            <artifactId>activiti-spring-boot-starter-basic</artifactId>
-            <version>5.22.0</version>
+            <artifactId>activiti-spring-boot-starter</artifactId>
+            <version>7.1.0.M2</version>
             <exclusions>
                 <exclusion>
-                    <artifactId>activation</artifactId>
-                    <groupId>javax.activation</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                    <groupId>org.springframework.boot</groupId>
                 </exclusion>
                 <exclusion>
                     <artifactId>mybatis</artifactId>
@@ -42,26 +42,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- Activiti流程图 -->
-        <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-diagram-rest</artifactId>
-            <version>5.22.0</version>
-        </dependency>
-        <!-- Activiti在线设计 -->
-        <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-modeler</artifactId>
-            <version>5.22.0</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>commons-logging</artifactId>
-                    <groupId>commons-logging</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-
 
     </dependencies>
 
