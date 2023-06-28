@@ -16,6 +16,6 @@ public class BusinessConstant {
     // 反对
     public static int PROCESS_REJECT = 3;
 
-    // 驳回到发起人
+    // 驳回
     public static int PROCESS_BACK_TO_OWNER = 4;
 }

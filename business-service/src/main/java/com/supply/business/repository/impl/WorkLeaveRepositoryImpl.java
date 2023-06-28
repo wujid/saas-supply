@@ -11,6 +11,7 @@ import com.supply.business.model.request.WorkLeaveRequest;
 import com.supply.business.repository.IWorkLeaveRepository;
 import com.supply.common.constant.OperatorTypeEnum;
 import com.supply.common.web.annotation.BaseData;
+import com.supply.common.web.annotation.IgnoreFill;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -40,6 +41,15 @@ public class WorkLeaveRepositoryImpl extends ServiceImpl<WorkLeaveMapper, WorkLe
     }
 
     @Override
+    @BaseData(fill = OperatorTypeEnum.UPDATE)
+    public void updateByBusinessId(WorkLeavePo workLeavePo, @IgnoreFill String businessId) {
+        WorkLeaveRequest request = new WorkLeaveRequest();
+        request.setBusinessId(businessId);
+        final LambdaQueryWrapper<WorkLeavePo> queryWrapper = this.getQueryWrapper(request);
+        workLeaveMapper.update(workLeavePo, queryWrapper);
+    }
+
+    @Override
     public WorkLeavePo getByParams(WorkLeaveRequest request) {
         final LambdaQueryWrapper<WorkLeavePo> queryWrapper = this.getQueryWrapper(request);
         return workLeaveMapper.selectOne(queryWrapper);
@@ -62,6 +72,7 @@ public class WorkLeaveRepositoryImpl extends ServiceImpl<WorkLeaveMapper, WorkLe
     private LambdaQueryWrapper<WorkLeavePo> getQueryWrapper(WorkLeaveRequest request) {
         LambdaQueryWrapper<WorkLeavePo> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(null != request.getId(), WorkLeavePo::getId, request.getId());
+        queryWrapper.eq(null != request.getBusinessId(), WorkLeavePo::getBusinessId, request.getBusinessId());
         queryWrapper.eq(null != request.getBusinessStatus(), WorkLeavePo::getBusinessStatus, request.getStatus());
         queryWrapper.eq(null != request.getStatus(), WorkLeavePo::getStatus, request.getStatus());
         queryWrapper.apply(null != request.getAuthSql(), request.getAuthSql());

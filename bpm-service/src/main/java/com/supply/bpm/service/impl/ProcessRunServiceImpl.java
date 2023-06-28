@@ -158,6 +158,7 @@ public class ProcessRunServiceImpl implements IProcessRunService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void completeTask(TaskHandleRequest request) {
         // 获取当前任务
         final Task task = taskService.createTaskQuery().taskId(request.getTaskId()).singleResult();
@@ -205,7 +206,7 @@ public class ProcessRunServiceImpl implements IProcessRunService {
         final long count = runtimeService.createProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).count();
         String endScript = null;
         if (count == 0L) {
-            endScript = processDefinition.getAgreeEndScript();
+            endScript = processDefinition.getEndScript();
         }
 
         // 3.执行当前审批节点对应的脚本任务及结束脚本任务
@@ -215,9 +216,9 @@ public class ProcessRunServiceImpl implements IProcessRunService {
     private void againstTask(TaskHandleRequest request, Task task, ProcessDefinitionPo processDefinition) {
         // 1.结束当前流程实例
         runtimeService.deleteProcessInstance(task.getProcessInstanceId(), null);
-        // 2.执行当前审批节点对应的脚本任务
+        // 2.执行当前审批节点对应的脚本任务及结束脚本任务
         final Integer buttonType = request.getButtonType();
-        String endScript = processDefinition.getAgainstEndScript();
+        String endScript = processDefinition.getEndScript();
         this.executeScript(task.getProcessInstanceId(), request.getNodeSetId(), buttonType, endScript);
     }
 
@@ -239,7 +240,7 @@ public class ProcessRunServiceImpl implements IProcessRunService {
 
         final Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("businessId", businessId);
-        paramsMap.put("operateType", buttonType);
+        paramsMap.put("approvalType", buttonType);
         // 执行当前节点下的脚本
         if (StrUtil.isNotBlank(nodeScript)) {
             final String finalUrl = CommonUtil.getContentByRule(nodeScript, paramsMap);

@@ -77,4 +77,21 @@ public class WorkLeaveServiceImpl implements IWorkLeaveService {
         final WorkLeavePo workLeavePo = workLeaveRepository.getById(id);
         return WorkLeaveCvt.INSTANCE.poToResponse(workLeavePo);
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateBusinessStatus(String businessId, Integer approvalType) {
+        final WorkLeavePo workLeavePo = new WorkLeavePo();
+        // approvalType: 1同意 2反对 3驳回到发起人
+        if (approvalType == 1) {
+            workLeavePo.setBusinessStatus(BusinessConstant.PROCESS_SUCCESS);
+        }
+        if (approvalType == 2) {
+            workLeavePo.setBusinessStatus(BusinessConstant.PROCESS_REJECT);
+        }
+        if (approvalType == 3) {
+            workLeavePo.setBusinessStatus(BusinessConstant.PROCESS_BACK_TO_OWNER);
+        }
+        workLeaveRepository.updateByBusinessId(workLeavePo, businessId);
+    }
 }

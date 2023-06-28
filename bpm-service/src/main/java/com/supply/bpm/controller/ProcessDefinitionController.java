@@ -87,6 +87,16 @@ public class ProcessDefinitionController {
         return Result.ok();
     }
 
+    @ApiOperation(value = "修改流程结束脚本")
+    @PostMapping("/updateProcessEndScript")
+    public Result<?> updateProcessEndScript(@RequestBody ProcessDefinitionRequest request) {
+        ProcessDefinitionRequest processDefinitionRequest = new ProcessDefinitionRequest();
+        processDefinitionRequest.setId(request.getId());
+        processDefinitionRequest.setEndScript(request.getEndScript());
+        processDefinitionService.updateProcessById(processDefinitionRequest);
+        return Result.ok();
+    }
+
     @ApiOperation(value = "修改流程为当前流程版本中使用状态")
     @GetMapping("/updateProcessInUse")
     public Result<?> updateProcessInUse(Long defId) {

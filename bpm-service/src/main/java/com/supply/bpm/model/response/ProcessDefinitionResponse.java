@@ -52,14 +52,8 @@ public class ProcessDefinitionResponse extends BaseEntity implements Serializabl
     @ApiModelProperty(value = "表单URL")
     private String formUrl;
 
-    @ApiModelProperty(value = "同意后置脚本")
-    private String agreeEndScript;
-
-    @ApiModelProperty(value = "反对后置脚本")
-    private String againstEndScript;
-
-    @ApiModelProperty(value = "驳回到发起人后置脚本")
-    private String rejectUserEndScript;
+    @ApiModelProperty(value = "后置脚本")
+    private String endScript;
 
     @ApiModelProperty(value = "业务状态")
     private Integer businessStatus;
