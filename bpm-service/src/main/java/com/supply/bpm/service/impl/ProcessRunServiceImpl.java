@@ -15,6 +15,7 @@ import com.supply.bpm.model.po.ProcessDefinitionPo;
 import com.supply.bpm.model.po.ProcessRunPo;
 import com.supply.bpm.model.request.NodeButtonRequest;
 import com.supply.bpm.model.request.NodeSetRequest;
+import com.supply.bpm.model.request.ProcessDefinitionRequest;
 import com.supply.bpm.model.request.ProcessRunRequest;
 import com.supply.bpm.model.request.TaskHandleRequest;
 import com.supply.bpm.repository.IBusinessVariableRepository;
@@ -158,18 +159,22 @@ public class ProcessRunServiceImpl implements IProcessRunService {
 
     @Override
     public void completeTask(TaskHandleRequest request) {
+        // 获取当前任务
         final Task task = taskService.createTaskQuery().taskId(request.getTaskId()).singleResult();
+        // 获取流程定义信息
+        ProcessDefinitionRequest definitionRequest = new ProcessDefinitionRequest();
+        definitionRequest.setDefinitionId(task.getProcessDefinitionId());
+        definitionRequest.setStatus(Constant.STATUS_NOT_DEL);
+        final ProcessDefinitionPo processDefinition = processDefinitionRepository.getByParams(definitionRequest);
         final Integer buttonType = request.getButtonType();
         // 同意
         if (buttonType == NodeButtonTypeEnum.AGREE.getType()) {
-            this.agreeTask(request, task);
+            this.agreeTask(request, task, processDefinition);
             return;
         }
         // 反对
         if (buttonType == NodeButtonTypeEnum.AGAINST.getType()) {
-            runtimeService.deleteProcessInstance(task.getProcessInstanceId(), null);
-            // 执行当前审批节点对应的脚本任务
-            this.executeScript(task.getProcessInstanceId(), request.getNodeSetId(), buttonType);
+            this.againstTask(request, task, processDefinition);
             return;
         }
         // 驳回到发起人
@@ -177,7 +182,7 @@ public class ProcessRunServiceImpl implements IProcessRunService {
         }
     }
 
-    private void agreeTask(TaskHandleRequest request, Task task) {
+    private void agreeTask(TaskHandleRequest request, Task task, ProcessDefinitionPo processDefinition) {
         final String taskId = request.getTaskId();
         // 获取BpmnModel对象
         BpmnModel bpmnModel = repositoryService.getBpmnModel(task.getProcessDefinitionId());
@@ -196,17 +201,27 @@ public class ProcessRunServiceImpl implements IProcessRunService {
         taskService.claim(taskId, request.getAssigneeId().toString());
         taskService.complete(taskId, variablesMap);
 
-        // 2.执行当前审批节点对应的脚本任务
-        this.executeScript(task.getProcessInstanceId(), request.getNodeSetId(), request.getButtonType());
-
-        // 3.判断当前流程实例是否结束,如果结束则执行对应的结束脚本任务
+        // 2.判断当前流程实例是否结束,如果结束则获取对应的结束脚本任务
         final long count = runtimeService.createProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).count();
+        String endScript = null;
         if (count == 0L) {
-
+            endScript = processDefinition.getAgreeEndScript();
         }
+
+        // 3.执行当前审批节点对应的脚本任务及结束脚本任务
+        this.executeScript(task.getProcessInstanceId(), request.getNodeSetId(), request.getButtonType(), endScript);
     }
 
-    private void executeScript(String instanceId, Long nodeSetId, Integer buttonType) {
+    private void againstTask(TaskHandleRequest request, Task task, ProcessDefinitionPo processDefinition) {
+        // 1.结束当前流程实例
+        runtimeService.deleteProcessInstance(task.getProcessInstanceId(), null);
+        // 2.执行当前审批节点对应的脚本任务
+        final Integer buttonType = request.getButtonType();
+        String endScript = processDefinition.getAgainstEndScript();
+        this.executeScript(task.getProcessInstanceId(), request.getNodeSetId(), buttonType, endScript);
+    }
+
+    private void executeScript(String instanceId, Long nodeSetId, Integer buttonType, String endScript) {
         // 根据流程运行实例ID获取关联的业务ID
         ProcessRunRequest request = new ProcessRunRequest();
         request.setInstanceId(instanceId);
@@ -220,13 +235,19 @@ public class ProcessRunServiceImpl implements IProcessRunService {
         nodeButtonRequest.setButtonType(buttonType);
         nodeButtonRequest.setStatus(Constant.STATUS_NOT_DEL);
         final NodeButtonPo nodeButton = nodeButtonRepository.getByParams(nodeButtonRequest);
-        final String script = nodeButton.getScript();
-        // 执行脚本
-        if (StrUtil.isNotBlank(script)) {
-            final Map<String, Object> paramsMap = new HashMap<>();
-            paramsMap.put("businessId", businessId);
-            paramsMap.put("operateType", buttonType);
-            final String finalUrl = CommonUtil.getContentByRule(script, paramsMap);
+        final String nodeScript = nodeButton.getScript();
+
+        final Map<String, Object> paramsMap = new HashMap<>();
+        paramsMap.put("businessId", businessId);
+        paramsMap.put("operateType", buttonType);
+        // 执行当前节点下的脚本
+        if (StrUtil.isNotBlank(nodeScript)) {
+            final String finalUrl = CommonUtil.getContentByRule(nodeScript, paramsMap);
+            restTemplate.getForEntity(finalUrl, Result.class);
+        }
+        // 执行流程结束脚本
+        if (StrUtil.isNotBlank(endScript)) {
+            final String finalUrl = CommonUtil.getContentByRule(endScript, paramsMap);
             restTemplate.getForEntity(finalUrl, Result.class);
         }
     }
