@@ -168,37 +168,38 @@ public class ProcessRunServiceImpl implements IProcessRunService {
         // 反对
         if (buttonType == NodeButtonTypeEnum.AGAINST.getType()) {
             runtimeService.deleteProcessInstance(task.getProcessInstanceId(), null);
+            // 执行当前审批节点对应的脚本任务
+            this.executeScript(task.getProcessInstanceId(), request.getNodeSetId(), buttonType);
             return;
         }
         // 驳回到发起人
         if (buttonType == NodeButtonTypeEnum.REJECT_TO_START_USER.getType()) {
-            return;
         }
     }
 
     private void agreeTask(TaskHandleRequest request, Task task) {
         final String taskId = request.getTaskId();
-        //获取BpmnModel对象
+        // 获取BpmnModel对象
         BpmnModel bpmnModel = repositoryService.getBpmnModel(task.getProcessDefinitionId());
-        //获取Process对象
+        // 获取Process对象
         Process process = bpmnModel.getProcesses().get(bpmnModel.getProcesses().size()-1);
-        //获取所有的FlowElement信息
+        // 获取所有的FlowElement信息
         Collection<FlowElement> flowElements = process.getFlowElements();
-        //获取当前节点信息
+        // 获取当前节点信息
         FlowElement flowElement = ActivityUtil.getFlowElementById(task.getTaskDefinitionKey(), flowElements);
         // 流程参数信息
         final Map<String, Object> variablesMap = runtimeService.getVariables(task.getProcessInstanceId());
         // 下一步审批人赋值
         this.setNextNodeVariables(task.getProcessDefinitionId(), flowElements, flowElement, variablesMap, request.getNodeUserMap());
-        // 完成当前任务
-        taskService.claim(taskId, request.getAssigneeId().toString());
-        taskService.complete(taskId);
 
-        // 执行当前审批节点对应的脚本任务
+        // 1.完成当前任务
+        taskService.claim(taskId, request.getAssigneeId().toString());
+        taskService.complete(taskId, variablesMap);
+
+        // 2.执行当前审批节点对应的脚本任务
         this.executeScript(task.getProcessInstanceId(), request.getNodeSetId(), request.getButtonType());
 
-        // 判断当前流程实例是否完成,如果完成则执行对应的脚本任务
-        // 查询运行中的流程实例信息
+        // 3.判断当前流程实例是否结束,如果结束则执行对应的结束脚本任务
         final long count = runtimeService.createProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).count();
         if (count == 0L) {
 
