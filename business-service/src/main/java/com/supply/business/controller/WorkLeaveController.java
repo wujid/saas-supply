@@ -60,10 +60,10 @@ public class WorkLeaveController {
         return Result.ok(data);
     }
 
-    @ApiOperation(value = "获取请假申请分页信息")
-    @GetMapping("/getWorkLeaveById")
-    public Result<?> getWorkLeaveById(@RequestParam Long id) {
-        final WorkLeaveResponse data = workLeaveService.getInfoById(id);
+    @ApiOperation(value = "获取请假申请信息")
+    @GetMapping("/getWorkLeaveByBusinessId")
+    public Result<?> getWorkLeaveByBusinessId(@RequestParam String businessId) {
+        final WorkLeaveResponse data = workLeaveService.getInfoByBusinessId(businessId);
         return Result.ok(data);
     }
 }

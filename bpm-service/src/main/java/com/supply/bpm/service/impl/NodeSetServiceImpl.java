@@ -1,6 +1,7 @@
 package com.supply.bpm.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.supply.bpm.constant.NodeTypeEnum;
@@ -8,11 +9,17 @@ import com.supply.bpm.constant.NodeUserTypeEnum;
 import com.supply.bpm.cvt.NodeSetCvt;
 import com.supply.bpm.model.po.NodeSetPo;
 import com.supply.bpm.model.po.NodeUserPo;
+import com.supply.bpm.model.po.ProcessDefinitionPo;
+import com.supply.bpm.model.po.ProcessRunPo;
 import com.supply.bpm.model.request.NodeSetRequest;
 import com.supply.bpm.model.request.NodeUserRequest;
+import com.supply.bpm.model.request.ProcessDefinitionRequest;
+import com.supply.bpm.model.request.ProcessRunRequest;
 import com.supply.bpm.model.response.NodeSetResponse;
 import com.supply.bpm.repository.INodeSetRepository;
 import com.supply.bpm.repository.INodeUserRepository;
+import com.supply.bpm.repository.IProcessDefinitionRepository;
+import com.supply.bpm.repository.IProcessRunRepository;
 import com.supply.bpm.service.INodeSetService;
 import com.supply.bpm.util.ActivityUtil;
 import com.supply.common.constant.BusinessStatusEnum;
@@ -37,6 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -64,15 +72,22 @@ public class NodeSetServiceImpl implements INodeSetService {
 
     private final RuntimeService runtimeService;
 
+    private final IProcessDefinitionRepository processDefinitionRepository;
+
+    private final IProcessRunRepository processRunRepository;
+
     public NodeSetServiceImpl(INodeSetRepository nodeSetRepository, RepositoryService repositoryService,
                               INodeUserRepository nodeUserRepository, SystemUserUtil userUtil,
-                              TaskService taskService, RuntimeService runtimeService) {
+                              TaskService taskService, RuntimeService runtimeService,
+                              IProcessDefinitionRepository processDefinitionRepository, IProcessRunRepository processRunRepository) {
         this.nodeSetRepository = nodeSetRepository;
         this.repositoryService = repositoryService;
         this.nodeUserRepository = nodeUserRepository;
         this.userUtil = userUtil;
         this.taskService = taskService;
         this.runtimeService = runtimeService;
+        this.processDefinitionRepository = processDefinitionRepository;
+        this.processRunRepository = processRunRepository;
     }
 
 
@@ -113,8 +128,7 @@ public class NodeSetServiceImpl implements INodeSetService {
         if (null == startFlowElement) {
             throw new ApiException("流程起始节点未定义,请检查流程图!");
         }
-        final List<NodeSetResponse> nextNodeInfo = this.getNextNode(flowElements, startFlowElement, definitionId, variablesMap);
-        return nextNodeInfo;
+        return this.getNextNode(flowElements, startFlowElement, definitionId, variablesMap);
     }
 
     @Override
@@ -130,8 +144,43 @@ public class NodeSetServiceImpl implements INodeSetService {
         Collection<FlowElement> flowElements = process.getFlowElements();
         //获取当前节点信息
         FlowElement flowElement = ActivityUtil.getFlowElementById(task.getTaskDefinitionKey(), flowElements);
-        final List<NodeSetResponse> nextNodeInfo = this.getNextNode(flowElements, flowElement, definitionId, variablesMap);
-        return nextNodeInfo;
+        return this.getNextNode(flowElements, flowElement, definitionId, variablesMap);
+    }
+
+    @Override
+    public String getFormUrl(String instanceId, String nodeId) {
+        ProcessRunRequest request = new ProcessRunRequest();
+        request.setInstanceId(instanceId);
+        final ProcessRunPo processRun = processRunRepository.getByParams(request);
+        if (null == processRun) {
+            logger.error("根据流程运行实例ID{}未查询到流程运行信息", instanceId);
+            throw new ApiException();
+        }
+        final String definitionId = processRun.getDefinitionId();
+        NodeSetRequest nodeSetRequest = new NodeSetRequest();
+        nodeSetRequest.setDefinitionId(definitionId);
+        nodeSetRequest.setNodeId(nodeId);
+        nodeSetRequest.setStatus(Constant.STATUS_NOT_DEL);
+        final NodeSetPo nodeSetPo = nodeSetRepository.getByParams(nodeSetRequest);
+        if (null == nodeSetPo) {
+            logger.error("根据流程定义ID{}和节点ID{}未查询到流程设置信息", definitionId, nodeId);
+            throw new ApiException();
+        }
+        String formUrl = nodeSetPo.getFormUrl();
+        // 当前节点未配置则从流程定义中获取
+        if (StrUtil.isBlank(formUrl)) {
+            ProcessDefinitionRequest definitionRequest = new ProcessDefinitionRequest();
+            definitionRequest.setDefinitionId(definitionId);
+            final ProcessDefinitionPo processDefinition = processDefinitionRepository.getByParams(definitionRequest);
+            formUrl = processDefinition.getFormUrl();
+        }
+        // 拼装详情url
+        if (StrUtil.isNotBlank(formUrl)) {
+            Map<String, Object> paramsMap = new HashMap<>();
+            paramsMap.put("businessId", processRun.getBusinessId());
+            formUrl =  CommonUtil.getContentByRule(formUrl, paramsMap);
+        }
+        return formUrl;
     }
 
 

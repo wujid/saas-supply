@@ -75,4 +75,11 @@ public class NodeSetController {
         final List<NodeSetResponse> data = userNodeService.getNextNodeInfoByTaskId(taskId);
         return Result.ok(data);
     }
+
+    @ApiOperation(value = "获取表单详情URL")
+    @GetMapping("/getFormUrl")
+    public Result<?> getFormUrl(@RequestParam String instanceId, @RequestParam String nodeId) {
+        final String data = userNodeService.getFormUrl(instanceId, nodeId);
+        return Result.ok(data);
+    }
 }

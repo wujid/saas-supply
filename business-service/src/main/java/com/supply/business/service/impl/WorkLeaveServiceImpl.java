@@ -73,8 +73,10 @@ public class WorkLeaveServiceImpl implements IWorkLeaveService {
     }
 
     @Override
-    public WorkLeaveResponse getInfoById(Long id) {
-        final WorkLeavePo workLeavePo = workLeaveRepository.getById(id);
+    public WorkLeaveResponse getInfoByBusinessId(String businessId) {
+        WorkLeaveRequest request = new WorkLeaveRequest();
+        request.setBusinessId(businessId);
+        final WorkLeavePo workLeavePo = workLeaveRepository.getByParams(request);
         return WorkLeaveCvt.INSTANCE.poToResponse(workLeavePo);
     }
 

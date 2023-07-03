@@ -14,7 +14,7 @@ public interface IWorkLeaveService {
 
     IPage<WorkLeaveResponse> getPageByParams(WorkLeaveRequest request);
 
-    WorkLeaveResponse getInfoById(Long id);
+    WorkLeaveResponse getInfoByBusinessId(String businessId);
 
     /**
       * @description 流程结束回调修改业务状态.

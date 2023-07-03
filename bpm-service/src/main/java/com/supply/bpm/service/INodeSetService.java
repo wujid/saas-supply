@@ -49,4 +49,14 @@ public interface INodeSetService {
       * @return 下一个审批节点信息
       */
     List<NodeSetResponse> getNextNodeInfoByTaskId(String taskId);
+
+    /**
+      * @description 获取表单详情URL.
+      * @author wjd
+      * @date 2023/7/3
+      * @param instanceId 流程运行实例ID
+      * @param nodeId 流程节点ID
+      * @return 详情表单URL
+      */
+    String getFormUrl(String instanceId, String nodeId);
 }
