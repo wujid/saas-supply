@@ -42,6 +42,11 @@
                 left join (
                 select
                     run.id as run_id,
+                    run.instance_id,
+                    run.business_id,
+                    run.business_title,
+                    run.start_user_id,
+                    run.business_status,
                     def.process_key,
                     def.process_name,
                     def.category_id,
