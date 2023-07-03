@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.supply.bpm.constant.NodeButtonTypeEnum;
 import com.supply.bpm.constant.NodeTypeEnum;
 import com.supply.bpm.constant.NodeUserTypeEnum;
+import com.supply.bpm.image.CustomProcessDiagramGenerator;
 import com.supply.bpm.model.po.BusinessVariablePo;
 import com.supply.bpm.model.po.NodeButtonPo;
 import com.supply.bpm.model.po.NodeSetPo;
@@ -34,22 +35,35 @@ import com.supply.common.model.response.sys.SysUserResponse;
 import com.supply.common.util.CommonUtil;
 import com.supply.common.util.SystemUserUtil;
 import com.supply.common.web.model.BpmRequestEntity;
+import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.UserTask;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.activiti.image.ProcessDiagramGenerator;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -85,6 +99,8 @@ public class ProcessRunServiceImpl implements IProcessRunService {
 
     private final TaskService taskService;
 
+    private final HistoryService historyService;
+
     private final RestTemplate restTemplate;
 
     private final SystemUserUtil userUtil;
@@ -93,7 +109,7 @@ public class ProcessRunServiceImpl implements IProcessRunService {
                                  IBusinessVariableRepository businessVariableRepository, INodeSetRepository nodeSetRepository,
                                  INodeUserRepository nodeUserRepository, INodeButtonRepository nodeButtonRepository,
                                  RepositoryService repositoryService, RuntimeService runtimeService,
-                                 TaskService taskService, RestTemplate restTemplate, SystemUserUtil userUtil) {
+                                 TaskService taskService, HistoryService historyService, RestTemplate restTemplate, SystemUserUtil userUtil) {
         this.processRunRepository = processRunRepository;
         this.processDefinitionRepository = processDefinitionRepository;
         this.businessVariableRepository = businessVariableRepository;
@@ -103,6 +119,7 @@ public class ProcessRunServiceImpl implements IProcessRunService {
         this.repositoryService = repositoryService;
         this.runtimeService = runtimeService;
         this.taskService = taskService;
+        this.historyService = historyService;
         this.restTemplate = restTemplate;
         this.userUtil = userUtil;
     }
@@ -183,73 +200,47 @@ public class ProcessRunServiceImpl implements IProcessRunService {
         }
     }
 
-    private void agreeTask(TaskHandleRequest request, Task task, ProcessDefinitionPo processDefinition) {
-        final String taskId = request.getTaskId();
-        // 获取BpmnModel对象
-        BpmnModel bpmnModel = repositoryService.getBpmnModel(task.getProcessDefinitionId());
-        // 获取Process对象
-        Process process = bpmnModel.getProcesses().get(bpmnModel.getProcesses().size()-1);
-        // 获取所有的FlowElement信息
-        Collection<FlowElement> flowElements = process.getFlowElements();
-        // 获取当前节点信息
-        FlowElement flowElement = ActivityUtil.getFlowElementById(task.getTaskDefinitionKey(), flowElements);
-        // 流程参数信息
-        final Map<String, Object> variablesMap = runtimeService.getVariables(task.getProcessInstanceId());
-        // 下一步审批人赋值
-        this.setNextNodeVariables(task.getProcessDefinitionId(), flowElements, flowElement, variablesMap, request.getNodeUserMap());
-
-        // 1.完成当前任务
-        taskService.claim(taskId, request.getAssigneeId().toString());
-        taskService.complete(taskId, variablesMap);
-
-        // 2.判断当前流程实例是否结束,如果结束则获取对应的结束脚本任务
-        final long count = runtimeService.createProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).count();
-        String endScript = null;
-        if (count == 0L) {
-            endScript = processDefinition.getEndScript();
+    @Override
+    public void getActImage(String instanceId, HttpServletResponse response) {
+        // 获取历史流程实例
+        HistoricProcessInstance historicProcessInstance = historyService
+                .createHistoricProcessInstanceQuery()
+                .processInstanceId(instanceId).singleResult();
+        // 获取流程中已经执行的节点，按照执行先后顺序排序
+        List<HistoricActivityInstance> historicActivityInstances = historyService
+                .createHistoricActivityInstanceQuery()
+                .processInstanceId(instanceId)
+                .orderByHistoricActivityInstanceId()
+                .asc().list();
+        // 高亮已经执行流程节点ID集合
+        List<String> highLightedActivityIds = new ArrayList<>();
+        int index = 1;
+        final int historicActivitySize = historicActivityInstances.size();
+        for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
+            // 用自定义颜色
+            if (index == historicActivitySize && null == historicActivityInstance.getEndTime()) {
+                // 当前节点
+                highLightedActivityIds.add(historicActivityInstance.getActivityId() + "#");
+            } else {
+                // 已完成节点
+                highLightedActivityIds.add(historicActivityInstance.getActivityId());
+            }
+            index++;
         }
-
-        // 3.执行当前审批节点对应的脚本任务及结束脚本任务
-        this.executeScript(task.getProcessInstanceId(), request.getNodeSetId(), request.getButtonType(), endScript);
-    }
-
-    private void againstTask(TaskHandleRequest request, Task task, ProcessDefinitionPo processDefinition) {
-        // 1.结束当前流程实例
-        runtimeService.deleteProcessInstance(task.getProcessInstanceId(), null);
-        // 2.执行当前审批节点对应的脚本任务及结束脚本任务
-        final Integer buttonType = request.getButtonType();
-        String endScript = processDefinition.getEndScript();
-        this.executeScript(task.getProcessInstanceId(), request.getNodeSetId(), buttonType, endScript);
-    }
-
-    private void executeScript(String instanceId, Long nodeSetId, Integer buttonType, String endScript) {
-        // 根据流程运行实例ID获取关联的业务ID
-        ProcessRunRequest request = new ProcessRunRequest();
-        request.setInstanceId(instanceId);
-        request.setStatus(Constant.STATUS_NOT_DEL);
-        final ProcessRunPo processRun = processRunRepository.getByParams(request);
-        final String businessId = processRun.getBusinessId();
-
-        // 获取流程在该审批节点下的脚本
-        NodeButtonRequest nodeButtonRequest = new NodeButtonRequest();
-        nodeButtonRequest.setNodeSetId(nodeSetId);
-        nodeButtonRequest.setButtonType(buttonType);
-        nodeButtonRequest.setStatus(Constant.STATUS_NOT_DEL);
-        final NodeButtonPo nodeButton = nodeButtonRepository.getByParams(nodeButtonRequest);
-        final String nodeScript = nodeButton.getScript();
-
-        final Map<String, Object> paramsMap = new HashMap<>();
-        paramsMap.put("businessId", businessId);
-        paramsMap.put("approvalType", buttonType);
-        // 执行当前节点下的脚本
-        if (StrUtil.isNotBlank(nodeScript)) {
-            final String finalUrl = CommonUtil.getContentByRule(nodeScript, paramsMap);
-            restTemplate.getForEntity(finalUrl, Result.class);
-        }
-        // 执行流程结束脚本
-        if (StrUtil.isNotBlank(endScript)) {
-            final String finalUrl = CommonUtil.getContentByRule(endScript, paramsMap);
-            restTemplate.getForEntity(finalUrl, Result.class);
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(historicProcessInstance.getProcessDefinitionId());
+        // 高亮流程已发生流转的线id集合
+        List<String> highLightedFlowIds = ActivityUtil.getHighLightedFlows(bpmnModel, historicActivityInstances);
+        ProcessDiagramGenerator generator = new CustomProcessDiagramGenerator();
+        try (InputStream inputStream = generator.generateDiagram(bpmnModel, highLightedActivityIds,
+                highLightedFlowIds, "原版宋体", "原版宋体", "原版宋体");
+             ServletOutputStream outputStream = response.getOutputStream()) {
+            byte[] bytes = IOUtils.toByteArray(inputStream);
+            response.setContentType("image/svg+xml");
+            response.setStatus(203);
+            outputStream.write(bytes);
+            outputStream.flush();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -365,5 +356,140 @@ public class ProcessRunServiceImpl implements IProcessRunService {
         }
         businessVariableMap.put("startTime", DateUtil.now());
         return CommonUtil.getContentByRule(definition.getTitle(), businessVariableMap);
+    }
+
+    private void agreeTask(TaskHandleRequest request, Task task, ProcessDefinitionPo processDefinition) {
+        final String taskId = request.getTaskId();
+        // 获取BpmnModel对象
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(task.getProcessDefinitionId());
+        // 获取Process对象
+        Process process = bpmnModel.getProcesses().get(bpmnModel.getProcesses().size()-1);
+        // 获取所有的FlowElement信息
+        Collection<FlowElement> flowElements = process.getFlowElements();
+        // 获取当前节点信息
+        FlowElement flowElement = ActivityUtil.getFlowElementById(task.getTaskDefinitionKey(), flowElements);
+        // 流程参数信息
+        final Map<String, Object> variablesMap = runtimeService.getVariables(task.getProcessInstanceId());
+        // 下一步审批人赋值
+        this.setNextNodeVariables(task.getProcessDefinitionId(), flowElements, flowElement, variablesMap, request.getNodeUserMap());
+
+        // 1.完成当前任务
+        taskService.claim(taskId, request.getAssigneeId().toString());
+        taskService.complete(taskId, variablesMap);
+
+        // 2.判断当前流程实例是否结束,如果结束则获取对应的结束脚本任务
+        final long count = runtimeService.createProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).count();
+        String endScript = null;
+        if (count == 0L) {
+            endScript = processDefinition.getEndScript();
+        }
+
+        // 3.执行当前审批节点对应的脚本任务及结束脚本任务
+        this.executeScript(task.getProcessInstanceId(), request.getNodeSetId(), request.getButtonType(), endScript);
+    }
+
+    private void againstTask(TaskHandleRequest request, Task task, ProcessDefinitionPo processDefinition) {
+        // 1.结束当前流程实例
+        runtimeService.deleteProcessInstance(task.getProcessInstanceId(), null);
+        // 2.执行当前审批节点对应的脚本任务及结束脚本任务
+        final Integer buttonType = request.getButtonType();
+        String endScript = processDefinition.getEndScript();
+        this.executeScript(task.getProcessInstanceId(), request.getNodeSetId(), buttonType, endScript);
+    }
+
+    private void executeScript(String instanceId, Long nodeSetId, Integer buttonType, String endScript) {
+        // 根据流程运行实例ID获取关联的业务ID
+        ProcessRunRequest request = new ProcessRunRequest();
+        request.setInstanceId(instanceId);
+        request.setStatus(Constant.STATUS_NOT_DEL);
+        final ProcessRunPo processRun = processRunRepository.getByParams(request);
+        final String businessId = processRun.getBusinessId();
+
+        // 获取流程在该审批节点下的脚本
+        NodeButtonRequest nodeButtonRequest = new NodeButtonRequest();
+        nodeButtonRequest.setNodeSetId(nodeSetId);
+        nodeButtonRequest.setButtonType(buttonType);
+        nodeButtonRequest.setStatus(Constant.STATUS_NOT_DEL);
+        final NodeButtonPo nodeButton = nodeButtonRepository.getByParams(nodeButtonRequest);
+        final String nodeScript = nodeButton.getScript();
+
+        final Map<String, Object> paramsMap = new HashMap<>();
+        paramsMap.put("businessId", businessId);
+        paramsMap.put("approvalType", buttonType);
+        // 执行当前节点下的脚本
+        if (StrUtil.isNotBlank(nodeScript)) {
+            final String finalUrl = CommonUtil.getContentByRule(nodeScript, paramsMap);
+            restTemplate.getForEntity(finalUrl, Result.class);
+        }
+        // 执行流程结束脚本
+        if (StrUtil.isNotBlank(endScript)) {
+            final String finalUrl = CommonUtil.getContentByRule(endScript, paramsMap);
+            restTemplate.getForEntity(finalUrl, Result.class);
+        }
+    }
+
+    private List<String> getRunningActivityFlowsIds(BpmnModel bpmnModel, List<String> runningActivityIdList, List<HistoricActivityInstance> historicActivityInstanceList) {
+        List<String> runningActivityFlowsIds = new ArrayList<>();
+        List<String> runningActivityIds = new ArrayList<>(runningActivityIdList);
+        // 逆序寻找，因为historicActivityInstanceList有序
+        if (CollectionUtils.isEmpty(runningActivityIds)) {
+            return runningActivityFlowsIds;
+        }
+        for (int i = historicActivityInstanceList.size() - 1; i >= 0; i--) {
+            HistoricActivityInstance historicActivityInstance = historicActivityInstanceList.get(i);
+            FlowNode flowNode = (FlowNode) bpmnModel.getMainProcess().getFlowElement(historicActivityInstance.getActivityId(), true);
+            // 如果当前节点是未完成的节点
+            if (runningActivityIds.contains(flowNode.getId())) {
+                continue;
+            }
+            // 当前节点的所有流出线
+            List<SequenceFlow> outgoingFlowList = flowNode.getOutgoingFlows();
+            // 遍历所有的流出线
+            for (SequenceFlow outgoingFlow : outgoingFlowList) {
+                // 获取当前节点流程线对应的下一级节点
+                FlowNode targetFlowNode = (FlowNode) bpmnModel.getMainProcess().getFlowElement(outgoingFlow.getTargetRef(), true);
+                // 如果找到流出线的目标是runningActivityIdList中的，那么添加后将其移除，避免找到重复的都指向runningActivityIdList的流出线
+                if (runningActivityIds.contains(targetFlowNode.getId())) {
+                    runningActivityFlowsIds.add(outgoingFlow.getId());
+                    runningActivityIds.remove(targetFlowNode.getId());
+                }
+            }
+
+        }
+        return runningActivityFlowsIds;
+    }
+
+    private List<String> getHighLightedFlowsByIncomingFlows(BpmnModel bpmnModel, List<HistoricActivityInstance> historicActivityInstanceList) {
+
+        // 已经流经的顺序流，需要高亮显示
+        List<String> highFlows = new ArrayList<>();
+
+        // 全部活动节点(包括正在执行的和未执行的)
+        List<FlowNode> allHistoricActivityNodeList = new ArrayList<>();
+
+        /*
+         * 循环的目的：
+         *           获取所有的历史节点FlowNode并放入allHistoricActivityNodeList
+         *           获取所有确定结束了的历史节点finishedActivityInstancesList
+         */
+        for (HistoricActivityInstance historicActivityInstance : historicActivityInstanceList) {
+            // 获取流程节点
+            // bpmnModel.getMainProcess()获取一个Process对象
+            FlowNode flowNode = (FlowNode) bpmnModel.getMainProcess().getFlowElement(historicActivityInstance.getActivityId(), true);
+            allHistoricActivityNodeList.add(flowNode);
+        }
+        // 循环活动节点
+        for (FlowNode flowNode : allHistoricActivityNodeList) {
+            // 获取每个活动节点的输入线
+            List<SequenceFlow> incomingFlows = flowNode.getIncomingFlows();
+
+            // 循环输入线，如果输入线的源头处于全部活动节点中，则将其包含在内
+            for (SequenceFlow sequenceFlow : incomingFlows) {
+                if (allHistoricActivityNodeList.stream().map(BaseElement::getId).collect(Collectors.toList()).contains(sequenceFlow.getSourceFlowElement().getId())) {
+                    highFlows.add(sequenceFlow.getId());
+                }
+            }
+        }
+        return highFlows;
     }
 }
