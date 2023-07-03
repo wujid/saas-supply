@@ -22,12 +22,27 @@ import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.Transaction;
 import org.activiti.image.exception.ActivitiImageException;
 import org.activiti.image.impl.ProcessDiagramSVGGraphics2D;
-import org.activiti.image.impl.icon.*;
+import org.activiti.image.impl.icon.BusinessRuleTaskIconType;
+import org.activiti.image.impl.icon.CompensateIconType;
+import org.activiti.image.impl.icon.CompensateThrowIconType;
+import org.activiti.image.impl.icon.ErrorIconType;
+import org.activiti.image.impl.icon.ErrorThrowIconType;
+import org.activiti.image.impl.icon.IconType;
+import org.activiti.image.impl.icon.ManualTaskIconType;
+import org.activiti.image.impl.icon.MessageIconType;
+import org.activiti.image.impl.icon.ReceiveTaskIconType;
+import org.activiti.image.impl.icon.ScriptTaskIconType;
+import org.activiti.image.impl.icon.SendTaskIconType;
+import org.activiti.image.impl.icon.ServiceTaskIconType;
+import org.activiti.image.impl.icon.SignalIconType;
+import org.activiti.image.impl.icon.SignalThrowIconType;
+import org.activiti.image.impl.icon.TaskIconType;
+import org.activiti.image.impl.icon.TimerIconType;
+import org.activiti.image.impl.icon.UserTaskIconType;
 import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.svggen.SVGGraphics2DIOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
 import java.awt.*;
@@ -35,8 +50,19 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
-import java.awt.geom.*;
-import java.io.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
+import java.awt.geom.PathIterator;
+import java.awt.geom.Rectangle2D;
+import java.awt.geom.RoundRectangle2D;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.ArrayList;
@@ -217,7 +243,7 @@ public class CustomProcessDiagramCanvas {
 
     public void initialize() {
         // Get a DOMImplementation.
-        DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
+        GenericDOMImplementation domImpl = new GenericDOMImplementation();
 
         // Create an instance of org.w3c.dom.Document.
         String svgNS = "http://www.w3.org/2000/svg";

@@ -19,6 +19,9 @@ import java.io.Serializable;
 public class TaskResponse extends BaseEntity implements Serializable {
     private static final long serialVersionUID = -2871582615535724612L;
 
+    @ApiModelProperty(value = "流程运行表主键ID")
+    private Long runId;
+
     @ApiModelProperty(value = "任务ID")
     private String taskId;
 

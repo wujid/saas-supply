@@ -1,13 +1,17 @@
 package com.supply.bpm.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.supply.bpm.cvt.NodeButtonCvt;
 import com.supply.bpm.model.po.NodeButtonPo;
+import com.supply.bpm.model.po.NodeSetPo;
 import com.supply.bpm.model.request.NodeButtonRequest;
+import com.supply.bpm.model.request.NodeSetRequest;
 import com.supply.bpm.model.response.NodeButtonResponse;
 import com.supply.bpm.repository.INodeButtonRepository;
+import com.supply.bpm.repository.INodeSetRepository;
 import com.supply.bpm.service.INodeButtonService;
 import com.supply.common.constant.BusinessStatusEnum;
 import com.supply.common.constant.Constant;
@@ -31,8 +35,11 @@ public class NodeButtonServiceImpl implements INodeButtonService {
 
     private final INodeButtonRepository nodeButtonRepository;
 
-    public NodeButtonServiceImpl(INodeButtonRepository nodeButtonRepository) {
+    private final INodeSetRepository nodeSetRepository;
+
+    public NodeButtonServiceImpl(INodeButtonRepository nodeButtonRepository, INodeSetRepository nodeSetRepository) {
         this.nodeButtonRepository = nodeButtonRepository;
+        this.nodeSetRepository = nodeSetRepository;
     }
 
 
@@ -103,6 +110,28 @@ public class NodeButtonServiceImpl implements INodeButtonService {
     public List<NodeButtonResponse> getListByParams(NodeButtonRequest request) {
         final List<NodeButtonPo> list = nodeButtonRepository.getListByParams(request);
         return NodeButtonCvt.INSTANCE.poToResponseBatch(list);
+    }
+
+    @Override
+    public List<NodeButtonResponse> getByDefinitionIdAndNodeId(String definitionId, String nodeId) {
+        NodeSetRequest nodeSetRequest = new NodeSetRequest();
+        nodeSetRequest.setDefinitionId(definitionId);
+        nodeSetRequest.setNodeId(nodeId);
+        nodeSetRequest.setStatus(Constant.STATUS_NOT_DEL);
+        final NodeSetPo nodeSet = nodeSetRepository.getByParams(nodeSetRequest);
+        if (null == nodeSet) {
+            logger.error("根据流程定义ID{}和节点ID{}未找到流程节点设置信息", definitionId, nodeId);
+            throw new ApiException();
+        }
+        NodeButtonRequest request = new NodeButtonRequest();
+        request.setNodeSetId(nodeSet.getId());
+        request.setStatus(Constant.STATUS_NOT_DEL);
+        request.setBusinessStatus(BusinessStatusEnum.IN_ACTIVE.getStatus());
+        final List<NodeButtonResponse> list = this.getListByParams(request);
+        if (CollectionUtil.isEmpty(list)) {
+            throw new ApiException("当前审批人未配置流程操作按钮");
+        }
+        return list;
     }
 
     /**

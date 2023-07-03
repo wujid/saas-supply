@@ -20,7 +20,7 @@
 
     <select id="getMyTask" resultType="com.supply.bpm.model.response.TaskResponse" parameterType="com.supply.bpm.model.request.TaskRequest">
         select
-            bp.id,
+            bp.run_id,
             res.id_ as task_id,
             res.execution_id_ as execution_id,
             res.proc_inst_id_ as instance_id,
@@ -41,7 +41,7 @@
                 left join act_ru_identitylink i on i.task_id_ = res.id_
                 left join (
                 select
-                    run.*,
+                    run.id as run_id,
                     def.process_key,
                     def.process_name,
                     def.category_id,

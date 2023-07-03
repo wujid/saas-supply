@@ -1,12 +1,10 @@
 package com.supply.bpm.controller;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.supply.bpm.model.po.NodeButtonPo;
 import com.supply.bpm.model.request.NodeButtonRequest;
 import com.supply.bpm.model.response.NodeButtonResponse;
 import com.supply.bpm.service.INodeButtonService;
-import com.supply.common.constant.BusinessStatusEnum;
 import com.supply.common.constant.Constant;
 import com.supply.common.model.Result;
 import com.supply.common.web.util.ContextUtil;
@@ -94,17 +92,10 @@ public class NodeButtonController {
         return Result.ok(data);
     }
 
-    @ApiOperation(value = "根据流程节点设置ID查询按钮信息")
-    @GetMapping("/getNodeButtonByNodeSetId")
-    public Result<?> getNodeButtonByNodeSetId(@RequestParam Long nodeSetId) {
-        NodeButtonRequest request = new NodeButtonRequest();
-        request.setNodeSetId(nodeSetId);
-        request.setStatus(Constant.STATUS_NOT_DEL);
-        request.setBusinessStatus(BusinessStatusEnum.IN_ACTIVE.getStatus());
-        final List<NodeButtonResponse> data = nodeButtonService.getListByParams(request);
-        if (CollectionUtil.isEmpty(data)) {
-            return Result.error("当前审批人未配置流程操作按钮");
-        }
+    @ApiOperation(value = "根据流程定义ID及节点ID查询对应的节点按钮信息集")
+    @GetMapping("/getNodeButtonByDefIdAndNodeId")
+    public Result<?> getNodeButtonByDefIdAndNodeId(@RequestParam String definitionId, @RequestParam String nodeId) {
+        final List<NodeButtonResponse> data = nodeButtonService.getByDefinitionIdAndNodeId(definitionId, nodeId);
         return Result.ok(data);
     }
 

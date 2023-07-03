@@ -33,4 +33,14 @@ public interface INodeButtonService {
       * @return 流程节点按钮信息集
       */
     List<NodeButtonResponse> getListByParams(NodeButtonRequest request);
+
+    /**
+      * @description 根据流程定义ID及节点ID查询对应的节点按钮信息集.
+      * @author wjd
+      * @date 2023/7/3
+      * @param definitionId 流程定义ID
+      * @param nodeId 节点ID
+      * @return 节点按钮信息集
+      */
+    List<NodeButtonResponse> getByDefinitionIdAndNodeId(String definitionId, String nodeId);
 }
