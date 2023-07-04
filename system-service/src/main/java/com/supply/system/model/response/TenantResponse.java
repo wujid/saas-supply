@@ -31,14 +31,14 @@ public class TenantResponse extends BaseEntity implements Serializable {
     private Integer type;
 
     @ApiModelProperty(value = "授权开始时间")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date startTime;
 
     @ApiModelProperty(value = "授权天数")
     private Integer days;
 
     @ApiModelProperty(value = "授权结束时间")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date endTime;
 
     @ApiModelProperty(value = "客户端ID")

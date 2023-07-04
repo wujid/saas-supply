@@ -393,7 +393,7 @@ public class ProcessRunServiceImpl implements IProcessRunService {
 
     private void againstTask(TaskHandleRequest request, Task task, ProcessDefinitionPo processDefinition) {
         // 1.结束当前流程实例
-        runtimeService.deleteProcessInstance(task.getProcessInstanceId(), null);
+        runtimeService.deleteProcessInstance(task.getProcessInstanceId(), request.getOpinion());
         // 2.执行当前审批节点对应的脚本任务及结束脚本任务
         final Integer buttonType = request.getButtonType();
         String endScript = processDefinition.getEndScript();

@@ -32,14 +32,14 @@ public class SysTenantRequest implements Serializable {
     private Integer type;
 
     @Note(description = "授权开始时间")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date startTime;
 
     @Note(description = "授权天数")
     private Integer days;
 
     @Note(description = "授权结束时间")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date endTime;
 
     @Note(description = "客户端ID")
@@ -52,14 +52,14 @@ public class SysTenantRequest implements Serializable {
     private Long createUserId;
 
     @Note(description = "创建时间")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date createTime;
 
     @Note(description = "修改人")
     private Long updateUserId;
 
     @Note(description = "修改时间")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date updateTime;
 
     @Note(description = "状态")

@@ -50,14 +50,14 @@ public class SysResourceRequest implements Serializable {
     private Long createUserId;
 
     @Note(description = "创建时间")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date createTime;
 
     @Note(description = "修改人")
     private Long updateUserId;
 
     @Note(description = "修改时间")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date updateTime;
 
     @Note(description = "状态")

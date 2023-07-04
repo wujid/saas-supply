@@ -30,7 +30,7 @@
             bp.business_id,
             bp.business_title,
             bp.start_user_id,
-            res.create_time_,
+            bp.create_time,
             bp.process_key,
             bp.process_name,
             bp.category_id,
@@ -47,14 +47,15 @@
                     run.business_title,
                     run.start_user_id,
                     run.business_status,
+                    run.create_time,
                     def.process_key,
                     def.process_name,
                     def.category_id,
                     cat.`name` as category_name
                 from
                     bpm_process_run run
-                        left join bpm_process_definition def on run.definition_id = def.definition_id
-                        left join bpm_category cat on def.category_id = cat.id
+                    left join bpm_process_definition def on run.definition_id = def.definition_id
+                    left join bpm_category cat on def.category_id = cat.id
             ) bp on bp.instance_id = res.proc_inst_id_
         <where>
             (
