@@ -67,4 +67,10 @@ public class TaskResponse extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "业务状态")
     private Integer businessStatus;
 
+    @ApiModelProperty(value = "流程节点名称集")
+    private String nodeNames;
+
+    @ApiModelProperty(value = "流程节点审批人ID集")
+    private String nodeUserIds;
+
 }

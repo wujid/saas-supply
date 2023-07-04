@@ -71,7 +71,7 @@
             )
 
             <if test="request.processName != null and request.processName != '' ">
-                and bp.process_name LIKE concat('%', #{request.processName}, '%')
+                AND bp.process_name LIKE concat('%', #{request.processName}, '%')
             </if>
             <if test="request.startUserId != null">
                 AND bp.start_user_id = #{request.startUserId}
@@ -83,8 +83,43 @@
                 AND bp.business_status = #{request.businessStatus}
             </if>
         </where>
-        order by
-            res.create_time_ desc
+        ORDER BY
+            res.create_time_ DESC
+    </select>
+
+    <select id="getMyStart" resultType="com.supply.bpm.model.response.TaskResponse" parameterType="com.supply.bpm.model.request.TaskRequest">
+        SELECT
+            pr.id AS run_id,
+            pr.definition_id,
+            pr.instance_id,
+            pr.business_id,
+            pr.business_title,
+            pr.start_user_id,
+            pr.business_status,
+            pr.tenant_id,
+            pd.process_name,
+            pd.category_id,
+            bc.`name` AS category_name,
+            rt.node_names,
+            rt.node_user_ids
+        FROM
+            bpm_process_run pr
+                LEFT JOIN bpm_process_definition pd ON pr.definition_id = pd.definition_id
+                LEFT JOIN bpm_category bc ON bc.id = pd.category_id
+                LEFT JOIN ( SELECT PROC_INST_ID_, GROUP_CONCAT( NAME_ ) AS node_names, GROUP_CONCAT( ASSIGNEE_ ) AS node_user_ids FROM act_ru_task GROUP BY PROC_INST_ID_ ) rt ON pr.instance_id = rt.PROC_INST_ID_
+        WHERE
+            pr.start_user_id = #{request.startUserId}
+        <if test="request.processName != null and request.processName != '' ">
+            AND bp.process_name LIKE concat('%', #{request.processName}, '%')
+        </if>
+        <if test="request.categoryId != null">
+            AND bp.category_id = #{request.categoryId}
+        </if>
+        <if test="request.businessStatus != null">
+            AND bp.business_status = #{request.businessStatus}
+        </if>
+        ORDER BY
+            pr.create_time DESC
     </select>
 
 </mapper>

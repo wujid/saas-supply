@@ -19,4 +19,13 @@ public interface ITaskManageService {
       * @return 我的待办
       */
     IPage<TaskResponse> getMyTask(TaskRequest request);
+
+    /**
+     * @description 我发起的流程列表.
+     * @author wjd
+     * @date 2023/6/25
+     * @param request 查询条件
+     * @return 我的待办
+     */
+    IPage<TaskResponse> getMyStart(TaskRequest request);
 }

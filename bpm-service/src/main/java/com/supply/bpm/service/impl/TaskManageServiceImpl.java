@@ -52,13 +52,24 @@ public class TaskManageServiceImpl implements ITaskManageService {
                 request.setAssigneeGroups(assigneeGroups);
             }
         }
-        final Page<TaskResponse> taskPage = processRunRepository.getMyTask(request);
-        if (taskPage.getTotal() <= 0) {
+        final Page<TaskResponse> page = processRunRepository.getMyTask(request);
+        if (page.getTotal() <= 0) {
             return new Page<>(request.getPageIndex(), request.getPageSize());
         }
-        final List<TaskResponse> list = taskPage.getRecords();
+        final List<TaskResponse> list = page.getRecords();
         this.getExtData(list);
-        return taskPage;
+        return page;
+    }
+
+    @Override
+    public IPage<TaskResponse> getMyStart(TaskRequest request) {
+        final Page<TaskResponse> page = processRunRepository.getMyStart(request);
+        if (page.getTotal() <= 0) {
+            return new Page<>(request.getPageIndex(), request.getPageSize());
+        }
+        final List<TaskResponse> list = page.getRecords();
+        this.getExtData(list);
+        return page;
     }
 
     /**

@@ -16,6 +16,23 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface ProcessRunMapper extends BaseMapper<ProcessRunPo> {
 
-
+    /**
+      * @description 我的待办.
+      * @author wjd
+      * @date 2023/7/4
+      * @param page 分页信息
+      * @param request 条件信息
+      * @return 我的待办
+      */
     Page<TaskResponse> getMyTask(@Param("page") Page<TaskRequest> page, @Param("request") TaskRequest request);
+
+    /**
+     * @description 我发起的流程.
+     * @author wjd
+     * @date 2023/7/4
+     * @param page 分页信息
+     * @param request 条件信息
+     * @return 我发起的流程
+     */
+    Page<TaskResponse> getMyStart(@Param("page") Page<TaskRequest> page, @Param("request") TaskRequest request);
 }

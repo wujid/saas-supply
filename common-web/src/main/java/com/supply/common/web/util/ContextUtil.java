@@ -37,7 +37,7 @@ public class ContextUtil {
      */
     public static SysUserResponse getCurrentUser() {
         // 从request中获取到当前登陆用户ID,未获取到则直接返回空
-        final String currentUserId = getCurrentUserId();
+        final String currentUserId = getCurrentUserIdStr();
         if (StrUtil.isBlank(currentUserId)) {
             logger.error("未从request中获取到用户ID信息!");
             return null;
@@ -57,15 +57,26 @@ public class ContextUtil {
         return userResponse;
     }
 
-    public static Long getCurrentTenantId() {
+    /**
+      * @description 从request中获取当前租户ID.
+      * @author wjd
+      * @date 2023/7/4
+      * @return 当前租户ID
+      */
+    public static String getCurrentTenantIdStr() {
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
         final String tenantId = request.getHeader(Constant.TENANT_ID_KEY);
-        if (StrUtil.isNotBlank(tenantId)) {
-            return Long.valueOf(tenantId);
+        if (StrUtil.isBlank(tenantId)) {
+            throw new ApiException("通过上下文未获取到当前租户ID");
         }
-        throw new ApiException("通过上下文未获取到当前租户ID");
+        return tenantId;
+    }
+
+    public static Long getCurrentTenantId() {
+        final String tenantIdStr = getCurrentTenantIdStr();
+        return Long.valueOf(tenantIdStr);
     }
 
 
@@ -75,14 +86,19 @@ public class ContextUtil {
      * @date 2022/7/28
      * @return 当前登陆用户ID
      */
-    public static String getCurrentUserId() {
+    public static String getCurrentUserIdStr() {
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
         final String userId = request.getHeader(Constant.USER_ID_KEY);
-        if (StrUtil.isNotBlank(userId)) {
-            return userId;
+        if (StrUtil.isBlank(userId)) {
+            throw new ApiException("通过上下文未获取到当前用户ID");
         }
-        return null;
+        return userId;
+    }
+
+    public static Long getCurrentUserId() {
+        final String userIdStr = getCurrentUserIdStr();
+        return Long.valueOf(userIdStr);
     }
 }

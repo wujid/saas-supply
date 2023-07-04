@@ -31,7 +31,7 @@ public class FeignClientInterceptor implements RequestInterceptor {
         if (StrUtil.isNotBlank(tenantId)) {
             requestTemplate.header(Constant.TENANT_ID_KEY, tenantId);
         }
-        final String currentUserId = ContextUtil.getCurrentUserId();
+        final String currentUserId = ContextUtil.getCurrentUserIdStr();
         if (StrUtil.isNotBlank(currentUserId)) {
             requestTemplate.header(Constant.USER_ID_KEY, currentUserId);
         }

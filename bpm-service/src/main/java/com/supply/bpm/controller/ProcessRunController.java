@@ -1,6 +1,5 @@
 package com.supply.bpm.controller;
 
-import cn.hutool.core.util.StrUtil;
 import com.supply.bpm.model.request.TaskHandleRequest;
 import com.supply.bpm.service.IProcessRunService;
 import com.supply.common.model.Result;
@@ -35,10 +34,7 @@ public class ProcessRunController {
     @ApiOperation(value = "完成任务")
     @PostMapping("/completeTask")
     public Result<?> completeTask(@RequestBody TaskHandleRequest request) {
-        final String userId = ContextUtil.getCurrentUserId();
-        if (StrUtil.isBlank(userId)) {
-            return Result.error("未获取到当前人信息");
-        }
+        final Long userId = ContextUtil.getCurrentUserId();
         request.setAssigneeId(Long.valueOf(userId));
         processRunService.completeTask(request);
         return Result.ok();

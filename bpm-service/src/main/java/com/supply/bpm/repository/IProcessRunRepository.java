@@ -30,4 +30,13 @@ public interface IProcessRunRepository extends IService<ProcessRunPo> {
       * @return 我的待办
       */
     Page<TaskResponse> getMyTask(TaskRequest request);
+
+    /**
+     * @description 我发起的流程.
+     * @author wjd
+     * @date 2023/7/4
+     * @param request 条件信息
+     * @return 我发起的流程
+     */
+    Page<TaskResponse> getMyStart(TaskRequest request);
 }

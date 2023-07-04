@@ -80,6 +80,12 @@ public class ProcessRunRepositoryImpl extends ServiceImpl<ProcessRunMapper, Proc
         return processRunMapper.getMyTask(page, request);
     }
 
+    @Override
+    public Page<TaskResponse> getMyStart(TaskRequest request) {
+        Page<TaskRequest> page = new Page<>(request.getPageIndex(), request.getPageSize());
+        return processRunMapper.getMyStart(page, request);
+    }
+
 
     /**
      * @author wjd
