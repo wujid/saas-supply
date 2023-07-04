@@ -43,6 +43,7 @@ import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.svggen.SVGGraphics2DIOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
 import java.awt.*;
@@ -243,7 +244,7 @@ public class CustomProcessDiagramCanvas {
 
     public void initialize() {
         // Get a DOMImplementation.
-        GenericDOMImplementation domImpl = new GenericDOMImplementation();
+        DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
 
         // Create an instance of org.w3c.dom.Document.
         String svgNS = "http://www.w3.org/2000/svg";
