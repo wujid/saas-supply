@@ -53,6 +53,13 @@ public class TaskOpinionPo extends Model<ProcessRunPo> implements Serializable {
     @ApiModelProperty(value = "审批意见")
     private String opinion;
 
+    @ApiModelProperty(value = "审批结束时间")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
+    private Date endTime;
+
+    @ApiModelProperty(value = "审批持续时间(毫秒)")
+    private Long duration;
+
     @ApiModelProperty(value = "租户ID")
     private Long tenantId;
 
