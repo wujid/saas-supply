@@ -58,6 +58,7 @@ public class NodeUserRepositoryImpl extends ServiceImpl<NodeUserMapper, NodeUser
     }
 
     @Override
+    @BaseData(fill = OperatorTypeEnum.UPDATE)
     public int updateByParams(NodeUserPo nodeUserPo, @IgnoreFill NodeUserRequest request) {
         final LambdaQueryWrapper<NodeUserPo> queryWrapper = this.getQueryWrapper(request);
         return nodeUserMapper.update(nodeUserPo, queryWrapper);

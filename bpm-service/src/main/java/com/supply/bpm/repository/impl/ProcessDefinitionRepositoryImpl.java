@@ -57,6 +57,7 @@ public class ProcessDefinitionRepositoryImpl extends ServiceImpl<ProcessDefiniti
     }
 
     @Override
+    @BaseData(fill = OperatorTypeEnum.UPDATE)
     public int updateByParams(ProcessDefinitionPo processDefinitionPo, @IgnoreFill ProcessDefinitionRequest request) {
         final LambdaQueryWrapper<ProcessDefinitionPo> queryWrapper = this.getQueryWrapper(request);
         return processDefinitionMapper.update(processDefinitionPo, queryWrapper);

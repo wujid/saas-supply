@@ -6,6 +6,7 @@ import com.supply.bpm.model.po.ProcessRunPo;
 import com.supply.bpm.model.request.ProcessRunRequest;
 import com.supply.bpm.model.request.TaskRequest;
 import com.supply.bpm.model.response.TaskResponse;
+import com.supply.common.web.annotation.IgnoreFill;
 
 import java.util.List;
 
@@ -15,6 +16,8 @@ import java.util.List;
  * @date 2023-06-20
  */
 public interface IProcessRunRepository extends IService<ProcessRunPo> {
+
+    int updateByParams(ProcessRunPo processRunPo, @IgnoreFill ProcessRunRequest request);
 
     ProcessRunPo getByParams(ProcessRunRequest request);
 

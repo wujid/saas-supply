@@ -57,6 +57,7 @@ public class BusinessVariableRepositoryImpl extends ServiceImpl<BusinessVariable
     }
 
     @Override
+    @BaseData(fill = OperatorTypeEnum.UPDATE)
     public int updateByParams(BusinessVariablePo businessVariablePo, @IgnoreFill BusinessVariableRequest request) {
         final LambdaQueryWrapper<BusinessVariablePo> queryWrapper = this.getQueryWrapper(request);
         return businessVariableMapper.update(businessVariablePo, queryWrapper);

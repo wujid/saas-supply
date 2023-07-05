@@ -363,6 +363,7 @@ public class ProcessRunServiceImpl implements IProcessRunService {
 
     private void agreeTask(TaskHandleRequest request, Task task, ProcessDefinitionPo processDefinition) {
         final String taskId = request.getTaskId();
+        final String instanceId = task.getProcessInstanceId();
         // 获取BpmnModel对象
         BpmnModel bpmnModel = repositoryService.getBpmnModel(task.getProcessDefinitionId());
         // 获取Process对象
@@ -372,7 +373,7 @@ public class ProcessRunServiceImpl implements IProcessRunService {
         // 获取当前节点信息
         FlowElement flowElement = ActivityUtil.getFlowElementById(task.getTaskDefinitionKey(), flowElements);
         // 流程参数信息
-        final Map<String, Object> variablesMap = runtimeService.getVariables(task.getProcessInstanceId());
+        final Map<String, Object> variablesMap = runtimeService.getVariables(instanceId);
         // 下一步审批人赋值
         this.setNextNodeVariables(task.getProcessDefinitionId(), flowElements, flowElement, variablesMap, request.getNodeUserMap());
 
@@ -380,24 +381,45 @@ public class ProcessRunServiceImpl implements IProcessRunService {
         taskService.claim(taskId, request.getAssigneeId().toString());
         taskService.complete(taskId, variablesMap);
 
-        // 2.判断当前流程实例是否结束,如果结束则获取对应的结束脚本任务
-        final long count = runtimeService.createProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).count();
+        // 2.判断当前流程实例是否结束,如果结束则更新流程状态为结束并获取对应的结束脚本任务
+        final long count = runtimeService.createProcessInstanceQuery().processInstanceId(instanceId).count();
         String endScript = null;
         if (count == 0L) {
+            // 更新流程状态为结束
+            this.updateStatusEnd(instanceId);
             endScript = processDefinition.getEndScript();
         }
 
         // 3.执行当前审批节点对应的脚本任务及结束脚本任务
-        this.executeScript(task.getProcessInstanceId(), request.getNodeSetId(), request.getButtonType(), endScript);
+        this.executeScript(instanceId, request.getNodeSetId(), request.getButtonType(), endScript);
     }
 
     private void againstTask(TaskHandleRequest request, Task task, ProcessDefinitionPo processDefinition) {
+        final String instanceId = task.getProcessInstanceId();
         // 1.结束当前流程实例
-        runtimeService.deleteProcessInstance(task.getProcessInstanceId(), request.getOpinion());
-        // 2.执行当前审批节点对应的脚本任务及结束脚本任务
+        runtimeService.deleteProcessInstance(instanceId, request.getOpinion());
+        // 2.更新流程状态为结束
+        this.updateStatusEnd(instanceId);
+        // 3.执行当前审批节点对应的脚本任务及结束脚本任务
         final Integer buttonType = request.getButtonType();
         String endScript = processDefinition.getEndScript();
         this.executeScript(task.getProcessInstanceId(), request.getNodeSetId(), buttonType, endScript);
+    }
+
+    /**
+     * @description 更新流程状态为结束.
+     * @author wjd
+     * @date 2023/7/5
+     * @param instanceId 流程运行实例ID
+     */
+    private void updateStatusEnd(String instanceId) {
+        ProcessRunRequest request = new ProcessRunRequest();
+        request.setInstanceId(instanceId);
+
+        ProcessRunPo processRunPo = new ProcessRunPo();
+        processRunPo.setBusinessStatus(BusinessStatusEnum.PROCESS_STATUS_END.getStatus());
+
+        processRunRepository.updateByParams(processRunPo, request);
     }
 
     /**

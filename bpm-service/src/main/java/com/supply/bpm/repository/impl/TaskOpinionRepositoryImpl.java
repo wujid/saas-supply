@@ -57,6 +57,7 @@ public class TaskOpinionRepositoryImpl extends ServiceImpl<TaskOpinionMapper, Ta
     }
 
     @Override
+    @BaseData(fill = OperatorTypeEnum.UPDATE)
     public int updateByParams(TaskOpinionPo taskOpinionPo, @IgnoreFill TaskOpinionRequest request) {
         final LambdaQueryWrapper<TaskOpinionPo> queryWrapper = this.getQueryWrapper(request);
         return taskOpinionMapper.update(taskOpinionPo, queryWrapper);

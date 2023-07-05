@@ -57,6 +57,7 @@ public class CategoryRepositoryImpl extends ServiceImpl<CategoryMapper, Category
     }
 
     @Override
+    @BaseData(fill = OperatorTypeEnum.UPDATE)
     public int updateByParams(CategoryPo categoryPo, @IgnoreFill CategoryRequest request) {
         final LambdaQueryWrapper<CategoryPo> queryWrapper = this.getQueryWrapper(request);
         return categoryMapper.update(categoryPo, queryWrapper);

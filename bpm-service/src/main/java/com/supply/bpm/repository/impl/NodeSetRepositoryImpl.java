@@ -57,6 +57,7 @@ public class NodeSetRepositoryImpl extends ServiceImpl<NodeSetMapper, NodeSetPo>
     }
 
     @Override
+    @BaseData(fill = OperatorTypeEnum.UPDATE)
     public int updateByParams(NodeSetPo nodeSetPo, @IgnoreFill NodeSetRequest request) {
         final LambdaQueryWrapper<NodeSetPo> queryWrapper = this.getQueryWrapper(request);
         return nodeSetMapper.update(nodeSetPo, queryWrapper);

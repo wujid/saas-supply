@@ -14,6 +14,7 @@ import com.supply.bpm.model.response.TaskResponse;
 import com.supply.bpm.repository.IProcessRunRepository;
 import com.supply.common.constant.OperatorTypeEnum;
 import com.supply.common.web.annotation.BaseData;
+import com.supply.common.web.annotation.IgnoreFill;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
@@ -54,6 +55,13 @@ public class ProcessRunRepositoryImpl extends ServiceImpl<ProcessRunMapper, Proc
     @Override
     public boolean updateBatchById(Collection<ProcessRunPo> entityList) {
         return super.updateBatchById(entityList);
+    }
+
+    @Override
+    @BaseData(fill = OperatorTypeEnum.UPDATE)
+    public int updateByParams(ProcessRunPo processRunPo, @IgnoreFill ProcessRunRequest request) {
+        final LambdaQueryWrapper<ProcessRunPo> queryWrapper = this.getQueryWrapper(request);
+        return processRunMapper.update(processRunPo, queryWrapper);
     }
 
     @Override

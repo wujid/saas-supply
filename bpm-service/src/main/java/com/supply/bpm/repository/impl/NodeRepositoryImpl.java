@@ -57,6 +57,7 @@ public class NodeRepositoryImpl extends ServiceImpl<NodeButtonMapper, NodeButton
     }
 
     @Override
+    @BaseData(fill = OperatorTypeEnum.UPDATE)
     public int updateByParams(NodeButtonPo nodeUserPo, @IgnoreFill NodeButtonRequest request) {
         final LambdaQueryWrapper<NodeButtonPo> queryWrapper = this.getQueryWrapper(request);
         return nodeButtonMapper.update(nodeUserPo, queryWrapper);
