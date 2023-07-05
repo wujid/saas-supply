@@ -31,7 +31,6 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.slf4j.Logger;
@@ -59,8 +58,6 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
 
     private final RepositoryService repositoryService;
 
-    private final RuntimeService runtimeService;
-
     private final HistoryService historyService;
 
     private final IProcessDefinitionRepository processDefinitionRepository;
@@ -69,11 +66,10 @@ public class ProcessDefinitionServiceImpl implements IProcessDefinitionService {
 
     private final ICategoryRepository categoryRepository;
 
-    public ProcessDefinitionServiceImpl(RepositoryService repositoryService, RuntimeService runtimeService,
-                                        HistoryService historyService, IProcessDefinitionRepository processDefinitionRepository,
-                                        INodeSetRepository userNodeRepository, ICategoryRepository categoryRepository) {
+    public ProcessDefinitionServiceImpl(RepositoryService repositoryService, HistoryService historyService,
+                                        IProcessDefinitionRepository processDefinitionRepository, INodeSetRepository userNodeRepository,
+                                        ICategoryRepository categoryRepository) {
         this.repositoryService = repositoryService;
-        this.runtimeService = runtimeService;
         this.historyService = historyService;
         this.processDefinitionRepository = processDefinitionRepository;
         this.userNodeRepository = userNodeRepository;

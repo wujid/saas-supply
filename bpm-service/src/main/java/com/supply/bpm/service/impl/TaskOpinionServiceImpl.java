@@ -45,6 +45,7 @@ public class TaskOpinionServiceImpl implements ITaskOpinionService {
     public List<TaskOpinionResponse> getByParams(TaskOpinionRequest request) {
         final List<TaskOpinionPo> list = taskOpinionRepository.getListByParams(request);
         final List<TaskOpinionResponse> responses = TaskOpinionCvt.INSTANCE.poToResponseBatch(list);
+        this.extData(responses);
         return responses;
     }
 
