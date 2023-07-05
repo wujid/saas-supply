@@ -4,10 +4,15 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.supply.bpm.model.po.NodeSetPo;
+import com.supply.bpm.model.request.NodeSetRequest;
 import com.supply.bpm.model.request.TaskRequest;
 import com.supply.bpm.model.response.TaskResponse;
+import com.supply.bpm.repository.INodeSetRepository;
 import com.supply.bpm.repository.IProcessRunRepository;
 import com.supply.bpm.service.ITaskManageService;
+import com.supply.common.constant.Constant;
+import com.supply.common.exception.ApiException;
 import com.supply.common.model.response.sys.SysUserResponse;
 import com.supply.common.util.SystemUserUtil;
 import org.slf4j.Logger;
@@ -31,10 +36,14 @@ public class TaskManageServiceImpl implements ITaskManageService {
 
     private final IProcessRunRepository processRunRepository;
 
+    private final INodeSetRepository nodeSetRepository;
+
     private final SystemUserUtil systemUserUtil;
 
-    public TaskManageServiceImpl(IProcessRunRepository processRunRepository, SystemUserUtil systemUserUtil) {
+    public TaskManageServiceImpl(IProcessRunRepository processRunRepository, INodeSetRepository nodeSetRepository,
+                                 SystemUserUtil systemUserUtil) {
         this.processRunRepository = processRunRepository;
+        this.nodeSetRepository = nodeSetRepository;
         this.systemUserUtil = systemUserUtil;
     }
 
@@ -93,6 +102,16 @@ public class TaskManageServiceImpl implements ITaskManageService {
                 final String startUserName = startUserMap.get(startUserId);
                 task.setStartUserName(startUserName);
             }
+            NodeSetRequest nodeSetRequest = new NodeSetRequest();
+            nodeSetRequest.setDefinitionId(task.getDefinitionId());
+            nodeSetRequest.setNodeId(task.getNodeId());
+            nodeSetRequest.setStatus(Constant.STATUS_NOT_DEL);
+            final NodeSetPo nodeSetPo = nodeSetRepository.getByParams(nodeSetRequest);
+            if (null == nodeSetPo) {
+                logger.error("[我的待办]--根据流程定义ID{}和节点ID{}未查询到流程节点设置信息", task.getDefinitionId(), task.getNodeId());
+                throw new ApiException();
+            }
+            task.setNodeSetId(nodeSetPo.getId());
         }
     }
 }

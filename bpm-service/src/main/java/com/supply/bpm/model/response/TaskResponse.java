@@ -40,6 +40,9 @@ public class TaskResponse extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "流程定义名称")
     private String processName;
 
+    @ApiModelProperty(value = "流程节点设置主键ID")
+    private Long nodeSetId;
+
     @ApiModelProperty(value = "流程节点key")
     private String nodeId;
 

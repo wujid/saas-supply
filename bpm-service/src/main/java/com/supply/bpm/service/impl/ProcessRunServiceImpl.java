@@ -445,7 +445,6 @@ public class ProcessRunServiceImpl implements IProcessRunService {
 
         // 1.完成当前任务
         taskService.claim(taskId, request.getAssigneeId().toString());
-        taskService.addComment(taskId, task.getProcessInstanceId(), request.getOpinion());
         taskService.complete(taskId, variablesMap);
 
         final DateTime date = DateUtil.date();
