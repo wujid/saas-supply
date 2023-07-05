@@ -1,5 +1,6 @@
 package com.supply.bpm.model.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.supply.common.web.model.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -7,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author wjd
@@ -36,6 +38,13 @@ public class ProcessRunResponse extends BaseEntity implements Serializable {
 
     @ApiModelProperty(value = "业务状态")
     private Integer businessStatus;
+
+    @ApiModelProperty(value = "结束时间")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
+    private Date endTime;
+
+    @ApiModelProperty(value = "流程持续时间")
+    private Long duration;
 
     @ApiModelProperty(value = "租户ID")
     private Long tenantId;

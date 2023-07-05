@@ -400,6 +400,11 @@ public class ProcessRunServiceImpl implements IProcessRunService {
         this.executeScript(task.getProcessInstanceId(), request.getNodeSetId(), buttonType, endScript);
     }
 
+    /**
+      * @description 执行流程后置脚本任务.
+      * @author wjd
+      * @date 2023/7/5
+      */
     private void executeScript(String instanceId, Long nodeSetId, Integer buttonType, String endScript) {
         // 根据流程运行实例ID获取关联的业务ID
         ProcessRunRequest request = new ProcessRunRequest();
