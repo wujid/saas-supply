@@ -380,6 +380,7 @@ public class ProcessRunServiceImpl implements IProcessRunService {
 
         // 1.完成当前任务
         taskService.claim(taskId, request.getAssigneeId().toString());
+        taskService.addComment(taskId, task.getProcessInstanceId(), request.getOpinion());
         taskService.complete(taskId, variablesMap);
 
         // 2.判断当前流程实例是否结束,如果结束则更新流程状态为结束并获取对应的结束脚本任务

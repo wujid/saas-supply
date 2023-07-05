@@ -5,5 +5,5 @@ package com.supply.bpm.service;
  * @description .
  * @date 2023-07-04
  */
-public interface ITaskOpinionPoService {
+public interface ITaskOpinionService {
 }

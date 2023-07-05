@@ -13,6 +13,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum CheckStatusEnum {
 
+    STATUS_START(1, "发起"),
+
     STATUS_CHECKING(1, "审批中"),
 
     STATUS_ASSIGN(2, "交办"),
