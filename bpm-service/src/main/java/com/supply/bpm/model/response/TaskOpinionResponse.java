@@ -54,4 +54,16 @@ public class TaskOpinionResponse extends BaseEntity implements Serializable {
 
     @ApiModelProperty(value = "租户ID")
     private Long tenantId;
+
+    @ApiModelProperty(value = "流程当前节点任务所属人id---交办/委托原处理人名称")
+    private String ownerUserName;
+
+    @ApiModelProperty(value = "流程当前节点任务审批人名称")
+    private String assigneeUserName;
+
+    @ApiModelProperty(value = "审批状态名称")
+    private String checkStatusName;
+
+    @ApiModelProperty(value = "审批持续时间(天)")
+    private String durationDay;
 }

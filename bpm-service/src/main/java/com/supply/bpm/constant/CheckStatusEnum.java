@@ -4,6 +4,9 @@ import com.supply.common.annotation.Note;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author wjd
  * @description 流程节点任务审批状态枚举值.
@@ -13,7 +16,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum CheckStatusEnum {
 
-    STATUS_START(1, "发起"),
+    STATUS_START(0, "发起"),
 
     STATUS_CHECKING(1, "审批中"),
 
@@ -35,4 +38,18 @@ public enum CheckStatusEnum {
 
     @Note(description = "审批状态名称")
     private String name;
+
+    /**
+     * @description 获取枚举值映射关系.
+     * @author wjd
+     * @date 2022/7/27
+     * @return 映射结果
+     */
+    public static Map<Integer, String> getEnumMap() {
+        Map<Integer, String> map = new HashMap<>();
+        for (CheckStatusEnum statusEnumEnum : CheckStatusEnum.values()) {
+            map.put(statusEnumEnum.getStatus(), statusEnumEnum.getName());
+        }
+        return map;
+    }
 }

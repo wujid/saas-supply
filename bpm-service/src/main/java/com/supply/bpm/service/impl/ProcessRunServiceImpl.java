@@ -5,6 +5,7 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
+import com.supply.bpm.constant.CheckStatusEnum;
 import com.supply.bpm.constant.NodeButtonTypeEnum;
 import com.supply.bpm.constant.NodeTypeEnum;
 import com.supply.bpm.constant.NodeUserTypeEnum;
@@ -15,6 +16,7 @@ import com.supply.bpm.model.po.NodeSetPo;
 import com.supply.bpm.model.po.NodeUserPo;
 import com.supply.bpm.model.po.ProcessDefinitionPo;
 import com.supply.bpm.model.po.ProcessRunPo;
+import com.supply.bpm.model.po.TaskOpinionPo;
 import com.supply.bpm.model.request.NodeButtonRequest;
 import com.supply.bpm.model.request.NodeSetRequest;
 import com.supply.bpm.model.request.ProcessDefinitionRequest;
@@ -26,6 +28,7 @@ import com.supply.bpm.repository.INodeSetRepository;
 import com.supply.bpm.repository.INodeUserRepository;
 import com.supply.bpm.repository.IProcessDefinitionRepository;
 import com.supply.bpm.repository.IProcessRunRepository;
+import com.supply.bpm.repository.ITaskOpinionRepository;
 import com.supply.bpm.service.IProcessRunService;
 import com.supply.bpm.util.ActivityUtil;
 import com.supply.common.constant.BusinessStatusEnum;
@@ -95,6 +98,8 @@ public class ProcessRunServiceImpl implements IProcessRunService {
 
     private final INodeButtonRepository nodeButtonRepository;
 
+    private final ITaskOpinionRepository taskOpinionRepository;
+
     private final RepositoryService repositoryService;
 
     private final RuntimeService runtimeService;
@@ -110,7 +115,7 @@ public class ProcessRunServiceImpl implements IProcessRunService {
     public ProcessRunServiceImpl(IProcessRunRepository processRunRepository, IProcessDefinitionRepository processDefinitionRepository,
                                  IBusinessVariableRepository businessVariableRepository, INodeSetRepository nodeSetRepository,
                                  INodeUserRepository nodeUserRepository, INodeButtonRepository nodeButtonRepository,
-                                 RepositoryService repositoryService, RuntimeService runtimeService,
+                                 ITaskOpinionRepository taskOpinionRepository, RepositoryService repositoryService, RuntimeService runtimeService,
                                  TaskService taskService, HistoryService historyService, RestTemplate restTemplate, SystemUserUtil userUtil) {
         this.processRunRepository = processRunRepository;
         this.processDefinitionRepository = processDefinitionRepository;
@@ -118,6 +123,7 @@ public class ProcessRunServiceImpl implements IProcessRunService {
         this.nodeSetRepository = nodeSetRepository;
         this.nodeUserRepository = nodeUserRepository;
         this.nodeButtonRepository = nodeButtonRepository;
+        this.taskOpinionRepository = taskOpinionRepository;
         this.repositoryService = repositoryService;
         this.runtimeService = runtimeService;
         this.taskService = taskService;
@@ -159,10 +165,12 @@ public class ProcessRunServiceImpl implements IProcessRunService {
         // 查询下一个审批节点信息并赋值
         this.setNextNodeVariables(definitionId, flowElements, startFlowElement, businessVariableMap, request.getBpmNodeUserMap());
 
+        final DateTime date = DateUtil.date();
         // 启动流程
         final String businessId = request.getBpmBusinessId();
         final ProcessInstance processInstance = runtimeService.startProcessInstanceById(definitionId, businessId, businessVariableMap);
         final String instanceId = processInstance.getProcessInstanceId();
+        this.startTaskOpinion(startEvent, instanceId, startUserId, date);
 
         // 保存流程运行信息
         ProcessRunPo processRun = new ProcessRunPo();
@@ -171,9 +179,13 @@ public class ProcessRunServiceImpl implements IProcessRunService {
         processRun.setBusinessId(businessId);
         processRun.setStartUserId(startUserId);
         processRun.setBusinessStatus(BusinessStatusEnum.PROCESS_STATUS_ACTIVE.getStatus());
+        processRun.setCreateTime(date);
         final String businessTitle = this.getBusinessTitle(definitionId, startUserId, businessVariableMap);
         processRun.setBusinessTitle(businessTitle);
         processRunRepository.save(processRun);
+
+        // 保存流程审批意见信息
+        this.addTaskOpinionByInstanceId(instanceId, date);
     }
 
     @Override
@@ -246,6 +258,59 @@ public class ProcessRunServiceImpl implements IProcessRunService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void startTaskOpinion(StartEvent startEvent, String instanceId, Long startUserId, DateTime startDate) {
+        TaskOpinionPo taskOpinion = new TaskOpinionPo();
+        taskOpinion.setInstanceId(instanceId);
+        taskOpinion.setNodeId(startEvent.getId());
+        taskOpinion.setNodeName(startEvent.getName());
+        taskOpinion.setAssigneeUserId(startUserId);
+        taskOpinion.setCheckStatus(CheckStatusEnum.STATUS_START.getStatus());
+        taskOpinion.setCreateTime(startDate);
+        taskOpinion.setEndTime(startDate);
+        taskOpinion.setDuration(0L);
+        taskOpinionRepository.save(taskOpinion);
+    }
+
+    private void addTaskOpinionByInstanceId(String instanceId, DateTime startDate) {
+        final List<Task> tasks = taskService.createTaskQuery().processInstanceId(instanceId).list();
+        if (CollectionUtil.isEmpty(tasks)) {
+            return;
+        }
+        List<TaskOpinionPo> taskOpinionPos = new ArrayList<>();
+        for (Task task : tasks) {
+            TaskOpinionPo taskOpinion = new TaskOpinionPo();
+            taskOpinion.setInstanceId(instanceId);
+            taskOpinion.setTaskId(task.getId());
+            taskOpinion.setNodeId(task.getTaskDefinitionKey());
+            taskOpinion.setNodeName(task.getName());
+            if (StrUtil.isNotBlank(task.getAssignee())) {
+                taskOpinion.setAssigneeUserId(Long.valueOf(task.getAssignee()));
+            }
+            taskOpinion.setCheckStatus(CheckStatusEnum.STATUS_CHECKING.getStatus());
+            taskOpinion.setCreateTime(startDate);
+            taskOpinionPos.add(taskOpinion);
+        }
+        taskOpinionRepository.saveBatch(taskOpinionPos);
+    }
+
+    private void updateTaskOpinionByTaskId(String taskId, String opinion, Long assigneeUserId, CheckStatusEnum statusEnum, DateTime endTime) {
+        final TaskOpinionPo taskOpinion = taskOpinionRepository.getByTaskId(taskId);
+        if (null == taskOpinion) {
+            logger.warn("根据任务ID{}未查询到审批意见信息", taskId);
+            return;
+        }
+        // 计算持续时间
+        final long duration = DateUtil.betweenMs(taskOpinion.getCreateTime(), endTime);
+        final TaskOpinionPo taskOpinionPo = new TaskOpinionPo();
+        taskOpinionPo.setId(taskOpinion.getId());
+        taskOpinionPo.setAssigneeUserId(assigneeUserId);
+        taskOpinionPo.setCheckStatus(statusEnum.getStatus());
+        taskOpinionPo.setOpinion(opinion);
+        taskOpinionPo.setEndTime(endTime);
+        taskOpinionPo.setDuration(duration);
+        taskOpinionRepository.updateById(taskOpinionPo);
     }
 
     /**
@@ -383,7 +448,12 @@ public class ProcessRunServiceImpl implements IProcessRunService {
         taskService.addComment(taskId, task.getProcessInstanceId(), request.getOpinion());
         taskService.complete(taskId, variablesMap);
 
-        // 2.判断当前流程实例是否结束,如果结束则更新流程状态为结束并获取对应的结束脚本任务
+        final DateTime date = DateUtil.date();
+        // 2.更新审批意见信息及保存下一个节审批节点审批信息
+        this.updateTaskOpinionByTaskId(taskId, request.getOpinion(), request.getAssigneeId(), CheckStatusEnum.STATUS_AGREE, date);
+        this.addTaskOpinionByInstanceId(instanceId, date);
+
+        // 3.判断当前流程实例是否结束,如果结束则更新流程状态为结束并获取对应的结束脚本任务
         final long count = runtimeService.createProcessInstanceQuery().processInstanceId(instanceId).count();
         String endScript = null;
         if (count == 0L) {

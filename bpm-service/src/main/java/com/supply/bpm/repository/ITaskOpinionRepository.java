@@ -21,4 +21,6 @@ public interface ITaskOpinionRepository extends IService<TaskOpinionPo> {
     List<TaskOpinionPo> getListByParams(TaskOpinionRequest request);
 
     Page<TaskOpinionPo> getPageByParams(Page<TaskOpinionPo> page, TaskOpinionRequest request);
+
+    TaskOpinionPo getByTaskId(String taskId);
 }

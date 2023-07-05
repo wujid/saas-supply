@@ -81,6 +81,14 @@ public class TaskOpinionRepositoryImpl extends ServiceImpl<TaskOpinionMapper, Ta
         return taskOpinionMapper.selectPage(page, queryWrapper);
     }
 
+    @Override
+    public TaskOpinionPo getByTaskId(String taskId) {
+        TaskOpinionRequest request = new TaskOpinionRequest();
+        request.setTaskId(taskId);
+        final LambdaQueryWrapper<TaskOpinionPo> queryWrapper = this.getQueryWrapper(request);
+        return taskOpinionMapper.selectOne(queryWrapper);
+    }
+
     /**
      * @author wjd
      * @description 通用非空查询条件.
@@ -92,6 +100,7 @@ public class TaskOpinionRepositoryImpl extends ServiceImpl<TaskOpinionMapper, Ta
         LambdaQueryWrapper<TaskOpinionPo> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(null != request.getId(), TaskOpinionPo::getId, request.getId());
         queryWrapper.eq(StrUtil.isNotBlank(request.getInstanceId()), TaskOpinionPo::getInstanceId, request.getInstanceId());
+        queryWrapper.eq(StrUtil.isNotBlank(request.getTaskId()), TaskOpinionPo::getTaskId, request.getTaskId());
         queryWrapper.eq(null != request.getTenantId(), TaskOpinionPo::getTenantId, request.getTenantId());
         queryWrapper.apply(null != request.getAuthSql(), request.getAuthSql());
         queryWrapper.eq(null != request.getStatus(), TaskOpinionPo::getStatus, request.getStatus());
