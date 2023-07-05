@@ -51,7 +51,7 @@ public class ProcessRunPo extends Model<ProcessRunPo> implements Serializable {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date endTime;
 
-    @ApiModelProperty(value = "流程持续时间")
+    @ApiModelProperty(value = "流程持续时间(毫秒)")
     private Long duration;
 
     @ApiModelProperty(value = "租户ID")

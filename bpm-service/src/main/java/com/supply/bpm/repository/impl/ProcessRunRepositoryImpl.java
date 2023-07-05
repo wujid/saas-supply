@@ -83,6 +83,14 @@ public class ProcessRunRepositoryImpl extends ServiceImpl<ProcessRunMapper, Proc
     }
 
     @Override
+    public ProcessRunPo getByInstanceId(String instanceId) {
+        ProcessRunRequest request = new ProcessRunRequest();
+        request.setInstanceId(instanceId);
+        final LambdaQueryWrapper<ProcessRunPo> queryWrapper = this.getQueryWrapper(request);
+        return processRunMapper.selectOne(queryWrapper);
+    }
+
+    @Override
     public Page<TaskResponse> getMyTask(TaskRequest request) {
         Page<TaskRequest> page = new Page<>(request.getPageIndex(), request.getPageSize());
         return processRunMapper.getMyTask(page, request);

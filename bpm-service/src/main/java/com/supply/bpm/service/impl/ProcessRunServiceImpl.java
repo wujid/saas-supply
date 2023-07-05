@@ -1,6 +1,7 @@
 package com.supply.bpm.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
@@ -413,13 +414,18 @@ public class ProcessRunServiceImpl implements IProcessRunService {
      * @param instanceId 流程运行实例ID
      */
     private void updateStatusEnd(String instanceId) {
-        ProcessRunRequest request = new ProcessRunRequest();
-        request.setInstanceId(instanceId);
+        final ProcessRunPo processRun = processRunRepository.getByInstanceId(instanceId);
+        final DateTime endTime = DateUtil.date();
+        // 计算持续时间
+        final long duration = DateUtil.betweenMs(processRun.getCreateTime(), endTime);
 
         ProcessRunPo processRunPo = new ProcessRunPo();
+        processRunPo.setId(processRun.getId());
         processRunPo.setBusinessStatus(BusinessStatusEnum.PROCESS_STATUS_END.getStatus());
+        processRunPo.setEndTime(endTime);
+        processRunPo.setDuration(duration);
 
-        processRunRepository.updateByParams(processRunPo, request);
+        processRunRepository.updateById(processRunPo);
     }
 
     /**
