@@ -102,16 +102,18 @@ public class TaskManageServiceImpl implements ITaskManageService {
                 final String startUserName = startUserMap.get(startUserId);
                 task.setStartUserName(startUserName);
             }
-            NodeSetRequest nodeSetRequest = new NodeSetRequest();
-            nodeSetRequest.setDefinitionId(task.getDefinitionId());
-            nodeSetRequest.setNodeId(task.getNodeId());
-            nodeSetRequest.setStatus(Constant.STATUS_NOT_DEL);
-            final NodeSetPo nodeSetPo = nodeSetRepository.getByParams(nodeSetRequest);
-            if (null == nodeSetPo) {
-                logger.error("[我的待办]--根据流程定义ID{}和节点ID{}未查询到流程节点设置信息", task.getDefinitionId(), task.getNodeId());
-                throw new ApiException();
+            if (StrUtil.isNotBlank(task.getNodeId())) {
+                NodeSetRequest nodeSetRequest = new NodeSetRequest();
+                nodeSetRequest.setDefinitionId(task.getDefinitionId());
+                nodeSetRequest.setNodeId(task.getNodeId());
+                nodeSetRequest.setStatus(Constant.STATUS_NOT_DEL);
+                final NodeSetPo nodeSetPo = nodeSetRepository.getByParams(nodeSetRequest);
+                if (null == nodeSetPo) {
+                    logger.error("根据流程定义ID{}和节点ID{}未查询到流程节点设置信息", task.getDefinitionId(), task.getNodeId());
+                    throw new ApiException();
+                }
+                task.setNodeSetId(nodeSetPo.getId());
             }
-            task.setNodeSetId(nodeSetPo.getId());
         }
     }
 }
