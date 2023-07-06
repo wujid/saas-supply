@@ -51,9 +51,9 @@ public class TaskManageServiceImpl implements ITaskManageService {
     @Override
     public IPage<TaskResponse> getMyTask(TaskRequest request) {
         // 如果审批人不为空,查询当前审批人所属角色
-        final String assigneeId = request.getAssigneeId();
-        if (StrUtil.isNotBlank(assigneeId)) {
-            final Set<Long> roleIds = systemUserUtil.getRoleIdsByUserId(Long.valueOf(assigneeId));
+        final String assigneeUserId = request.getAssigneeUserId();
+        if (StrUtil.isNotBlank(assigneeUserId)) {
+            final Set<Long> roleIds = systemUserUtil.getRoleIdsByUserId(Long.valueOf(assigneeUserId));
             if (CollectionUtil.isNotEmpty(roleIds)) {
                 final Set<String> assigneeGroups = roleIds.stream()
                         .map(roleId -> StrUtil.concat(true, "role:", roleId.toString()))
@@ -73,6 +73,17 @@ public class TaskManageServiceImpl implements ITaskManageService {
     @Override
     public IPage<TaskResponse> getMyStart(TaskRequest request) {
         final Page<TaskResponse> page = processRunRepository.getMyStart(request);
+        if (page.getTotal() <= 0) {
+            return new Page<>(request.getPageIndex(), request.getPageSize());
+        }
+        final List<TaskResponse> list = page.getRecords();
+        this.getExtData(list);
+        return page;
+    }
+
+    @Override
+    public IPage<TaskResponse> getMyAttend(TaskRequest request) {
+        final Page<TaskResponse> page = processRunRepository.getMyAttend(request);
         if (page.getTotal() <= 0) {
             return new Page<>(request.getPageIndex(), request.getPageSize());
         }

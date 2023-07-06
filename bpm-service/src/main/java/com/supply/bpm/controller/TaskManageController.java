@@ -42,7 +42,7 @@ public class TaskManageController {
         request.setStartUserId(startUserId);
         request.setCategoryId(categoryId);
         final String userId = ContextUtil.getCurrentUserIdStr();
-        request.setAssigneeId(userId);
+        request.setAssigneeUserId(userId);
         final IPage<TaskResponse> data = taskManageService.getMyTask(request);
         return Result.ok(data);
     }
@@ -61,6 +61,23 @@ public class TaskManageController {
         final Long userId = ContextUtil.getCurrentUserId();
         request.setStartUserId(userId);
         final IPage<TaskResponse> data = taskManageService.getMyStart(request);
+        return Result.ok(data);
+    }
+
+    @ApiOperation(value = "我参与的流程")
+    @GetMapping("/getMyAttend")
+    public Result<?> getMyAttend(@RequestParam Integer pageIndex, @RequestParam Integer pageSize,
+                                @RequestParam(required = false) String processName, @RequestParam(required = false) String businessTitle,
+                                @RequestParam(required = false) Long categoryId) {
+        TaskRequest request = new TaskRequest();
+        request.setPageIndex(pageIndex);
+        request.setPageSize(pageSize);
+        request.setProcessName(processName);
+        request.setBusinessTitle(businessTitle);
+        request.setCategoryId(categoryId);
+        final String userId = ContextUtil.getCurrentUserIdStr();
+        request.setAssigneeUserId(userId);
+        final IPage<TaskResponse> data = taskManageService.getMyAttend(request);
         return Result.ok(data);
     }
 }

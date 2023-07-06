@@ -59,8 +59,8 @@
             ) bp on bp.instance_id = res.proc_inst_id_
         <where>
             (
-                res.assignee_ = #{request.assigneeId}
-                or ( res.assignee_ is null and i.type_ = 'candidate' and i.user_id_ = #{request.assigneeId} )
+                res.assignee_ = #{request.assigneeUserId}
+                or ( res.assignee_ is null and i.type_ = 'candidate' and i.user_id_ = #{request.assigneeUserId} )
                 <if test="request.assigneeGroups != null and request.assigneeGroups.size()>0" >
                     or ( res.assignee_ is null and i.type_ = 'candidate' and i.group_id_ in
                     <foreach collection="request.assigneeGroups" item="item" open="(" close=")" separator="," >
@@ -105,18 +105,55 @@
             bc.`name` AS category_name
         FROM
             bpm_process_run pr
-                LEFT JOIN bpm_process_definition pd ON pr.definition_id = pd.definition_id
-                LEFT JOIN bpm_category bc ON bc.id = pd.category_id
+        LEFT JOIN bpm_process_definition pd ON pr.definition_id = pd.definition_id
+        LEFT JOIN bpm_category bc ON bc.id = pd.category_id
         WHERE
             pr.start_user_id = #{request.startUserId}
         <if test="request.processName != null and request.processName != '' ">
-            AND bp.process_name LIKE concat('%', #{request.processName}, '%')
+            AND pd.process_name LIKE concat('%', #{request.processName}, '%')
         </if>
         <if test="request.categoryId != null">
-            AND bp.category_id = #{request.categoryId}
+            AND pd.category_id = #{request.categoryId}
         </if>
         <if test="request.businessStatus != null">
-            AND bp.business_status = #{request.businessStatus}
+            AND pd.business_status = #{request.businessStatus}
+        </if>
+        ORDER BY
+            pr.create_time DESC
+    </select>
+
+    <select id="getMyAttend" resultType="com.supply.bpm.model.response.TaskResponse" parameterType="com.supply.bpm.model.request.TaskRequest">
+        SELECT
+            pr.id AS run_id,
+            pr.definition_id,
+            pr.instance_id,
+            pr.business_id,
+            pr.business_title,
+            pr.start_user_id,
+            pr.business_status,
+            pr.tenant_id,
+            pr.create_time,
+            pr.end_time,
+            pr.duration,
+            pd.process_name,
+            pd.category_id,
+            bc.`name` AS category_name
+        FROM
+            bpm_process_run pr
+        LEFT JOIN bpm_process_definition pd ON pr.definition_id = pd.definition_id
+        LEFT JOIN bpm_category bc ON bc.id = pd.category_id
+        WHERE
+            pr.instance_id IN (
+                SELECT instance_id FROM bpm_task_opinion WHERE assignee_user_id = #{request.assigneeUserId} AND check_status &lt;&gt; 0
+            )
+        <if test="request.processName != null and request.processName != '' ">
+            AND pd.process_name LIKE concat('%', #{request.processName}, '%')
+        </if>
+        <if test="request.categoryId != null">
+            AND pd.category_id = #{request.categoryId}
+        </if>
+        <if test="request.businessStatus != null">
+            AND pd.business_status = #{request.businessStatus}
         </if>
         ORDER BY
             pr.create_time DESC

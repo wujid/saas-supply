@@ -36,7 +36,7 @@ public class TaskRequest extends BaseRequestEntity<Object> implements Serializab
     private Integer businessStatus;
 
     @ApiModelProperty(value = "审批人")
-    private String assigneeId;
+    private String assigneeUserId;
 
     @ApiModelProperty(value = "审批人所在组")
     private Set<String> assigneeGroups;
