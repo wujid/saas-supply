@@ -43,7 +43,6 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.UserTask;
-import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -93,8 +92,6 @@ public class ProcessRunServiceImpl implements IProcessRunService {
 
     private final TaskService taskService;
 
-    private final HistoryService historyService;
-
     private final RestTemplate restTemplate;
 
     private final SystemUserUtil userUtil;
@@ -103,7 +100,7 @@ public class ProcessRunServiceImpl implements IProcessRunService {
                                  IBusinessVariableRepository businessVariableRepository, INodeSetRepository nodeSetRepository,
                                  INodeUserRepository nodeUserRepository, INodeButtonRepository nodeButtonRepository,
                                  ITaskOpinionRepository taskOpinionRepository, RepositoryService repositoryService, RuntimeService runtimeService,
-                                 TaskService taskService, HistoryService historyService, RestTemplate restTemplate, SystemUserUtil userUtil) {
+                                 TaskService taskService, RestTemplate restTemplate, SystemUserUtil userUtil) {
         this.processRunRepository = processRunRepository;
         this.processDefinitionRepository = processDefinitionRepository;
         this.businessVariableRepository = businessVariableRepository;
@@ -114,7 +111,6 @@ public class ProcessRunServiceImpl implements IProcessRunService {
         this.repositoryService = repositoryService;
         this.runtimeService = runtimeService;
         this.taskService = taskService;
-        this.historyService = historyService;
         this.restTemplate = restTemplate;
         this.userUtil = userUtil;
     }
