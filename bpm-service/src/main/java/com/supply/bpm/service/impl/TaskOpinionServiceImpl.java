@@ -152,6 +152,7 @@ public class TaskOpinionServiceImpl implements ITaskOpinionService {
              ServletOutputStream outputStream = response.getOutputStream()) {
             byte[] bytes = IOUtils.toByteArray(inputStream);
             response.setContentType("image/svg+xml");
+            response.setStatus(203);
             outputStream.write(bytes);
             outputStream.flush();
         } catch (IOException e) {
