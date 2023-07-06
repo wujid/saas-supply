@@ -102,14 +102,11 @@
             pr.duration,
             pd.process_name,
             pd.category_id,
-            bc.`name` AS category_name,
-            rt.node_names,
-            rt.node_user_ids
+            bc.`name` AS category_name
         FROM
             bpm_process_run pr
                 LEFT JOIN bpm_process_definition pd ON pr.definition_id = pd.definition_id
                 LEFT JOIN bpm_category bc ON bc.id = pd.category_id
-                LEFT JOIN ( SELECT PROC_INST_ID_, GROUP_CONCAT( NAME_ ) AS node_names, GROUP_CONCAT( ASSIGNEE_ ) AS node_user_ids FROM act_ru_task GROUP BY PROC_INST_ID_ ) rt ON pr.instance_id = rt.PROC_INST_ID_
         WHERE
             pr.start_user_id = #{request.startUserId}
         <if test="request.processName != null and request.processName != '' ">
