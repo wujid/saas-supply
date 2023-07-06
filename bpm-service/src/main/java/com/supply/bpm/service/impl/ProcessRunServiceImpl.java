@@ -276,10 +276,15 @@ public class ProcessRunServiceImpl implements IProcessRunService {
     }
 
     private void updateTaskOpinionByTaskId(String taskId, String opinion, Long assigneeUserId, CheckStatusEnum statusEnum, DateTime endTime) {
-        final TaskOpinionPo taskOpinion = taskOpinionRepository.getByTaskId(taskId);
-        if (null == taskOpinion) {
+        final List<TaskOpinionPo> taskOpinions = taskOpinionRepository.getByTaskId(taskId);
+        if (CollectionUtil.isEmpty(taskOpinions)) {
             logger.warn("根据任务ID{}未查询到审批意见信息", taskId);
-            return;
+            throw new ApiException();
+        }
+        final TaskOpinionPo taskOpinion = taskOpinions.stream().filter(e -> null == e.getEndTime()).findFirst().orElse(null);
+        if (null == taskOpinion) {
+            logger.error("[修改审批意见]---根据任务ID{}未查询到未结束的审批意见", taskId);
+            throw new ApiException();
         }
         // 计算持续时间
         final long duration = DateUtil.betweenMs(taskOpinion.getCreateTime(), endTime);

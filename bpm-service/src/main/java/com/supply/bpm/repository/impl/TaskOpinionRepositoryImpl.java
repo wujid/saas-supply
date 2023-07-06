@@ -82,11 +82,11 @@ public class TaskOpinionRepositoryImpl extends ServiceImpl<TaskOpinionMapper, Ta
     }
 
     @Override
-    public TaskOpinionPo getByTaskId(String taskId) {
+    public List<TaskOpinionPo> getByTaskId(String taskId) {
         TaskOpinionRequest request = new TaskOpinionRequest();
         request.setTaskId(taskId);
         final LambdaQueryWrapper<TaskOpinionPo> queryWrapper = this.getQueryWrapper(request);
-        return taskOpinionMapper.selectOne(queryWrapper);
+        return taskOpinionMapper.selectList(queryWrapper);
     }
 
     /**
