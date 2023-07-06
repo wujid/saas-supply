@@ -63,7 +63,4 @@ public class TaskOpinionResponse extends BaseEntity implements Serializable {
 
     @ApiModelProperty(value = "审批状态名称")
     private String checkStatusName;
-
-    @ApiModelProperty(value = "审批持续时间(天)")
-    private String durationDay;
 }

@@ -11,5 +11,6 @@ import java.util.List;
  * @date 2023-07-04
  */
 public interface ITaskOpinionService {
-    List<TaskOpinionResponse> getByParams(TaskOpinionRequest request);
+
+    List<TaskOpinionResponse> getTaskOpinions(String instanceId, String businessId);
 }

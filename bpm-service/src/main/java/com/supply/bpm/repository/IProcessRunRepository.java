@@ -27,6 +27,8 @@ public interface IProcessRunRepository extends IService<ProcessRunPo> {
 
     ProcessRunPo getByInstanceId(String instanceId);
 
+    ProcessRunPo getByBusinessId(String businessId);
+
     /**
       * @description 我的待办列表.
       * @author wjd

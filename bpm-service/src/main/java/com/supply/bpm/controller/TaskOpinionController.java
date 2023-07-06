@@ -1,7 +1,5 @@
 package com.supply.bpm.controller;
 
-import com.supply.bpm.model.po.TaskOpinionPo;
-import com.supply.bpm.model.request.TaskOpinionRequest;
 import com.supply.bpm.model.response.TaskOpinionResponse;
 import com.supply.bpm.service.ITaskOpinionService;
 import com.supply.common.model.Result;
@@ -30,14 +28,10 @@ public class TaskOpinionController {
         this.taskOpinionService = taskOpinionService;
     }
 
-    @ApiOperation(value = "根据运行实例ID查询审批意见信息集")
-    @GetMapping("/getTaskOpinionsByInstanceId")
-    public Result<?> getTaskOpinionsByInstanceId(@RequestParam String instanceId) {
-        TaskOpinionRequest request = new TaskOpinionRequest();
-        request.setInstanceId(instanceId);
-        request.setOrderColumn(TaskOpinionPo::getId);
-        request.setIsAsc(true);
-        final List<TaskOpinionResponse> data = taskOpinionService.getByParams(request);
+    @ApiOperation(value = "根据条件查询审批意见信息集")
+    @GetMapping("/getTaskOpinions")
+    public Result<?> getTaskOpinions(@RequestParam(required = false) String instanceId, @RequestParam(required = false) String businessId) {
+        final List<TaskOpinionResponse> data = taskOpinionService.getTaskOpinions(instanceId, businessId);
         return Result.ok(data);
     }
 }

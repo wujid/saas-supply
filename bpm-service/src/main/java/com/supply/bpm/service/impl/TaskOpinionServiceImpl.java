@@ -1,15 +1,17 @@
 package com.supply.bpm.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.supply.bpm.constant.CheckStatusEnum;
 import com.supply.bpm.cvt.TaskOpinionCvt;
+import com.supply.bpm.model.po.ProcessRunPo;
 import com.supply.bpm.model.po.TaskOpinionPo;
 import com.supply.bpm.model.request.TaskOpinionRequest;
 import com.supply.bpm.model.response.TaskOpinionResponse;
+import com.supply.bpm.repository.IProcessRunRepository;
 import com.supply.bpm.repository.ITaskOpinionRepository;
 import com.supply.bpm.service.ITaskOpinionService;
+import com.supply.common.exception.ApiException;
 import com.supply.common.model.response.sys.SysUserResponse;
 import com.supply.common.util.SystemUserUtil;
 import org.slf4j.Logger;
@@ -34,15 +36,36 @@ public class TaskOpinionServiceImpl implements ITaskOpinionService {
 
     private final ITaskOpinionRepository taskOpinionRepository;
 
+    private final IProcessRunRepository processRunRepository;
+
     private final SystemUserUtil userUtil;
 
-    public TaskOpinionServiceImpl(ITaskOpinionRepository taskOpinionRepository, SystemUserUtil userUtil) {
+    public TaskOpinionServiceImpl(ITaskOpinionRepository taskOpinionRepository, IProcessRunRepository processRunRepository,
+                                  SystemUserUtil userUtil) {
         this.taskOpinionRepository = taskOpinionRepository;
+        this.processRunRepository = processRunRepository;
         this.userUtil = userUtil;
     }
 
     @Override
-    public List<TaskOpinionResponse> getByParams(TaskOpinionRequest request) {
+    public List<TaskOpinionResponse> getTaskOpinions(String instanceId, String businessId) {
+        if (StrUtil.isBlank(instanceId) && StrUtil.isBlank(businessId)) {
+            logger.error("根据流程运行实例ID或业务ID查询审批意见未传入任何参数");
+            throw new ApiException();
+        }
+        // 如果未传入运行实例ID则根据业务ID查询出对应的运行实例ID
+        if (StrUtil.isBlank(instanceId)) {
+            final ProcessRunPo processRun = processRunRepository.getByBusinessId(businessId);
+            if (null == processRun) {
+                logger.error("根据业务ID{}未查询到流程运行信息", businessId);
+                throw new ApiException();
+            }
+            instanceId = processRun.getInstanceId();
+        }
+        TaskOpinionRequest request = new TaskOpinionRequest();
+        request.setInstanceId(instanceId);
+        request.setOrderColumn(TaskOpinionPo::getId);
+        request.setIsAsc(true);
         final List<TaskOpinionPo> list = taskOpinionRepository.getListByParams(request);
         final List<TaskOpinionResponse> responses = TaskOpinionCvt.INSTANCE.poToResponseBatch(list);
         this.extData(responses);
@@ -94,12 +117,6 @@ public class TaskOpinionServiceImpl implements ITaskOpinionService {
                     final String name = StrUtil.format("{}-" + CheckStatusEnum.STATUS_ASSIGN.getName(), taskOpinion.getOwnerUserName());
                     taskOpinion.setCheckStatusName(name);
                 }
-            }
-            // 持续时间
-            final Long duration = taskOpinion.getDuration();
-            if (null != duration) {
-                final String durationDay = DateUtil.formatBetween(duration);
-                taskOpinion.setDurationDay(durationDay);
             }
         }
 
