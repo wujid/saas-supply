@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -33,5 +34,11 @@ public class TaskOpinionController {
     public Result<?> getTaskOpinions(@RequestParam(required = false) String instanceId, @RequestParam(required = false) String businessId) {
         final List<TaskOpinionResponse> data = taskOpinionService.getTaskOpinions(instanceId, businessId);
         return Result.ok(data);
+    }
+
+    @ApiOperation(value = "流程运行图")
+    @GetMapping("/getActImage")
+    public void getActImage(@RequestParam(required = false) String instanceId, @RequestParam(required = false) String businessId, HttpServletResponse response) {
+        taskOpinionService.getActImage(instanceId, businessId, response);
     }
 }
