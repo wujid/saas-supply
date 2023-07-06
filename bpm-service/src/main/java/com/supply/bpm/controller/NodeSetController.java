@@ -78,7 +78,7 @@ public class NodeSetController {
 
     @ApiOperation(value = "获取表单详情URL")
     @GetMapping("/getFormUrl")
-    public Result<?> getFormUrl(@RequestParam String instanceId, @RequestParam String nodeId) {
+    public Result<?> getFormUrl(@RequestParam String instanceId, @RequestParam(required = false) String nodeId) {
         final String data = userNodeService.getFormUrl(instanceId, nodeId);
         return Result.ok(data);
     }

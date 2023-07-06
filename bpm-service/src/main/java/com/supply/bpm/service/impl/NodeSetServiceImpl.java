@@ -156,17 +156,19 @@ public class NodeSetServiceImpl implements INodeSetService {
             logger.error("根据流程运行实例ID{}未查询到流程运行信息", instanceId);
             throw new ApiException();
         }
+        String formUrl = null;
         final String definitionId = processRun.getDefinitionId();
-        NodeSetRequest nodeSetRequest = new NodeSetRequest();
-        nodeSetRequest.setDefinitionId(definitionId);
-        nodeSetRequest.setNodeId(nodeId);
-        nodeSetRequest.setStatus(Constant.STATUS_NOT_DEL);
-        final NodeSetPo nodeSetPo = nodeSetRepository.getByParams(nodeSetRequest);
-        if (null == nodeSetPo) {
-            logger.error("根据流程定义ID{}和节点ID{}未查询到流程设置信息", definitionId, nodeId);
-            throw new ApiException();
+        if (StrUtil.isNotBlank(nodeId)) {
+            NodeSetRequest nodeSetRequest = new NodeSetRequest();
+            nodeSetRequest.setDefinitionId(definitionId);
+            nodeSetRequest.setNodeId(nodeId);
+            nodeSetRequest.setStatus(Constant.STATUS_NOT_DEL);
+            final NodeSetPo nodeSetPo = nodeSetRepository.getByParams(nodeSetRequest);
+            if (null == nodeSetPo) {
+                logger.error("根据流程定义ID{}和节点ID{}未查询到流程设置信息", definitionId, nodeId);
+            }
+            formUrl = nodeSetPo.getFormUrl();
         }
-        String formUrl = nodeSetPo.getFormUrl();
         // 当前节点未配置则从流程定义中获取
         if (StrUtil.isBlank(formUrl)) {
             ProcessDefinitionRequest definitionRequest = new ProcessDefinitionRequest();
