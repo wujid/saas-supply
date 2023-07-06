@@ -202,7 +202,7 @@ public class TaskOpinionServiceImpl implements ITaskOpinionService {
                 taskOpinion.setCheckStatusName(checkStatusName);
                 // 交办
                 if (checkStatus == CheckStatusEnum.STATUS_ASSIGN.getStatus() && StrUtil.isNotBlank(taskOpinion.getOwnerUserName())) {
-                    final String name = StrUtil.format("{}-" + CheckStatusEnum.STATUS_ASSIGN.getName(), taskOpinion.getOwnerUserName());
+                    final String name = StrUtil.format(CheckStatusEnum.STATUS_ASSIGN.getName() + "-{}", taskOpinion.getOwnerUserName());
                     taskOpinion.setCheckStatusName(name);
                 }
             }

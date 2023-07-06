@@ -6,9 +6,11 @@ import com.supply.common.model.Result;
 import com.supply.common.web.util.ContextUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -31,8 +33,16 @@ public class ProcessRunController {
     @PostMapping("/completeTask")
     public Result<?> completeTask(@RequestBody TaskHandleRequest request) {
         final Long userId = ContextUtil.getCurrentUserId();
-        request.setAssigneeId(Long.valueOf(userId));
+        request.setAssigneeId(userId);
         processRunService.completeTask(request);
+        return Result.ok();
+    }
+
+    @ApiOperation(value = "流程交办")
+    @GetMapping("/assignTask")
+    public Result<?> assignTask(@RequestParam String taskId, @RequestParam Long toUserId) {
+        final Long userId = ContextUtil.getCurrentUserId();
+        processRunService.assignTask(taskId, toUserId, userId);
         return Result.ok();
     }
 }

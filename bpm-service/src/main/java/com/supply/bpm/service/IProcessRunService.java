@@ -3,8 +3,6 @@ package com.supply.bpm.service;
 import com.supply.bpm.model.request.TaskHandleRequest;
 import com.supply.common.web.model.BpmRequestEntity;
 
-import javax.servlet.http.HttpServletResponse;
-
 /**
  * @author wjd
  * @description .
@@ -27,4 +25,14 @@ public interface IProcessRunService {
       * @param request 条件信息
       */
     void completeTask(TaskHandleRequest request);
+
+    /**
+      * @description 流程交办.
+      * @author wjd
+      * @date 2023/7/6
+      * @param taskId 任务ID
+      * @param toUserId 转交人
+      * @param userId 原处理人
+      */
+    void assignTask(String taskId, Long toUserId, Long userId);
 }

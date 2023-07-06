@@ -41,7 +41,7 @@ public class TaskOpinionPo extends Model<ProcessRunPo> implements Serializable {
     @ApiModelProperty(value = "流程审批节点名称")
     private String nodeName;
 
-    @ApiModelProperty(value = "流程当前节点任务所属人id---交办/委托原处理人")
+    @ApiModelProperty(value = "流程当前节点任务所属人id---交办/委托人")
     private Long ownerUserId;
 
     @ApiModelProperty(value = "流程当前节点任务审批人")

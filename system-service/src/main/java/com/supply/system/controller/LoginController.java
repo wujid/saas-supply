@@ -42,7 +42,7 @@ public class LoginController {
     }
 
     @ApiOperation(value = "微信登录")
-    @GetMapping("/loginForPwd")
+    @GetMapping("/loginByWeCat")
     public Result<AuthTokenResponse> loginByWeCat(@RequestParam String code) {
         final AuthTokenResponse tokenResponse = loginService.loginByWeCat(code);
         return Result.ok(tokenResponse);

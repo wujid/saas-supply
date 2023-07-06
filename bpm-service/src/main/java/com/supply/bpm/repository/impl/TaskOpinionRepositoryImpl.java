@@ -101,6 +101,7 @@ public class TaskOpinionRepositoryImpl extends ServiceImpl<TaskOpinionMapper, Ta
         queryWrapper.eq(null != request.getId(), TaskOpinionPo::getId, request.getId());
         queryWrapper.eq(StrUtil.isNotBlank(request.getInstanceId()), TaskOpinionPo::getInstanceId, request.getInstanceId());
         queryWrapper.eq(StrUtil.isNotBlank(request.getTaskId()), TaskOpinionPo::getTaskId, request.getTaskId());
+        queryWrapper.eq(StrUtil.isNotBlank(request.getNodeId()), TaskOpinionPo::getNodeId, request.getNodeId());
         queryWrapper.eq(null != request.getTenantId(), TaskOpinionPo::getTenantId, request.getTenantId());
         queryWrapper.apply(null != request.getAuthSql(), request.getAuthSql());
         queryWrapper.eq(null != request.getStatus(), TaskOpinionPo::getStatus, request.getStatus());

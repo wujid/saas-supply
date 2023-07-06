@@ -2,7 +2,6 @@ package com.supply.common.web.config;
 
 import cn.hutool.core.util.StrUtil;
 import com.supply.common.constant.Constant;
-import com.supply.common.web.util.ContextUtil;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +30,7 @@ public class FeignClientInterceptor implements RequestInterceptor {
         if (StrUtil.isNotBlank(tenantId)) {
             requestTemplate.header(Constant.TENANT_ID_KEY, tenantId);
         }
-        final String currentUserId = ContextUtil.getCurrentUserIdStr();
+        final String currentUserId = request.getHeader(Constant.USER_ID_KEY);
         if (StrUtil.isNotBlank(currentUserId)) {
             requestTemplate.header(Constant.USER_ID_KEY, currentUserId);
         }

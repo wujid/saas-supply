@@ -21,6 +21,7 @@ import com.supply.bpm.model.request.NodeSetRequest;
 import com.supply.bpm.model.request.ProcessDefinitionRequest;
 import com.supply.bpm.model.request.ProcessRunRequest;
 import com.supply.bpm.model.request.TaskHandleRequest;
+import com.supply.bpm.model.request.TaskOpinionRequest;
 import com.supply.bpm.repository.IBusinessVariableRepository;
 import com.supply.bpm.repository.INodeButtonRepository;
 import com.supply.bpm.repository.INodeSetRepository;
@@ -195,6 +196,48 @@ public class ProcessRunServiceImpl implements IProcessRunService {
         // 驳回到发起人
         if (buttonType == NodeButtonTypeEnum.REJECT_TO_START_USER.getType()) {
         }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void assignTask(String taskId, Long toUserId, Long userId) {
+        final Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        if (null == task) {
+            logger.error("[流程交办]---根据流程任务ID{}未查询到任务信息", taskId);
+            throw new ApiException();
+        }
+        // 设置原处理人
+        taskService.setOwner(taskId, userId.toString());
+        // 设置转交后的处理人
+        taskService.setAssignee(taskId, toUserId.toString());
+        // 查询当前节点审批意见信息并更新
+        TaskOpinionRequest taskOpinionRequest = new TaskOpinionRequest();
+        taskOpinionRequest.setInstanceId(task.getProcessInstanceId());
+        taskOpinionRequest.setTaskId(taskId);
+        taskOpinionRequest.setNodeId(task.getTaskDefinitionKey());
+        final TaskOpinionPo taskOpinionPo = taskOpinionRepository.getByParams(taskOpinionRequest);
+        final DateTime date = DateUtil.date();
+        if (null != taskOpinionPo) {
+            final TaskOpinionPo updateTaskOpinion = new TaskOpinionPo();
+            updateTaskOpinion.setId(taskOpinionPo.getId());
+            // 计算持续时间
+            final long duration = DateUtil.betweenMs(taskOpinionPo.getCreateTime(), date);
+            updateTaskOpinion.setAssigneeUserId(userId);
+            updateTaskOpinion.setOwnerUserId(toUserId);
+            updateTaskOpinion.setCheckStatus(CheckStatusEnum.STATUS_ASSIGN.getStatus());
+            updateTaskOpinion.setEndTime(date);
+            updateTaskOpinion.setDuration(duration);
+            taskOpinionRepository.updateById(updateTaskOpinion);
+        }
+        // 保存一条新的流程审批意见信息
+        final TaskOpinionPo taskOpinion = new TaskOpinionPo();
+        taskOpinion.setInstanceId(task.getProcessInstanceId());
+        taskOpinion.setTaskId(taskId);
+        taskOpinion.setNodeId(task.getTaskDefinitionKey());
+        taskOpinion.setNodeName(task.getName());
+        taskOpinion.setAssigneeUserId(toUserId);
+        taskOpinion.setCheckStatus(CheckStatusEnum.STATUS_CHECKING.getStatus());
+        taskOpinionRepository.save(taskOpinion);
     }
 
     private void startTaskOpinion(StartEvent startEvent, String instanceId, Long startUserId, DateTime startDate) {
