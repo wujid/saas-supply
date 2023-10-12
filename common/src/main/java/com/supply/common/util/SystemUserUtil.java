@@ -140,8 +140,6 @@ public class SystemUserUtil {
      * @return 用户信息
      */
     public SysUserResponse getUserById(Long userId) {
-        SysUserRequest request = new SysUserRequest();
-        request.setId(userId);
         final Result<SysUserResponse> result = systemClient.getUserById(userId);
         if (!result.isOk()) {
             final String message = StrUtil.format("根据用户ID{}查询用户信息异常!", userId);
