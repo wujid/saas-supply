@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,7 +36,10 @@ public class CategoryResponse extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "父名称")
     private String parentName;
 
+    @ApiModelProperty(value = "全称")
+    private String fullName;
+
     @ApiModelProperty(value = "流程分类子级信息")
-    private List<CategoryResponse> childrenList;
+    private List<CategoryResponse> childrenList = new ArrayList<>();
 
 }

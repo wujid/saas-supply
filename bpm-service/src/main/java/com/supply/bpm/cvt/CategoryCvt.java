@@ -37,6 +37,15 @@ public interface CategoryCvt {
     CategoryResponse poToResponse(CategoryPo po);
 
     /**
+     * @description 将response实体转换成response实体.
+     * @author wjd
+     * @date 2022/10/9
+     * @param response 待转换的response实体
+     * @return 转换后的response实体
+     */
+    CategoryResponse responseToResponse(CategoryResponse response);
+
+    /**
      * @description 批量将po实体转换成response实体.
      * @author wjd
      * @date 2022/10/9

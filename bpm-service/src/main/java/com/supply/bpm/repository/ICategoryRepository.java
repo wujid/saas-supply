@@ -51,4 +51,6 @@ public interface ICategoryRepository extends IService<CategoryPo> {
      * @return 带分页的结果
      */
     Page<CategoryPo> getPageByParams(Page<CategoryPo> page, CategoryRequest request);
+
+    List<CategoryPo> getListByTenantId(Long tenantId);
 }

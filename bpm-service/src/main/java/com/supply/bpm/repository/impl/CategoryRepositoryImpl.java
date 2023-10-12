@@ -10,6 +10,7 @@ import com.supply.bpm.mapper.CategoryMapper;
 import com.supply.bpm.model.po.CategoryPo;
 import com.supply.bpm.model.request.CategoryRequest;
 import com.supply.bpm.repository.ICategoryRepository;
+import com.supply.common.constant.Constant;
 import com.supply.common.constant.OperatorTypeEnum;
 import com.supply.common.web.annotation.BaseData;
 import com.supply.common.web.annotation.IgnoreFill;
@@ -79,6 +80,15 @@ public class CategoryRepositoryImpl extends ServiceImpl<CategoryMapper, Category
     public Page<CategoryPo> getPageByParams(Page<CategoryPo> page, CategoryRequest request) {
         final LambdaQueryWrapper<CategoryPo> queryWrapper = this.getQueryWrapper(request);
         return categoryMapper.selectPage(page, queryWrapper);
+    }
+
+    @Override
+    public List<CategoryPo> getListByTenantId(Long tenantId) {
+        final CategoryRequest request = new CategoryRequest();
+        request.setTenantId(tenantId);
+        request.setStatus(Constant.STATUS_NOT_DEL);
+        final LambdaQueryWrapper<CategoryPo> queryWrapper = this.getQueryWrapper(request);
+        return categoryMapper.selectList(queryWrapper);
     }
 
 

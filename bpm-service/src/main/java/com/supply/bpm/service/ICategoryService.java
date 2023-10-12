@@ -45,4 +45,14 @@ public interface ICategoryService {
       * @return 流程分类树
       */
     List<CategoryResponse> getCategoryTree(Long parentId, String name, Long tenantId);
+
+    /**
+      * @description 流程分类行.
+      * @author wjd
+      * @date 2023/10/12
+      * @param tenantId 租户ID
+      * @param name 名称条件
+      * @return 流程分类行
+      */
+    List<CategoryResponse> getCategoryRows(Long tenantId, String name);
 }

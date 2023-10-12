@@ -97,6 +97,19 @@ public class CategoryServiceImpl implements ICategoryService {
         return result;
     }
 
+    @Override
+    public List<CategoryResponse> getCategoryRows(Long tenantId, String name) {
+        List<CategoryResponse> result = new ArrayList<>();
+        final List<CategoryResponse> categoryList = this.getCategoryTree(null, name, tenantId);
+        if (CollectionUtil.isEmpty(categoryList)) {
+            return result;
+        }
+        for (CategoryResponse node : categoryList) {
+            this.convertToRows(node, result, null);
+        }
+        return result;
+    }
+
     private void getLeafNode(List<CategoryResponse> rootList, List<CategoryResponse> categoryResponseList) {
         for (CategoryResponse categoryResponse : rootList) {
             final Long parentId = categoryResponse.getId();
@@ -133,6 +146,29 @@ public class CategoryServiceImpl implements ICategoryService {
                     oneIter.remove();
                 }
             }
+        }
+    }
+
+    /**
+     * @description 树形结构转行.
+     * @author wjd
+     * @date 2023/10/12
+     * @param node 根节点
+     * @param rows 转换后的行
+     */
+    private void convertToRows(CategoryResponse node, List<CategoryResponse> rows, String parentName) {
+        String nodeName;
+        if (StrUtil.isBlank(parentName)) {
+            nodeName = node.getName();
+        } else {
+            nodeName = StrUtil.concat(true, parentName, "-", node.getName());
+        }
+        CategoryResponse categoryResponse = CategoryCvt.INSTANCE.responseToResponse(node);
+        categoryResponse.setFullName(nodeName);
+        categoryResponse.setChildrenList(new ArrayList<>());
+        rows.add(categoryResponse);
+        for (CategoryResponse child : node.getChildrenList()) {
+            this.convertToRows(child, rows, nodeName);
         }
     }
 }

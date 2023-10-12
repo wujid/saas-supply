@@ -66,4 +66,12 @@ public class CategoryController {
         final List<CategoryResponse> list = categoryService.getCategoryTree(parentId, name, tenantId);
         return Result.ok(list);
     }
+
+    @ApiOperation(value = "流程分类行")
+    @GetMapping("/getCategoryRows")
+    public Result<List<CategoryResponse>> getCategoryRows(@RequestParam(required = false) String name) {
+        final Long tenantId = ContextUtil.getCurrentTenantId();
+        final List<CategoryResponse> list = categoryService.getCategoryRows(tenantId, name);
+        return Result.ok(list);
+    }
 }
