@@ -159,4 +159,39 @@
             pr.create_time DESC
     </select>
 
+    <select id="getBpmHistory" resultType="com.supply.bpm.model.response.TaskResponse" parameterType="com.supply.bpm.model.request.TaskRequest">
+        SELECT
+            pr.id AS run_id,
+            pr.definition_id,
+            pr.instance_id,
+            pr.business_id,
+            pr.business_title,
+            pr.start_user_id,
+            pr.business_status,
+            pr.tenant_id,
+            pr.create_time,
+            pr.end_time,
+            pr.duration,
+            pd.process_name,
+            pd.category_id,
+            bc.`name` AS category_name
+        FROM
+            bpm_process_run pr
+        LEFT JOIN bpm_process_definition pd ON pr.definition_id = pd.definition_id
+        LEFT JOIN bpm_category bc ON bc.id = pd.category_id
+        WHERE
+            pr.tenant_id = #{request.tenantId}
+            <if test="request.processName != null and request.processName != '' ">
+                AND pd.process_name LIKE concat('%', #{request.processName}, '%')
+            </if>
+            <if test="request.categoryId != null">
+                AND pd.category_id = #{request.categoryId}
+            </if>
+            <if test="request.businessStatus != null">
+                AND pd.business_status = #{request.businessStatus}
+            </if>
+        ORDER BY
+            pr.create_time DESC
+    </select>
+
 </mapper>

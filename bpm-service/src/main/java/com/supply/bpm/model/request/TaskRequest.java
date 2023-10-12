@@ -40,4 +40,7 @@ public class TaskRequest extends BaseRequestEntity<Object> implements Serializab
 
     @ApiModelProperty(value = "审批人所在组")
     private Set<String> assigneeGroups;
+
+    @ApiModelProperty(value = "租户ID")
+    private Long tenantId;
 }

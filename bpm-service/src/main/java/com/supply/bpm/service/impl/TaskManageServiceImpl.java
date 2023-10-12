@@ -92,6 +92,17 @@ public class TaskManageServiceImpl implements ITaskManageService {
         return page;
     }
 
+    @Override
+    public IPage<TaskResponse> getBpmHistory(TaskRequest request) {
+        final Page<TaskResponse> page = processRunRepository.getBpmHistory(request);
+        if (page.getTotal() <= 0) {
+            return new Page<>(request.getPageIndex(), request.getPageSize());
+        }
+        final List<TaskResponse> list = page.getRecords();
+        this.getExtData(list);
+        return page;
+    }
+
     /**
      * @description 任务管理拓展信息.
      * @author wjd

@@ -55,4 +55,13 @@ public interface IProcessRunRepository extends IService<ProcessRunPo> {
      * @return 我参与的流程
      */
     Page<TaskResponse> getMyAttend(TaskRequest request);
+
+    /**
+     * @description 流程审批历史.
+     * @author wjd
+     * @date 2023/7/4
+     * @param request 条件信息
+     * @return 流程审批历史
+     */
+    Page<TaskResponse> getBpmHistory(TaskRequest request);
 }

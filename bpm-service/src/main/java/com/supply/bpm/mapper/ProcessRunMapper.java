@@ -45,4 +45,14 @@ public interface ProcessRunMapper extends BaseMapper<ProcessRunPo> {
      * @return 我参与的流程
      */
     Page<TaskResponse> getMyAttend(@Param("page") Page<TaskRequest> page, @Param("request") TaskRequest request);
+
+    /**
+     * @description 流程审批历史.
+     * @author wjd
+     * @date 2023/7/4
+     * @param page 分页信息
+     * @param request 条件信息
+     * @return 流程审批历史
+     */
+    Page<TaskResponse> getBpmHistory(@Param("page") Page<TaskRequest> page, @Param("request") TaskRequest request);
 }

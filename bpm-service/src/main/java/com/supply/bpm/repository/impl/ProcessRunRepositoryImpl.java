@@ -116,6 +116,12 @@ public class ProcessRunRepositoryImpl extends ServiceImpl<ProcessRunMapper, Proc
         return processRunMapper.getMyAttend(page, request);
     }
 
+    @Override
+    public Page<TaskResponse> getBpmHistory(TaskRequest request) {
+        Page<TaskRequest> page = new Page<>(request.getPageIndex(), request.getPageSize());
+        return processRunMapper.getBpmHistory(page, request);
+    }
+
 
     /**
      * @author wjd

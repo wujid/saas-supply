@@ -80,4 +80,21 @@ public class TaskManageController {
         final IPage<TaskResponse> data = taskManageService.getMyAttend(request);
         return Result.ok(data);
     }
+
+    @ApiOperation(value = "流程审批历史")
+    @GetMapping("/getBpmHistory")
+    public Result<?> getBpmHistory(@RequestParam Integer pageIndex, @RequestParam Integer pageSize,
+                                 @RequestParam(required = false) String processName, @RequestParam(required = false) String businessTitle,
+                                 @RequestParam(required = false) Long categoryId) {
+        TaskRequest request = new TaskRequest();
+        request.setPageIndex(pageIndex);
+        request.setPageSize(pageSize);
+        request.setProcessName(processName);
+        request.setBusinessTitle(businessTitle);
+        request.setCategoryId(categoryId);
+        final Long tenantId = ContextUtil.getCurrentTenantId();
+        request.setTenantId(tenantId);
+        final IPage<TaskResponse> data = taskManageService.getBpmHistory(request);
+        return Result.ok(data);
+    }
 }

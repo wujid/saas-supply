@@ -37,4 +37,13 @@ public interface ITaskManageService {
      * @return 我参与的流程
      */
     IPage<TaskResponse> getMyAttend(TaskRequest request);
+
+    /**
+      * @description 流程审批历史.
+      * @author wjd
+      * @date 2023/10/12
+      * @param request 查询条件
+      * @return 流程审批历史
+      */
+    IPage<TaskResponse> getBpmHistory(TaskRequest request);
 }
