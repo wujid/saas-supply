@@ -35,7 +35,9 @@ public enum BusinessStatusEnum {
 
     PROCESS_STATUS_SUSPEND(704, "流程挂起", ModuleEnum.BPM),
 
-    PROCESS_STATUS_END(705, "流程完成", ModuleEnum.BPM);
+    PROCESS_STATUS_COMPLETE(705, "流程完成", ModuleEnum.BPM),
+
+    PROCESS_STATUS_END(706, "流程结束", ModuleEnum.BPM);
 
 
 

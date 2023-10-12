@@ -437,12 +437,12 @@ public class ProcessRunServiceImpl implements IProcessRunService {
         this.updateTaskOpinionByTaskId(taskId, request.getOpinion(), request.getAssigneeId(), CheckStatusEnum.STATUS_AGREE, date);
         this.addTaskOpinionByInstanceId(instanceId, date);
 
-        // 3.判断当前流程实例是否结束,如果结束则更新流程状态为结束并获取对应的结束脚本任务
+        // 3.判断当前流程实例是否完成,如果完成则更新流程状态为完成并获取对应的结束脚本任务
         final long count = runtimeService.createProcessInstanceQuery().processInstanceId(instanceId).count();
         String endScript = null;
         if (count == 0L) {
-            // 更新流程状态为结束
-            this.updateStatusEnd(instanceId);
+            // 更新流程状态为完成
+            this.updateStatusEnd(instanceId, BusinessStatusEnum.PROCESS_STATUS_COMPLETE);
             endScript = processDefinition.getEndScript();
         }
 
@@ -455,7 +455,7 @@ public class ProcessRunServiceImpl implements IProcessRunService {
         // 1.结束当前流程实例
         runtimeService.deleteProcessInstance(instanceId, request.getOpinion());
         // 2.更新流程状态为结束
-        this.updateStatusEnd(instanceId);
+        this.updateStatusEnd(instanceId, BusinessStatusEnum.PROCESS_STATUS_END);
         // 3.执行当前审批节点对应的脚本任务及结束脚本任务
         final Integer buttonType = request.getButtonType();
         String endScript = processDefinition.getEndScript();
@@ -468,7 +468,7 @@ public class ProcessRunServiceImpl implements IProcessRunService {
      * @date 2023/7/5
      * @param instanceId 流程运行实例ID
      */
-    private void updateStatusEnd(String instanceId) {
+    private void updateStatusEnd(String instanceId, BusinessStatusEnum businessStatusEnum) {
         final ProcessRunPo processRun = processRunRepository.getByInstanceId(instanceId);
         final DateTime endTime = DateUtil.date();
         // 计算持续时间
@@ -476,7 +476,7 @@ public class ProcessRunServiceImpl implements IProcessRunService {
 
         ProcessRunPo processRunPo = new ProcessRunPo();
         processRunPo.setId(processRun.getId());
-        processRunPo.setBusinessStatus(BusinessStatusEnum.PROCESS_STATUS_END.getStatus());
+        processRunPo.setBusinessStatus(businessStatusEnum.getStatus());
         processRunPo.setEndTime(endTime);
         processRunPo.setDuration(duration);
 
