@@ -25,11 +25,3 @@ spring:
 
 nacos: ${env_nacos:192.168.5.107:8848}
 group: ${env_group:supply}
-
-server:
-  port: 8091
-
-
-mybatis-plus:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
