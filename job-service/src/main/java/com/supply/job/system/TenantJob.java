@@ -29,7 +29,12 @@ public class TenantJob {
         XxlJobHelper.log(message);
         logger.info(message);
 
-        systemClient.expireTenant();
+        try {
+            systemClient.expireTenant();
+        } catch (Exception e) {
+            logger.error("租户过期调度执行异常", e);
+            throw new RuntimeException(e);
+        }
 
         message = "租户过期调度完成";
         XxlJobHelper.log(message);
