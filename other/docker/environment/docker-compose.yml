@@ -1,20 +1,19 @@
 version: '2'
 services:
   nacos:
-    image: nacos/nacos-server:v2.0.4
+    image: nacos/nacos-server:v2.1.0
     environment:
-      MODE: standalone
-      SPRING_DATASOURCE_PLATFORM: mysql
-      MYSQL_SERVICE_HOST: 192.16.5.107
-      MYSQL_SERVICE_DB_NAME: nacos_config
-      MYSQL_SERVICE_PORT: 3306
-      MYSQL_SERVICE_USER: root
-      MYSQL_SERVICE_PASSWORD: 123456
-      MYSQL_SERVICE_DB_PARAM: characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useSSL=false
+      # 支持主机名可以使用hostname,否则使用ip，默认ip
+      - PREFER_HOST_MODE=ip
+      # 单机模式
+      - MODE=standalone
+      - SPRING_DATASOURCE_PLATFORM=mysql
+    volumes:
+      - ./nacos/logs:/home/nacos/logs
+      - ./nacos/conf:/home/nacos/conf
     ports:
-      - "8848:8848"
-      - "9848:9848"
-      - "9555:9555"
+      - 8848:8848
+    restart: always
     depends_on:
       - mysql
   redis:
@@ -24,18 +23,18 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - ./data/redis:/data
+      - ./redis/data:/data
+    restart: always
   mysql:
+    image: mysql:8.0.22
     container_name: mysql
-    image: mysql:latest
-    command:
-      --default-authentication-plugin=mysql_native_password
-      --lower_case_table_names=1
-    volumes:
-      - ./data/mysql/data/:/var/lib/mysql/
-      - ./data/mysql/conf/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
     ports:
-      - "3306:3306"
+      - 3306:3306
     environment:
-      - MYSQL_ROOT_PASSWORD=123456
-      - LANG=C.UTF-8
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: "123456"
+    volumes:
+      - ./mysql/conf/my.cnf:/etc/mysql/my.cnf
+      - ./mysql/files:/var/lib/mysql-files
+      - ./mysql/data:/var/lib/mysql
+    restart: always
