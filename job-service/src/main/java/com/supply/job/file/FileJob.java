@@ -28,7 +28,14 @@ public class FileJob {
         XxlJobHelper.log(message);
         logger.info(message);
 
-        fileClient.delUnRelationAttachment();
+        try {
+            fileClient.delUnRelationAttachment();
+        } catch (Exception e) {
+            message= "删除未关联的附件调度执行异常";
+            logger.error(message, e);
+            XxlJobHelper.log(message);
+            throw new RuntimeException(e);
+        }
 
         message = "未关联附件删除调度完成";
         XxlJobHelper.log(message);

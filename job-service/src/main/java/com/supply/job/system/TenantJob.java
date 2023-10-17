@@ -32,7 +32,9 @@ public class TenantJob {
         try {
             systemClient.expireTenant();
         } catch (Exception e) {
-            logger.error("租户过期调度执行异常", e);
+            message= "租户过期调度执行异常";
+            logger.error(message, e);
+            XxlJobHelper.log(message);
             throw new RuntimeException(e);
         }
 
