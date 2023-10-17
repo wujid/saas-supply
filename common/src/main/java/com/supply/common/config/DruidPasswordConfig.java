@@ -22,6 +22,7 @@ public class DruidPasswordConfig extends DruidPasswordCallback {
         // 获取配置文件中的已经加密的密码
         String pwd = (String)properties.get("password");
         String password = EncryptionUtil.decryptPassword(pwd);
+        logger.info("数据库解密成功");
         setPassword(password.toCharArray());
     }
 }
