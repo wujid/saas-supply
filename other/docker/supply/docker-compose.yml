@@ -31,6 +31,8 @@ services:
     image: bpm-service:0.0.1
     container_name: bpm-service
     env_file: ./java-env/project.env
+    volumes:
+      - ./data/bpm:/usr/share/fonts
     restart: on-failure
   business-service:
     image: business-service:0.0.1
