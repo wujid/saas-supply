@@ -2561,9 +2561,9 @@ INSERT INTO `sys_tenant_resource` VALUES (1871, 5, 87, 13, '2023-10-12 13:38:09'
 DROP TABLE IF EXISTS `sys_user`;
 CREATE TABLE `sys_user`  (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `work_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '工号',
   `account` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '账号',
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '密码',
-  `encode_password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '加密密码',
   `telephone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '手机号',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '真实姓名',
   `sex` int NULL DEFAULT NULL COMMENT '性别',
@@ -2586,15 +2586,14 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 'admin', '$2a$10$uFDdGGWy9u/RTthGe5Vg4.FFMpvjnfZIBgX1HLgFA6vDtzJHaCuZu', NULL, '18007000000', '管理员', 1, 1590635711337758720, '5252@163.com', NULL, 1, NULL, 1, 1, 1, NULL, '2022-11-10 17:15:16', 13, '2023-06-25 17:31:05', 0);
-INSERT INTO `sys_user` VALUES (13, 'admin', '$2a$10$ww1EMzpd1rMFcndQyrejMuLd2OB0sHUFUyzrZCrnGn6M0joxWwY2O', NULL, '15822222222', '管理员', 2, 1595668838942752768, 'sdsa@126.com', '测试', 20, NULL, 1, 1, 5, NULL, '2022-11-16 17:40:03', 13, '2023-10-17 14:14:44', 0);
-INSERT INTO `sys_user` VALUES (16, 'test1', '$2a$10$z63uA4kXzLfeaC6Hnh41MO9ERgX2mSdVUZruWmx/WJuOhGxblSJGu', NULL, '12345678999', '测试员工一', 1, 1670986568595628032, '52525@163.com', NULL, 20, NULL, 1, 0, 5, 13, '2023-06-20 10:46:58', NULL, NULL, 0);
-INSERT INTO `sys_user` VALUES (17, 'test2', '$2a$10$HQcYCL7AEW0dSsINdjMpsupetyP/78aDeU7uO3fHe7eTLMvS2acdO', NULL, '12345678952', '测试员工二', 1, 1670986794823802880, 'sda@163.com', NULL, 20, NULL, 1, 0, 5, 13, '2023-06-20 10:47:52', NULL, NULL, 0);
-INSERT INTO `sys_user` VALUES (18, 'test3', '$2a$10$z3bGqFgd1W0Uy.PbLuHhPuswMbjxWixetykJARfWJj/s4OccWP7ce', NULL, '12345678947', '测试员工三', 1, 1670986922334838784, 'sdas@163.com', NULL, 20, NULL, 1, 0, 5, 13, '2023-06-20 10:48:22', NULL, NULL, 0);
-INSERT INTO `sys_user` VALUES (19, 'test4', '$2a$10$GrZRPiD4LbbMpy4W04CFee3R6qnBfVmdNc0/HuXHJ8Vn4bSP5y86K', NULL, '12398745688', '测试员工四', 2, 1670987078023208960, '525@163.com', NULL, 20, NULL, 1, 0, 5, 13, '2023-06-20 10:49:00', NULL, NULL, 0);
-INSERT INTO `sys_user` VALUES (20, 'test5', '$2a$10$VBYpOsq31dwW64D7rdRJ8eEWv1Oq3l7pafJg0oP/LlcZR8.DxOQ4C', NULL, '12398745888', '测试员工五', 2, 1670987204837990400, '985821@163.com', NULL, 20, NULL, 1, 0, 5, 13, '2023-06-20 10:49:30', NULL, NULL, 0);
-INSERT INTO `sys_user` VALUES (21, 'test6', '$2a$10$w4GYoMp/bFvkgsCaKNmHde7bwNVnlQ096kZdvi.5vTVqEMT2dOOLa', NULL, '12369854755', '测试员工六', 2, 1670989331962486784, '15625@163.com', NULL, 20, NULL, 1, 0, 5, 13, '2023-06-20 10:57:57', NULL, NULL, 0);
-
+INSERT INTO `sys_user` VALUES (1, '', 'admin', '$2a$10$uFDdGGWy9u/RTthGe5Vg4.FFMpvjnfZIBgX1HLgFA6vDtzJHaCuZu', '18007000000', '管理员', 1, 1590635711337758720, '5252@163.com', NULL, 1, NULL, 1, 1, 1, NULL, '2022-11-10 17:15:16', 13, '2023-06-25 17:31:05', 0);
+INSERT INTO `sys_user` VALUES (13, 'JXSM001', 'admin', '$2a$10$ww1EMzpd1rMFcndQyrejMuLd2OB0sHUFUyzrZCrnGn6M0joxWwY2O', '15822222222', '管理员', 2, 1595668838942752768, 'sdsa@126.com', '测试', 20, NULL, 1, 1, 5, NULL, '2022-11-16 17:40:03', 13, '2023-10-12 13:38:09', 0);
+INSERT INTO `sys_user` VALUES (16, 'JXSM002', 'test1', '$2a$10$z63uA4kXzLfeaC6Hnh41MO9ERgX2mSdVUZruWmx/WJuOhGxblSJGu', '12345678999', '测试员工一', 1, 1670986568595628032, '52525@163.com', NULL, 20, NULL, 1, 0, 5, 13, '2023-06-20 10:46:58', NULL, NULL, 0);
+INSERT INTO `sys_user` VALUES (17, 'JXSM003', 'test2', '$2a$10$HQcYCL7AEW0dSsINdjMpsupetyP/78aDeU7uO3fHe7eTLMvS2acdO', '12345678952', '测试员工二', 1, 1670986794823802880, 'sda@163.com', NULL, 20, NULL, 1, 0, 5, 13, '2023-06-20 10:47:52', NULL, NULL, 0);
+INSERT INTO `sys_user` VALUES (18, 'JXSM004', 'test3', '$2a$10$z3bGqFgd1W0Uy.PbLuHhPuswMbjxWixetykJARfWJj/s4OccWP7ce', '12345678947', '测试员工三', 1, 1670986922334838784, 'sdas@163.com', NULL, 20, NULL, 1, 0, 5, 13, '2023-06-20 10:48:22', NULL, NULL, 0);
+INSERT INTO `sys_user` VALUES (19, 'JXSM005', 'test4', '$2a$10$GrZRPiD4LbbMpy4W04CFee3R6qnBfVmdNc0/HuXHJ8Vn4bSP5y86K', '12398745688', '测试员工四', 2, 1670987078023208960, '525@163.com', NULL, 20, NULL, 1, 0, 5, 13, '2023-06-20 10:49:00', NULL, NULL, 0);
+INSERT INTO `sys_user` VALUES (20, 'JXSM006', 'test5', '$2a$10$VBYpOsq31dwW64D7rdRJ8eEWv1Oq3l7pafJg0oP/LlcZR8.DxOQ4C', '12398745888', '测试员工五', 2, 1670987204837990400, '985821@163.com', NULL, 20, NULL, 1, 0, 5, 13, '2023-06-20 10:49:30', NULL, NULL, 0);
+INSERT INTO `sys_user` VALUES (21, 'JXSM007', 'test6', '$2a$10$w4GYoMp/bFvkgsCaKNmHde7bwNVnlQ096kZdvi.5vTVqEMT2dOOLa', '12369854755', '测试员工六', 2, 1670989331962486784, '15625@163.com', NULL, 20, NULL, 1, 0, 5, 13, '2023-06-20 10:57:57', NULL, NULL, 0);
 -- ----------------------------
 -- Table structure for sys_user_role
 -- ----------------------------
