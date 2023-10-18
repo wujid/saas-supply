@@ -21,6 +21,9 @@ import java.util.Set;
 public class UserResponse extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 7406662071340201559L;
 
+    @ApiModelProperty(value = "工号")
+    private String workNumber;
+
     @ApiModelProperty(value = "登录账号")
     private String account;
 

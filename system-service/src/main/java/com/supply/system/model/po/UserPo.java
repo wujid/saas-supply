@@ -29,6 +29,9 @@ public class UserPo extends Model<UserPo> implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
+    @ApiModelProperty(value = "工号")
+    private String workNumber;
+
     @ApiModelProperty(value = "登录账号")
     private String account;
 

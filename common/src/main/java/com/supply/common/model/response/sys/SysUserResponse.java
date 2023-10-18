@@ -22,6 +22,9 @@ public class SysUserResponse implements Serializable {
     @Note(description = "ID")
     private Long id;
 
+    @Note(description = "工号")
+    private String workNumber;
+
     @Note(description = "登录账号")
     private String account;
 

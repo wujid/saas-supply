@@ -90,6 +90,7 @@ public class UserRepositoryImpl extends ServiceImpl<UserMapper, UserPo> implemen
     private LambdaQueryWrapper<UserPo> getQueryWrapper(UserRequest request) {
         LambdaQueryWrapper<UserPo> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(null != request.getId(), UserPo::getId, request.getId());
+        queryWrapper.eq(StrUtil.isNotBlank(request.getWorkNumber()), UserPo::getWorkNumber, request.getWorkNumber());
         queryWrapper.eq(StrUtil.isNotBlank(request.getAccount()), UserPo::getAccount, request.getAccount());
         queryWrapper.eq(StrUtil.isNotBlank(request.getTelephone()), UserPo::getTelephone, request.getTelephone());
         queryWrapper.eq(null != request.getStatus(), UserPo::getStatus, request.getStatus());
@@ -100,6 +101,7 @@ public class UserRepositoryImpl extends ServiceImpl<UserMapper, UserPo> implemen
         queryWrapper.eq(null != request.getBusinessStatus(), UserPo::getBusinessStatus, request.getBusinessStatus());
         queryWrapper.eq(null != request.getOrgId(), UserPo::getOrgId, request.getOrgId());
         queryWrapper.eq(null != request.getDepartId(), UserPo::getDepartId, request.getDepartId());
+
         queryWrapper.in(CollectionUtil.isNotEmpty(request.getUserIds()), UserPo::getId, request.getUserIds());
         queryWrapper.in(CollectionUtil.isNotEmpty(request.getTenantIds()), UserPo::getTenantId, request.getTenantIds());
         queryWrapper.in(CollectionUtil.isNotEmpty(request.getDeptIds()), UserPo::getDepartId, request.getDeptIds());
@@ -109,6 +111,7 @@ public class UserRepositoryImpl extends ServiceImpl<UserMapper, UserPo> implemen
         queryWrapper.like(StrUtil.isNotBlank(request.getLikeEmail()), UserPo::getEmail, request.getLikeEmail());
         queryWrapper.ne(null != request.getNeId(), UserPo::getId, request.getNeId());
         queryWrapper.apply(null != request.getRoleId(), "id IN ( SELECT user_id FROM sys_user_role WHERE `status` = 0 AND role_id = {0} )", request.getRoleId());
+
         queryWrapper.apply(StrUtil.isNotBlank(request.getAuthSql()), request.getAuthSql());
         queryWrapper.orderBy(null != request.getOrderColumn(),  request.getIsAsc(), request.getOrderColumn());
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(request.getOrderColumnList()), request.getIsAsc(), request.getOrderColumnList());

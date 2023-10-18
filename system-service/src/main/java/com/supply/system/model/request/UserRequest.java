@@ -23,6 +23,9 @@ import java.util.Set;
 public class UserRequest extends BaseRequestEntity<UserPo> implements Serializable {
     private static final long serialVersionUID = -241617171310573603L;
 
+    @ApiModelProperty(value = "工号")
+    private String workNumber;
+
     @ApiModelProperty(value = "登录账号")
     @NotBlank(message = "账号不能为空")
     @Length(message = "账号不能超过个 {max} 字符", max = 15)
