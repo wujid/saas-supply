@@ -76,6 +76,9 @@ public class UserRequest extends BaseRequestEntity<UserPo> implements Serializab
     @ApiModelProperty(value = "不包含的ID")
     private Long neId;
 
+    @ApiModelProperty(value = "工号模糊匹配")
+    private String likeWorkNumber;
+
     @ApiModelProperty(value = "用户名称模糊匹配")
     private String likeName;
 
@@ -96,4 +99,5 @@ public class UserRequest extends BaseRequestEntity<UserPo> implements Serializab
 
     @ApiModelProperty(value = "部门ID集")
     private Set<Long> deptIds;
+
 }

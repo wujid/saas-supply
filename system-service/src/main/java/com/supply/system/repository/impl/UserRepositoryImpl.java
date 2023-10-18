@@ -105,6 +105,7 @@ public class UserRepositoryImpl extends ServiceImpl<UserMapper, UserPo> implemen
         queryWrapper.in(CollectionUtil.isNotEmpty(request.getUserIds()), UserPo::getId, request.getUserIds());
         queryWrapper.in(CollectionUtil.isNotEmpty(request.getTenantIds()), UserPo::getTenantId, request.getTenantIds());
         queryWrapper.in(CollectionUtil.isNotEmpty(request.getDeptIds()), UserPo::getDepartId, request.getDeptIds());
+        queryWrapper.like(StrUtil.isNotBlank(request.getLikeWorkNumber()), UserPo::getWorkNumber, request.getLikeWorkNumber());
         queryWrapper.like(StrUtil.isNotBlank(request.getLikeAccount()), UserPo::getAccount, request.getLikeAccount());
         queryWrapper.like(StrUtil.isNotBlank(request.getLikeName()), UserPo::getName, request.getLikeName());
         queryWrapper.like(StrUtil.isNotBlank(request.getLikeTelephone()), UserPo::getTelephone, request.getLikeTelephone());

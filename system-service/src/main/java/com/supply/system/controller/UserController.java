@@ -95,7 +95,8 @@ public class UserController {
                                       @RequestParam(required = false) String telephone,  @RequestParam(required = false) String email,
                                       @RequestParam(required = false) Integer businessStatus,  @RequestParam(required = false) Long orgId,
                                       @RequestParam(required = false) Long deptId, @RequestParam(required = false) String deptIds,
-                                      @RequestParam(required = false) Long roleId, @RequestParam(defaultValue = "false") Boolean isUseDataScope) {
+                                      @RequestParam(required = false) Long roleId, @RequestParam(defaultValue = "false") Boolean isUseDataScope,
+                                      @RequestParam(required = false) String workNumber) {
         final Long tenantId = ContextUtil.getCurrentTenantId();
         UserRequest request = new UserRequest();
         request.setTenantId(tenantId);
@@ -109,6 +110,7 @@ public class UserController {
         request.setStatus(Constant.STATUS_NOT_DEL);
         request.setOrgId(orgId);
         request.setDepartId(deptId);
+        request.setLikeWorkNumber(workNumber);
         if (StrUtil.isNotBlank(deptIds)) {
             final Set<Long> set = Convert.toSet(Long.class, deptIds);
             request.setDeptIds(set);
@@ -125,11 +127,12 @@ public class UserController {
 
     @ApiOperation(value = "根据自定义条件查询用户信息集")
     @GetMapping("/getUserListByParams")
-    public Result<List<UserResponse>> getUserListByParams(@RequestParam(required = false) String likeName) {
+    public Result<List<UserResponse>> getUserListByParams(@RequestParam(required = false) String likeName, @RequestParam(required = false) String workNumber) {
         final Long tenantId = ContextUtil.getCurrentTenantId();
         UserRequest request = new UserRequest();
         request.setTenantId(tenantId);
         request.setLikeName(likeName);
+        request.setLikeWorkNumber(workNumber);
         final List<UserResponse> list = userService.getUserListByParams(request);
         return Result.ok(list);
     }
