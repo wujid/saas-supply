@@ -51,28 +51,4 @@ public class GatewayConfig {
         return new HttpMessageConverters(converters.orderedStream().collect(Collectors.toList()));
     }
 
-//    @Bean
-//    public WebFilter corsFilter() {
-//        return (ServerWebExchange ctx, WebFilterChain chain) -> {
-//            ServerHttpRequest request = ctx.getRequest();
-//            final boolean isTrue = CorsUtils.isCorsRequest(request);
-//            logger.info("跨域过滤-------------是否是个跨域请求{}", isTrue);
-//            if (isTrue) {
-//                ServerHttpResponse response = ctx.getResponse();
-//                HttpHeaders headers = response.getHeaders();
-//                headers.add("Access-Control-Allow-Origin", "*");
-//                headers.add("Access-Control-Allow-Methods", "*");
-//                headers.add("Access-Control-Max-Age", "18000L");
-//                headers.add("Access-Control-Allow-Headers", "*");
-//                headers.add("Access-Control-Expose-Headers", "*");
-//                headers.add("Access-Control-Allow-Credentials", "true");
-//                if (request.getMethod() == HttpMethod.OPTIONS) {
-//                    response.setStatusCode(HttpStatus.OK);
-//                    return Mono.empty();
-//                }
-//            }
-//            return chain.filter(ctx);
-//        };
-//    }
-
 }
